@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from .mixins import CustomerMixin, CustomerAddressQuerysetMixin
 
 class CustomLoginView(LoginView):
-    template_name = 'accounts/login.html'
+    template_name = 'accounts/auth/login.html'
     redirect_authenticated_user = True
 
     def get_success_url(self):
@@ -25,7 +25,7 @@ class CustomLogoutView(LogoutView):
 
 class RegisterView(CreateView):
     form_class = CustomerRegistrationForm
-    template_name = 'accounts/register.html'
+    template_name = 'accounts/auth/register.html'
     success_url = reverse_lazy('accounts:dashboard')
 
     def form_valid(self, form):
@@ -39,7 +39,7 @@ class RegisterView(CreateView):
         return response
 
 class PasswordChangeView(CustomerMixin, BasePasswordChangeView):
-    template_name = 'accounts/password_change.html'
+    template_name = 'accounts/auth/password_change.html'
     success_url = reverse_lazy('accounts:profile')
 
     def form_valid(self, form):
@@ -47,7 +47,7 @@ class PasswordChangeView(CustomerMixin, BasePasswordChangeView):
         return super().form_valid(form)
     
 class ProfileView(CustomerMixin, TemplateView):
-    template_name = 'accounts/profile.html'
+    template_name = 'accounts/profile/profile.html'
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -59,7 +59,7 @@ class ProfileView(CustomerMixin, TemplateView):
 class ProfileEditView(CustomerMixin, UpdateView):
     model = Customer
     form_class = CustomerProfileForm
-    template_name = 'accounts/profile_edit.html'
+    template_name = 'accounts/profile/profile_edit.html'
     success_url = reverse_lazy('accounts:profile')
 
     def get_object(self, queryset=None):
@@ -73,7 +73,7 @@ class ProfileEditView(CustomerMixin, UpdateView):
 class AddressListView(CustomerAddressQuerysetMixin, ListView):
     model = CustomerAddress
     form_class = CustomerAddressForm
-    template_name = 'accounts/address_list.html'
+    template_name = 'accounts/address/address_list.html'
     success_url = reverse_lazy('accounts:address_list')
 
     def form_valid(self, form):
@@ -94,7 +94,7 @@ class AddressListView(CustomerAddressQuerysetMixin, ListView):
 class AddressUpdateView(CustomerAddressQuerysetMixin, UpdateView):
     model = CustomerAddress
     form_class = CustomerAddressForm
-    template_name = 'accounts/address_form.html'
+    template_name = 'accounts/address/address_form.html'
     success_url = reverse_lazy('accounts:address_list')
 
     def form_valid(self, form):
@@ -110,7 +110,7 @@ class AddressUpdateView(CustomerAddressQuerysetMixin, UpdateView):
 
 class AddressDeleteView(CustomerAddressQuerysetMixin, DeleteView):
     model = CustomerAddress
-    template_name = 'accounts/address_confirm_delete.html'
+    template_name = 'accounts/address/address_confirm_delete.html'
     success_url = reverse_lazy('accounts:address_list')
 
     def delete(self, request, *args, **kwargs):
@@ -141,7 +141,7 @@ class SetDefaultAddressView(CustomerMixin, TemplateView):
     
 class OrderHistoryView(CustomerMixin, ListView):
     model = Order
-    template_name = 'accounts/order_history.html'
+    template_name = 'accounts/orders/order_history.html'
     context_object_name = 'orders'
 
     def get_queryset(self):
@@ -151,7 +151,7 @@ class OrderHistoryView(CustomerMixin, ListView):
 
 class OrderDetailView(CustomerMixin, DetailView):
     model = Order
-    template_name = 'accounts/order_detail.html'
+    template_name = 'accounts/orders/order_detail.html'
     context_object_name = 'order'
     slug_field = 'order_number'
     slug_url_kwarg = 'order_number'
