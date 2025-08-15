@@ -1,4 +1,5 @@
 from django.db import models
+from products.models import Product
 from sokoni.models import AuditTimestampModel
 
 class Cart(AuditTimestampModel):
@@ -12,15 +13,15 @@ class Cart(AuditTimestampModel):
     
     @property
     def total_items(self):
-        return sum(item.quantity for item in self.items.all())
+        return sum(item.quantity for item in self.cart_items.all())
     
     @property
     def subtotal(self):
-        return sum(item.total_price for item in self.items.all())
+        return sum(item.total_price for item in self.cart_items.all())
     
 class CartItem(AuditTimestampModel):
     cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='cart_items')
-    product = models.ForeignKey('products.Product', on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
 
     class Meta:

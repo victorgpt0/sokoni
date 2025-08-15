@@ -19,17 +19,20 @@ from django.urls import path, include
 from django.views.generic import TemplateView
 from django.conf import settings
 from django.conf.urls.static import static
+from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('', TemplateView.as_view(template_name='home.html'), name='home'),
+    path('', views.home, name='home'),
 
-    # path('products/', include('products.urls')),
+    # Main apps
+    path('products/', include('products.urls')),
     path('accounts/', include('accounts.urls', namespace='accounts')),
-    # path('cart/', include('cart.urls')),
-    # path('orders/', include('orders.urls')),
-    # path('coupons/', include('coupons.urls')),
+    path('cart/', include('cart.urls')),
+    path('orders/', include('orders.urls')),
+    path('coupons/', include('coupons.urls')),
+    path('payments/', include('payments.urls')),
 ]
 
 # Custom admin site headers

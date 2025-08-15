@@ -1,0 +1,277 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Profile - Sokoni{% endblock %}
+
+{% block head %}
+<style>
+    @keyframes slideInFromLeft {
+        0% {
+            transform: translateX(-50px);
+            opacity: 0;
+        }
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .slide-in-left {
+        animation: slideInFromLeft 0.6s ease-out;
+    }
+    
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-8 slide-in-left">
+        <ol class="flex items-center space-x-2 text-sm">
+            <li><a href="{% url 'accounts:dashboard' %}" class="text-secondary hover:text-white transition-colors">Dashboard</a></li>
+            <li class="text-gray-400">/</li>
+            <li class="text-white">Profile</li>
+        </ol>
+    </nav>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Profile Card -->
+        <div class="lg:col-span-1">
+            <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 slide-in-left stagger-1">
+                <!-- Profile Picture -->
+                <div class="text-center mb-6">
+                    <div class="mx-auto h-24 w-24 bg-secondary rounded-full flex items-center justify-center mb-4 transform transition-transform duration-300 hover:scale-110">
+                        <svg class="h-12 w-12 text-primary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                    <h2 class="text-xl font-bold text-white">{{ customer.full_name|default:user.username }}</h2>
+                    <p class="text-secondary text-sm">{{ user.email }}</p>
+                    {% if customer.phone_number %}
+                        <p class="text-gray-300 text-sm">{{ customer.phone_number }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Status Badge -->
+                <div class="text-center mb-6">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500/20 text-green-400">
+                        <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                        </svg>
+                        Active Member
+                    </span>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="space-y-4">
+                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                        <span class="text-secondary text-sm">Member Since</span>
+                        <span class="text-white font-semibold text-sm">{{ user.date_joined|date:"M Y" }}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                        <span class="text-secondary text-sm">Total Orders</span>
+                        <span class="text-white font-semibold text-sm">{{ recent_orders.count|default:0 }}</span>
+                    </div>
+                    <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg">
+                        <span class="text-secondary text-sm">Account Status</span>
+                        <span class="text-green-400 font-semibold text-sm">Verified</span>
+                    </div>
+                </div>
+
+                <!-- Edit Profile Button -->
+                <div class="mt-6">
+                    <a href="{% url 'accounts:profile_edit' %}" class="w-full bg-secondary text-primary py-3 px-4 rounded-lg hover:bg-secondary/90 transition-colors duration-200 flex items-center justify-center font-medium">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                        </svg>
+                        Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Details -->
+        <div class="lg:col-span-2">
+            <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 slide-in-left stagger-2">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-white">Profile Information</h3>
+                    <a href="{% url 'accounts:profile_edit' %}" class="text-secondary hover:text-white text-sm transition-colors duration-200 flex items-center">
+                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                        </svg>
+                        Edit
+                    </a>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Personal Information -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-white mb-4">Personal Details</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-1">First Name</label>
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    <span class="text-white">{{ user.first_name|default:"Not provided" }}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-1">Last Name</label>
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    <span class="text-white">{{ user.last_name|default:"Not provided" }}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-1">Username</label>
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    <span class="text-white">{{ user.username }}</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-1">Gender</label>
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    <span class="text-white">{{ customer.get_gender_display|default:"Not specified" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-white mb-4">Contact Information</h4>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-1">Email</label>
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    <span class="text-white">{{ user.email }}</span>
+                                    {% if user.email %}
+                                        <span class="ml-2 inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-500/20 text-green-400">
+                                            Verified
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-1">Phone Number</label>
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    {% if customer.phone_number %}
+                                        <span class="text-white">{{ customer.phone_number }}</span>
+                                    {% else %}
+                                        <span class="text-gray-400">Not provided</span>
+                                        <a href="{% url 'accounts:profile_edit' %}" class="ml-2 text-secondary hover:text-white text-sm">Add phone</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-1">Date of Birth</label>
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    {% if customer.date_of_birth %}
+                                        <span class="text-white">{{ customer.date_of_birth|date:"F d, Y" }}</span>
+                                    {% else %}
+                                        <span class="text-gray-400">Not provided</span>
+                                        <a href="{% url 'accounts:profile_edit' %}" class="ml-2 text-secondary hover:text-white text-sm">Add date</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-1">Member Since</label>
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    <span class="text-white">{{ user.date_joined|date:"F d, Y" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 mt-8 slide-in-left stagger-3">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-xl font-bold text-white">Recent Orders</h3>
+                    <a href="{% url 'accounts:order_history' %}" class="text-secondary hover:text-white text-sm transition-colors duration-200">
+                        View all orders
+                    </a>
+                </div>
+
+                {% if recent_orders %}
+                    <div class="space-y-4">
+                        {% for order in recent_orders|slice:":3" %}
+                        <div class="flex items-center justify-between p-4 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors duration-200">
+                            <div>
+                                <p class="font-semibold text-white">Order #{{ order.order_number }}</p>
+                                <p class="text-secondary text-sm">{{ order.created_at|date:"M d, Y" }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-white">${{ order.total_amount }}</p>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {% if order.status == 'delivered' %}bg-green-500/20 text-green-400
+                                    {% elif order.status == 'shipped' %}bg-blue-500/20 text-blue-400
+                                    {% elif order.status == 'processing' %}bg-yellow-500/20 text-yellow-400
+                                    {% else %}bg-gray-500/20 text-gray-400{% endif %}">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="text-center py-8">
+                        <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                        </svg>
+                        <p class="text-gray-400 mb-4">No orders found</p>
+                        <a href="/" class="inline-flex items-center px-4 py-2 bg-secondary text-primary rounded-lg hover:bg-secondary/90 transition-colors duration-200">
+                            Start Shopping
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mt-8 bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 slide-in-left stagger-3">
+        <h3 class="text-xl font-bold text-white mb-6">Quick Actions</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <a href="{% url 'accounts:address_list' %}" class="flex items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200">
+                <svg class="w-6 h-6 text-secondary mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                </svg>
+                <div>
+                    <p class="text-white font-medium">Addresses</p>
+                    <p class="text-secondary text-sm">Manage shipping</p>
+                </div>
+            </a>
+            <a href="{% url 'accounts:password_change' %}" class="flex items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200">
+                <svg class="w-6 h-6 text-secondary mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                </svg>
+                <div>
+                    <p class="text-white font-medium">Security</p>
+                    <p class="text-secondary text-sm">Change password</p>
+                </div>
+            </a>
+            <a href="{% url 'accounts:order_history' %}" class="flex items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200">
+                <svg class="w-6 h-6 text-secondary mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                </svg>
+                <div>
+                    <p class="text-white font-medium">Orders</p>
+                    <p class="text-secondary text-sm">View history</p>
+                </div>
+            </a>
+            <a href="#" class="flex items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200">
+                <svg class="w-6 h-6 text-secondary mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"></path>
+                </svg>
+                <div>
+                    <p class="text-white font-medium">Wishlist</p>
+                    <p class="text-secondary text-sm">Saved items</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

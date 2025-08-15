@@ -1,0 +1,286 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Edit Profile - Sokoni{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-8">
+        <ol class="flex items-center space-x-2 text-sm">
+            <li><a href="{% url 'accounts:dashboard' %}" class="text-secondary hover:text-white transition-colors">Dashboard</a></li>
+            <li class="text-gray-400">/</li>
+            <li><a href="{% url 'accounts:profile' %}" class="text-secondary hover:text-white transition-colors">Profile</a></li>
+            <li class="text-gray-400">/</li>
+            <li class="text-white">Edit</li>
+        </ol>
+    </nav>
+
+    <!-- Main Card -->
+    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="mx-auto h-16 w-16 bg-blue-500/20 rounded-full flex items-center justify-center mb-4">
+                <svg class="h-8 w-8 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-white mb-2">Edit Profile</h1>
+            <p class="text-secondary text-sm">Update your personal information</p>
+        </div>
+
+        <!-- Profile Edit Form -->
+        <form method="post" class="space-y-6" id="profileEditForm">
+            {% csrf_token %}
+            
+            <!-- Non-field errors -->
+            {% if form.non_field_errors %}
+                <div class="bg-red-500/20 border border-red-500/50 rounded-lg p-4">
+                    {% for error in form.non_field_errors %}
+                        <p class="text-red-200 text-sm flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            {{ error }}
+                        </p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Personal Information Section -->
+                <div class="space-y-6">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                        Personal Details
+                    </h3>
+
+                    <!-- First Name -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.user.first_name.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            First Name {% if form.user.first_name.field.required %}<span class="text-red-400">*</span>{% endif %}
+                        </label>
+                        {{ form.user.first_name|add_class:"w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {% if form.user.first_name.errors %}
+                            <div class="mt-2">
+                                {% for error in form.user.first_name.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.user.last_name.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            Last Name {% if form.user.last_name.field.required %}<span class="text-red-400">*</span>{% endif %}
+                        </label>
+                        {{ form.user.last_name|add_class:"w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {% if form.user.last_name.errors %}
+                            <div class="mt-2">
+                                {% for error in form.user.last_name.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.user.email.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            Email {% if form.user.email.field.required %}<span class="text-red-400">*</span>{% endif %}
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                                </svg>
+                            </div>
+                            {{ form.user.email|add_class:"w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        </div>
+                        {% if form.user.email.errors %}
+                            <div class="mt-2">
+                                {% for error in form.user.email.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Gender -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.gender.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            Gender
+                        </label>
+                        {{ form.gender|add_class:"w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {% if form.gender.errors %}
+                            <div class="mt-2">
+                                {% for error in form.gender.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Contact Information Section -->
+                <div class="space-y-6">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                        </svg>
+                        Contact Details
+                    </h3>
+
+                    <!-- Phone Number -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.phone_number.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            Phone Number
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                                </svg>
+                            </div>
+                            {{ form.phone_number|add_class:"w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        </div>
+                        {% if form.phone_number.errors %}
+                            <div class="mt-2">
+                                {% for error in form.phone_number.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Date of Birth -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.date_of_birth.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            Date of Birth
+                        </label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            {{ form.date_of_birth|add_class:"w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        </div>
+                        {% if form.date_of_birth.errors %}
+                            <div class="mt-2">
+                                {% for error in form.date_of_birth.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <p class="mt-1 text-sm text-gray-300">Format: YYYY-MM-DD</p>
+                    </div>
+
+                    <!-- Account Information (Read-only) -->
+                    <div class="pt-4 border-t border-white/10">
+                        <h4 class="text-md font-medium text-white mb-3">Account Information</h4>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-1">Username</label>
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    <span class="text-white">{{ user.username }}</span>
+                                    <span class="ml-2 text-xs text-gray-400">(Cannot be changed)</span>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-secondary mb-1">Member Since</label>
+                                <div class="p-3 bg-white/5 rounded-lg border border-white/10">
+                                    <span class="text-white">{{ user.date_joined|date:"F d, Y" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-4 pt-6 border-t border-white/10">
+                <button 
+                    type="submit" 
+                    class="flex-1 px-6 py-3 bg-secondary text-primary rounded-lg font-medium text-sm transition-all duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-secondary focus:ring-opacity-50 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                    id="submitBtn"
+                >
+                    <span>Save Changes</span>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                
+                <a href="{% url 'accounts:profile' %}" class="flex-1 px-6 py-3 bg-white/10 border border-white/20 text-white rounded-lg font-medium text-sm transition-all duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50 hover:bg-white/20 flex items-center justify-center space-x-2">
+                    <span>Cancel</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('profileEditForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    form.addEventListener('submit', function() {
+        submitBtn.innerHTML = `
+            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Saving...</span>
+        `;
+        submitBtn.disabled = true;
+    });
+
+    // Add floating animation to input fields
+    const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="date"], select');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.parentElement.classList.add('scale-105');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.parentElement.classList.remove('scale-105');
+        });
+    });
+});
+</script>
+{% endblock %}

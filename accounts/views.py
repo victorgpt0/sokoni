@@ -72,8 +72,12 @@ class ProfileEditView(CustomerMixin, UpdateView):
     
 class AddressListView(CustomerAddressQuerysetMixin, ListView):
     model = CustomerAddress
-    form_class = CustomerAddressForm
     template_name = 'accounts/address/address_list.html'
+
+class AddressCreateView(CustomerMixin, CreateView):
+    model = CustomerAddress
+    form_class = CustomerAddressForm
+    template_name = 'accounts/address/address_form.html'
     success_url = reverse_lazy('accounts:address_list')
 
     def form_valid(self, form):

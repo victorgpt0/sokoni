@@ -60,14 +60,43 @@ class CustomerProfileForm(forms.ModelForm):
         }
 
 class CustomerAddressForm(forms.ModelForm):
+    # Country choices
+    COUNTRY_CHOICES = [
+        ('', 'Select Country'),
+        ('Kenya', 'Kenya'),
+        ('Uganda', 'Uganda'),
+        ('Tanzania', 'Tanzania'),
+        ('Rwanda', 'Rwanda'),
+        ('Burundi', 'Burundi'),
+        ('Ethiopia', 'Ethiopia'),
+        ('Somalia', 'Somalia'),
+        ('South Sudan', 'South Sudan'),
+        ('Sudan', 'Sudan'),
+        ('Egypt', 'Egypt'),
+        ('Nigeria', 'Nigeria'),
+        ('Ghana', 'Ghana'),
+        ('South Africa', 'South Africa'),
+        ('Other', 'Other'),
+    ]
+    
+    country = forms.ChoiceField(
+        choices=COUNTRY_CHOICES,
+        required=True,
+        widget=forms.Select(attrs={'class': 'form-control'})
+    )
+    
     class Meta:
         model = CustomerAddress
-        fields = ('address_line_1', 'address_line_2', 'city', 'state', 'postal_code', 'country')
+        fields = ('type', 'first_name', 'last_name', 'company', 'address_line_1', 'address_line_2', 'city', 'state', 'postal_code', 'country', 'is_default')
         widgets = {
+            'type': forms.RadioSelect(attrs={'class': 'form-control'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'company': forms.TextInput(attrs={'class': 'form-control'}),
             'address_line_1': forms.TextInput(attrs={'class': 'form-control'}),
             'address_line_2': forms.TextInput(attrs={'class': 'form-control'}),
             'city': forms.TextInput(attrs={'class': 'form-control'}),
             'state': forms.TextInput(attrs={'class': 'form-control'}),
             'postal_code': forms.TextInput(attrs={'class': 'form-control'}),
-            'country': forms.Select(attrs={'class': 'form-control'}),
+            'is_default': forms.CheckboxInput(attrs={'class': 'form-control'}),
         }

@@ -21,6 +21,11 @@ class Order(AuditTimestampModel):
         ('refunded', 'Refunded'),
     ]
 
+    SHIPPING_METHOD_CHOICES = [
+        ('standard', 'Standard Shipping'),
+        ('express', 'Express Shipping'),
+    ]
+
     order_number = models.CharField(max_length=20, unique=True, blank=True)
     customer = models.ForeignKey('accounts.Customer', on_delete=models.CASCADE, related_name='orders')
 
@@ -35,6 +40,7 @@ class Order(AuditTimestampModel):
 
     shipping_address = models.ForeignKey('accounts.CustomerAddress', on_delete=models.CASCADE, related_name='shipping_orders', null=True, blank=True)
     billing_address = models.ForeignKey('accounts.CustomerAddress', on_delete=models.CASCADE, related_name='billing_orders', null=True, blank=True)
+    shipping_method = models.CharField(max_length=20, choices=SHIPPING_METHOD_CHOICES, default='standard')
 
     shipped_at = models.DateTimeField(null=True, blank=True)
     delivered_at = models.DateTimeField(null=True, blank=True)

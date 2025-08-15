@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 from pathlib import Path
 import environ
 import os
+from decimal import Decimal
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -26,7 +27,27 @@ environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 DEBUG = env('DEBUG')
 SECRET_KEY = env('SECRET_KEY', default='django-insecure-key')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    '491bc5dd1d1a.ngrok-free.app',
+    '127.0.0.1',
+    'localhost',
+]
+
+# CSRF settings for ngrok
+CSRF_TRUSTED_ORIGINS = [
+    'https://491bc5dd1d1a.ngrok-free.app',
+    'http://127.0.0.1:8000',
+    'http://localhost:8000',
+]
+
+# Additional security settings for ngrok development
+CSRF_COOKIE_SECURE = False  # Set to True in production
+SESSION_COOKIE_SECURE = False  # Set to True in production
+SECURE_SSL_REDIRECT = False  # Set to True in production
+
+# For ngrok development - allow insecure cookies
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
 
 
 # Application definition
@@ -39,11 +60,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # Third party apps
+    'widget_tweaks',
+
+    # Local apps
     'accounts',
-    'coupons',
-    'cart',
-    'orders',
     'products',
+    'cart',
+    'coupons',
+    'orders',
+    'payments',
 ]
 
 MIDDLEWARE = [
@@ -73,7 +99,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                # 'cart.context_processors.cart_context',
+                'cart.context_processors.cart_context',
             ],
         },
     },
@@ -125,6 +151,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -156,18 +183,18 @@ CART_SESSION_ID = 'cart'
 CART_ITEM_MAX_QUANTITY = 99
 
 # Currency settings
-CURRENCY_CODE = 'USD'
-CURRENCY_SYMBOL = '$'
+CURRENCY_CODE = 'KES'
+CURRENCY_SYMBOL = 'KES'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
 
-# Tax settings (adjust based on your location)
-TAX_RATE = 0.08  # 8%
+# Tax settings (Kenyan VAT rate)
+TAX_RATE = Decimal('0.16')  # 16% VAT in Kenya
 
 # Shipping settings
-FREE_SHIPPING_THRESHOLD = 50.00
-DEFAULT_SHIPPING_COST = 5.99
+FREE_SHIPPING_THRESHOLD = Decimal('5000.00')  # KES 5000 for free shipping
+DEFAULT_SHIPPING_COST = Decimal('500.00')  # KES 500 default shipping
 
 # Pagination
 PRODUCTS_PER_PAGE = 12
@@ -176,6 +203,13 @@ ORDERS_PER_PAGE = 10
 # Image settings
 PRODUCT_IMAGE_MAX_SIZE = 2 * 1024 * 1024  # 2MB
 ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp']
+
+# Paystack settings
+PAYSTACK_PUBLIC_KEY = env('PAYSTACK_PUBLIC_KEY', default='')
+PAYSTACK_SECRET_KEY = env('PAYSTACK_SECRET_KEY', default='')
+
+# Paystack webhook URL for ngrok development
+# Set this in your Paystack dashboard: https://491bc5dd1d1a.ngrok-free.app/payments/webhook/paystack/
 
 # Security settings (for production)
 # SECURE_BROWSER_XSS_FILTER = True

@@ -1,0 +1,356 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Products - Sokoni{% endblock %}
+
+{% block head %}
+<style>
+    .product-card {
+        transition: all 0.3s ease;
+    }
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    }
+    .sale-badge {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: linear-gradient(45deg, #ff4757, #ff3838);
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-white mb-4">
+            {% if current_category %}
+                {{ current_category|title }} Products
+            {% else %}
+                All Products
+            {% endif %}
+        </h1>
+        
+        <!-- Search and Filter Bar -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+            <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
+                <!-- Search -->
+                <div class="flex-1 max-w-md">
+                    <form method="get" class="relative">
+                        <input type="search" name="search" value="{{ search_query }}" 
+                               placeholder="Search products..." 
+                               class="w-full pl-10 pr-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary">
+                        <svg class="absolute left-3 top-3.5 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                        </svg>
+                        <button type="submit" class="absolute right-2 top-2 bg-secondary text-primary px-4 py-1.5 rounded-md text-sm hover:bg-secondary/90 transition-colors">
+                            Search
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Filters -->
+                <div class="flex gap-4 items-center">
+                    <!-- Category Filter -->
+                    <select name="category" onchange="applyFilters()" class="bg-white border border-gray-300 text-gray-900 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="">All Categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.slug }}" {% if current_category == category.slug %}selected{% endif %}>
+                                {{ category.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                    
+                    <!-- Sort -->
+                    <select name="sort" onchange="applyFilters()" class="bg-white border border-gray-300 text-gray-900 px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="-created_at" {% if sort_by == '-created_at' %}selected{% endif %}>Newest First</option>
+                        <option value="created_at" {% if sort_by == 'created_at' %}selected{% endif %}>Oldest First</option>
+                        <option value="price" {% if sort_by == 'price' %}selected{% endif %}>Price: Low to High</option>
+                        <option value="-price" {% if sort_by == '-price' %}selected{% endif %}>Price: High to Low</option>
+                        <option value="name" {% if sort_by == 'name' %}selected{% endif %}>Name: A to Z</option>
+                        <option value="-name" {% if sort_by == '-name' %}selected{% endif %}>Name: Z to A</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Results Info -->
+    {% if products %}
+        <div class="flex items-center justify-between mb-6">
+            <p class="text-gray-300">
+                Showing {{ products|length }} of {{ products.paginator.count }} products
+                {% if search_query %}for "{{ search_query }}"{% endif %}
+            </p>
+            <div class="flex items-center space-x-2">
+                <span class="text-gray-400 text-sm">View:</span>
+                <button onclick="toggleView('grid')" id="gridBtn" class="p-2 bg-secondary text-primary rounded-lg">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                    </svg>
+                </button>
+                <button onclick="toggleView('list')" id="listBtn" class="p-2 bg-white/10 text-white rounded-lg">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Product Grid -->
+        <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+            {% for product in products %}
+                <div class="product-card bg-white/10 backdrop-blur-lg rounded-xl overflow-hidden border border-white/20 relative">
+                    <!-- Sale Badge -->
+                    {% if product.is_on_sale %}
+                        <div class="sale-badge text-white text-xs font-bold px-2 py-1 rounded-full z-10">
+                            -{{ product.discount_percentage|floatformat:0 }}%
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Product Image -->
+                    <div class="aspect-square bg-gray-700 relative overflow-hidden">
+                        {% with product.images.first as image %}
+                            {% if image %}
+                                <img src="{{ image.image.url }}" alt="{{ product.name }}" 
+                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                                     onerror="this.onerror=null; this.src='https://placehold.co/400x400/374151/9ca3af?text={{ product.name|urlencode }}';">
+                            {% else %}
+                                <img src="https://placehold.co/400x400/374151/9ca3af?text={{ product.name|urlencode }}" 
+                                     alt="{{ product.name }}" 
+                                     class="w-full h-full object-cover hover:scale-105 transition-transform duration-300">
+                            {% endif %}
+                        {% endwith %}
+                        
+                        <!-- Quick Actions -->
+                        <div class="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-center justify-center space-x-3">
+                            <button onclick="quickView({{ product.id }})" class="bg-white/20 text-white p-2 rounded-full hover:bg-white/30 transition-colors">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                            <button onclick="addToCart({{ product.id }})" class="bg-secondary text-primary p-2 rounded-full hover:bg-secondary/90 transition-colors">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Product Info -->
+                    <div class="p-4">
+                        <div class="mb-2">
+                            <span class="text-xs text-secondary uppercase tracking-wide">{{ product.category.name }}</span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-white mb-2 hover:text-secondary transition-colors">
+                            <a href="{% url 'products:product_detail' product.slug %}">{{ product.name }}</a>
+                        </h3>
+                        
+                        <!-- Price -->
+                        <div class="flex items-center space-x-2 mb-3">
+                            <span class="text-xl font-bold text-white">KES {{ product.price }}</span>
+                            {% if product.compare_price %}
+                                <span class="text-sm text-gray-400 line-through">KES {{ product.compare_price }}</span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Rating -->
+                        {% if product.reviews.all %}
+                            <div class="flex items-center space-x-1 mb-3">
+                                {% with product.reviews.all|length as review_count %}
+                                    <div class="flex text-yellow-400">
+                                        {% for i in "12345" %}
+                                            <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20">
+                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            </svg>
+                                        {% endfor %}
+                                    </div>
+                                    <span class="text-sm text-gray-300">({{ review_count }})</span>
+                                {% endwith %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Stock Status -->
+                        {% if product.stock_quantity > 0 %}
+                            <div class="flex items-center text-green-400 text-sm">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                </svg>
+                                In Stock ({{ product.stock_quantity }})
+                            </div>
+                        {% else %}
+                            <div class="flex items-center text-red-400 text-sm">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                </svg>
+                                Out of Stock
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+            <div class="flex items-center justify-center space-x-2">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode }}" class="bg-white/10 border border-white/20 text-white px-4 py-2 rounded-lg hover:bg-white/20 transition-colors">Previous</a>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <span class="bg-secondary text-primary px-4 py-2 rounded-lg font-medium">{{ num }}</span>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <a href="?page={{ num }}&{{ request.GET.urlencode }}" class="bg-white/10 border border-white/20 text-white px-4 py-2 rounded-lg hover:bg-white/20 transition-colors">{{ num }}</a>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode }}" class="bg-white/10 border border-white/20 text-white px-4 py-2 rounded-lg hover:bg-white/20 transition-colors">Next</a>
+                {% endif %}
+            </div>
+        {% endif %}
+        
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-12">
+            <div class="bg-white/10 backdrop-blur-lg rounded-xl p-12 border border-white/20">
+                <svg class="mx-auto h-16 w-16 text-gray-400 mb-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                <h3 class="text-xl font-semibold text-white mb-2">No products found</h3>
+                <p class="text-gray-400 mb-6">
+                    {% if search_query %}
+                        No products match your search for "{{ search_query }}"
+                    {% else %}
+                        No products available at the moment
+                    {% endif %}
+                </p>
+                {% if search_query %}
+                    <a href="{% url 'products:product_list' %}" class="bg-secondary text-primary px-6 py-3 rounded-lg font-medium hover:bg-secondary/90 transition-colors">
+                        View All Products
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<script>
+function applyFilters() {
+    const form = document.createElement('form');
+    form.method = 'GET';
+    form.action = '';
+    
+    // Get current search query
+    const searchInput = document.querySelector('input[name="search"]');
+    if (searchInput && searchInput.value) {
+        const searchField = document.createElement('input');
+        searchField.type = 'hidden';
+        searchField.name = 'search';
+        searchField.value = searchInput.value;
+        form.appendChild(searchField);
+    }
+    
+    // Get category
+    const categorySelect = document.querySelector('select[name="category"]');
+    if (categorySelect && categorySelect.value) {
+        const categoryField = document.createElement('input');
+        categoryField.type = 'hidden';
+        categoryField.name = 'category';
+        categoryField.value = categorySelect.value;
+        form.appendChild(categoryField);
+    }
+    
+    // Get sort
+    const sortSelect = document.querySelector('select[name="sort"]');
+    if (sortSelect && sortSelect.value) {
+        const sortField = document.createElement('input');
+        sortField.type = 'hidden';
+        sortField.name = 'sort';
+        sortField.value = sortSelect.value;
+        form.appendChild(sortField);
+    }
+    
+    document.body.appendChild(form);
+    form.submit();
+}
+
+function toggleView(view) {
+    const gridBtn = document.getElementById('gridBtn');
+    const listBtn = document.getElementById('listBtn');
+    const productGrid = document.getElementById('productGrid');
+    
+    if (view === 'grid') {
+        gridBtn.className = 'p-2 bg-secondary text-primary rounded-lg';
+        listBtn.className = 'p-2 bg-white/10 text-white rounded-lg';
+        productGrid.className = 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8';
+    } else {
+        gridBtn.className = 'p-2 bg-white/10 text-white rounded-lg';
+        listBtn.className = 'p-2 bg-secondary text-primary rounded-lg';
+        productGrid.className = 'space-y-6 mb-8';
+    }
+}
+
+function quickView(productId) {
+    // Implement quick view modal
+    console.log('Quick view for product:', productId);
+}
+
+function addToCart(productId) {
+    fetch('/cart/add/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            quantity: 1
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Show success message
+            showNotification(data.message, 'success');
+            // Update cart count in navbar
+            updateCartCount(data.cart_count);
+        } else {
+            showNotification(data.error, 'error');
+        }
+    })
+    .catch(error => {
+        showNotification('An error occurred', 'error');
+    });
+}
+
+function showNotification(message, type) {
+    // Simple notification - you can enhance this
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-50 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
+    notification.textContent = message;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
+
+function updateCartCount(count) {
+    const cartCountEl = document.querySelector('.cart-count');
+    if (cartCountEl) {
+        cartCountEl.textContent = count;
+    }
+}
+</script>
+{% endblock %}
