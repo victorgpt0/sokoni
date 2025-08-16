@@ -128,7 +128,7 @@
 
     <!-- Action Buttons -->
     <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12">
-        <a href="{% url 'orders:order_detail' order.id %}" 
+        <a href="{% url 'accounts:order_detail' order_number=order.order_number %}" 
            class="bg-secondary text-primary px-8 py-4 rounded-lg font-bold text-lg hover:bg-secondary/90 transition-all duration-300 transform hover:scale-105">
             View Order Details
         </a>
@@ -188,13 +188,13 @@
 
 <script>
 function downloadInvoice() {
-    window.open(`{% url 'orders:invoice' order.id %}`, '_blank');
+    window.open(`{% url 'orders:order_invoice' order_number=order.order_number %}`, '_blank');
 }
 
 // Auto-redirect to order details after 10 seconds
 setTimeout(() => {
     if (confirm('Would you like to view your order details now?')) {
-        window.location.href = `{% url 'orders:order_detail' order.id %}`;
+        window.location.href = `{% url 'accounts:order_detail' order_number=order.order_number %}`;
     }
 }, 10000);
 </script>

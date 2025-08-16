@@ -11,6 +11,9 @@ import json
 import requests
 import hashlib
 import hmac
+from django.db import transaction
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
 
 from .models import Payment, PaymentAttempt
 from orders.models import Order
@@ -146,23 +149,39 @@ def verify_payment_view(request):
                         messages.error(request, 'Payment amount mismatch')
                         return redirect('orders:checkout')
                     
-                    # Update payment status
-                    payment.status = 'completed'
-                    payment.paystack_transaction_id = data['data']['id']
-                    payment.gateway_response = data['data']
-                    payment.paid_at = timezone.now()
-                    payment.save()
+                    # Update payment and order status
+                    with transaction.atomic():
+                        payment.status = 'completed'
+                        payment.paystack_transaction_id = data['data']['id']
+                        payment.gateway_response = data['data']
+                        payment.paid_at = timezone.now()
+                        payment.save()
+                        
+                        # Update order status
+                        order.payment_status = 'paid'
+                        order.status = 'processing'
+                        order.save()
+                        
+                        # Update product stock
+                        for item in order.items.all():
+                            product = item.product
+                            product.stock_quantity -= item.quantity
+                            product.save()
+                        
+                        # Clear cart
+                        if 'cart' in request.session:
+                            del request.session['cart']
+                        
+                        # Clear session data
+                        if 'payment_reference' in request.session:
+                            del request.session['payment_reference']
+                        if 'pending_order_id' in request.session:
+                            del request.session['pending_order_id']
+                        if 'applied_coupon_code' in request.session:
+                            del request.session['applied_coupon_code']
                     
-                    # Update order status
-                    order.payment_status = 'paid'
-                    order.status = 'processing'
-                    order.save()
-                    
-                    # Clear session data
-                    if 'payment_reference' in request.session:
-                        del request.session['payment_reference']
-                    if 'pending_order_id' in request.session:
-                        del request.session['pending_order_id']
+                    # Send email confirmation
+                    send_order_confirmation_email(order, payment)
                     
                     messages.success(request, f'Payment successful! Order {order.order_number} confirmed.')
                     return redirect('payments:payment_success', order_number=order.order_number)
@@ -231,17 +250,27 @@ def paystack_webhook_view(request):
                 payment = Payment.objects.get(paystack_reference=reference)
                 
                 if payment.status != 'completed':
-                    payment.status = 'completed'
-                    payment.paystack_transaction_id = data['data']['id']
-                    payment.gateway_response = data['data']
-                    payment.paid_at = timezone.now()
-                    payment.save()
+                    with transaction.atomic():
+                        payment.status = 'completed'
+                        payment.paystack_transaction_id = data['data']['id']
+                        payment.gateway_response = data['data']
+                        payment.paid_at = timezone.now()
+                        payment.save()
+                        
+                        # Update order
+                        order = payment.order
+                        order.payment_status = 'paid'
+                        order.status = 'processing'
+                        order.save()
+                        
+                        # Update product stock
+                        for item in order.items.all():
+                            product = item.product
+                            product.stock_quantity -= item.quantity
+                            product.save()
                     
-                    # Update order
-                    order = payment.order
-                    order.payment_status = 'paid'
-                    order.status = 'processing'
-                    order.save()
+                    # Send email confirmation
+                    send_order_confirmation_email(order, payment)
                     
             except Payment.DoesNotExist:
                 pass
@@ -273,6 +302,52 @@ def paystack_webhook_view(request):
         
     except json.JSONDecodeError:
         return HttpResponse(status=400)
+
+def send_order_confirmation_email(order, payment):
+    """Send order confirmation email to customer"""
+    try:
+        subject = f'Order Confirmation - {order.order_number}'
+        
+        # Create email context
+        context = {
+            'order': order,
+            'payment': payment,
+            'site_name': 'Sokoni',
+            'site_url': settings.SITE_URL if hasattr(settings, 'SITE_URL') else 'http://localhost:8000'
+        }
+        
+        # Render email templates
+        html_message = render_to_string('emails/order_confirmation.html', context)
+        plain_message = render_to_string('emails/order_confirmation.txt', context)
+        
+        # Send email
+        send_mail(
+            subject=subject,
+            message=plain_message,
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[order.customer.user.email],
+            html_message=html_message,
+            fail_silently=True
+        )
+        
+        # Also send admin notification
+        if hasattr(settings, 'ADMIN_EMAIL'):
+            admin_subject = f'New Order Received - {order.order_number}'
+            admin_html = render_to_string('emails/admin_order_notification.html', context)
+            admin_plain = render_to_string('emails/admin_order_notification.txt', context)
+            
+            send_mail(
+                subject=admin_subject,
+                message=admin_plain,
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[settings.ADMIN_EMAIL],
+                html_message=admin_html,
+                fail_silently=True
+            )
+            
+    except Exception as e:
+        # Log the error but don't fail the payment process
+        print(f"Failed to send order confirmation email: {e}")
 
 @login_required
 def payment_success_view(request, order_number):

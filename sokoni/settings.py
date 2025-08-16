@@ -188,6 +188,9 @@ CURRENCY_SYMBOL = 'KES'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
+DEFAULT_FROM_EMAIL = 'noreply@sokoni.com'
+ADMIN_EMAIL = 'admin@sokoni.com'  # Admin email for notifications
+SITE_URL = 'http://localhost:8000'  # Site URL for email links
 
 # Tax settings (Kenyan VAT rate)
 TAX_RATE = Decimal('0.16')  # 16% VAT in Kenya

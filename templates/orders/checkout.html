@@ -479,7 +479,7 @@ document.getElementById('checkoutForm').addEventListener('submit', function(e) {
     // Submit the form
     const formData = new FormData(this);
     
-    fetch('{% url "orders:checkout" %}', {
+    fetch('{% url "orders:create_order" %}', {
         method: 'POST',
         body: formData,
         headers: {

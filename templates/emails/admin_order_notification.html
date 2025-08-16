@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Order Received - {{ order.order_number }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #dc3545;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 10px;
+        }
+        .order-number {
+            background-color: #dc3545;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .alert {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .order-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 18px;
+            border-top: 2px solid #dc3545;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        .customer-info {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .shipping-info {
+            background-color: #fff3cd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .footer {
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #dc3545;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">{{ site_name }} - Admin</div>
+            <div class="order-number">New Order #{{ order.order_number }}</div>
+        </div>
+
+        <div class="alert">
+            <h2>🆕 New Order Received!</h2>
+            <p>A new order has been placed and payment has been confirmed. Please process this order as soon as possible.</p>
+        </div>
+
+        <div class="customer-info">
+            <h3>Customer Information</h3>
+            <p><strong>Customer:</strong> {{ order.customer.user.get_full_name|default:order.customer.user.username }}</p>
+            <p><strong>Email:</strong> {{ order.customer.user.email }}</p>
+            <p><strong>Phone:</strong> {{ order.customer.phone_number|default:"Not provided" }}</p>
+            <p><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y \a\t g:i A" }}</p>
+        </div>
+
+        <div class="order-details">
+            <h3>Order Details</h3>
+            <p><strong>Payment Method:</strong> {{ payment.get_payment_method_display }}</p>
+            <p><strong>Payment Status:</strong> <span style="color: #28a745;">{{ payment.get_status_display }}</span></p>
+            <p><strong>Payment Reference:</strong> {{ payment.paystack_reference }}</p>
+            
+            <h4>Items Ordered:</h4>
+            {% for item in order.items.all %}
+            <div class="order-item">
+                <div>
+                    <strong>{{ item.product_name }}</strong><br>
+                    <small>SKU: {{ item.product.sku|default:"N/A" }} | Quantity: {{ item.quantity }}</small>
+                </div>
+                <div>KES {{ item.get_total_price|floatformat:2 }}</div>
+            </div>
+            {% endfor %}
+            
+            <div class="total">
+                <div class="order-item">
+                    <span>Subtotal:</span>
+                    <span>KES {{ order.subtotal|floatformat:2 }}</span>
+                </div>
+                {% if order.discount_amount %}
+                <div class="order-item">
+                    <span>Discount:</span>
+                    <span style="color: #28a745;">-KES {{ order.discount_amount|floatformat:2 }}</span>
+                </div>
+                {% endif %}
+                <div class="order-item">
+                    <span>Shipping:</span>
+                    <span>{% if order.shipping_cost == 0 %}FREE{% else %}KES {{ order.shipping_cost|floatformat:2 }}{% endif %}</span>
+                </div>
+                <div class="order-item">
+                    <span>Tax:</span>
+                    <span>KES {{ order.tax_amount|floatformat:2 }}</span>
+                </div>
+                <div class="order-item">
+                    <span><strong>Total:</strong></span>
+                    <span><strong>KES {{ order.total_amount|floatformat:2 }}</strong></span>
+                </div>
+            </div>
+        </div>
+
+        {% if order.shipping_address %}
+        <div class="shipping-info">
+            <h3>Shipping Address</h3>
+            <p>
+                {{ order.shipping_address.full_name }}<br>
+                {{ order.shipping_address.address_line_1 }}<br>
+                {% if order.shipping_address.address_line_2 %}{{ order.shipping_address.address_line_2 }}<br>{% endif %}
+                {{ order.shipping_address.city }}, {{ order.shipping_address.state }} {{ order.shipping_address.postal_code }}<br>
+                {{ order.shipping_address.country }}<br>
+                Phone: {{ order.shipping_address.phone_number }}
+            </p>
+        </div>
+        {% endif %}
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ site_url }}{% url 'accounts:order_detail' order_number=order.order_number %}" class="btn">View Order Details</a>
+            <a href="{{ site_url }}/admin/orders/order/{{ order.id }}/change/" class="btn">Edit in Admin</a>
+        </div>
+
+        <div class="footer">
+            <p>This is an automated notification from {{ site_name }}.</p>
+        </div>
+    </div>
+</body>
+</html>
