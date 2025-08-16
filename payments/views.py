@@ -149,6 +149,23 @@ def verify_payment_view(request):
                         messages.error(request, 'Payment amount mismatch')
                         return redirect('orders:checkout')
                     
+                    # Validate stock before processing payment
+                    stock_issues = validate_order_stock(order)
+                    if stock_issues:
+                        # If there are stock issues, mark payment as failed
+                        payment.status = 'failed'
+                        payment.failure_reason = f'Insufficient stock for: {", ".join([issue["product"] for issue in stock_issues])}'
+                        payment.failed_at = timezone.now()
+                        payment.save()
+                        
+                        # Create detailed error message
+                        error_details = []
+                        for issue in stock_issues:
+                            error_details.append(f"{issue['product']} (requested: {issue['requested']}, available: {issue['available']})")
+                        
+                        messages.error(request, f'Payment failed due to insufficient stock: {", ".join(error_details)}')
+                        return redirect('orders:checkout')
+                    
                     # Update payment and order status
                     with transaction.atomic():
                         payment.status = 'completed'
@@ -162,11 +179,8 @@ def verify_payment_view(request):
                         order.status = 'processing'
                         order.save()
                         
-                        # Update product stock
-                        for item in order.items.all():
-                            product = item.product
-                            product.stock_quantity -= item.quantity
-                            product.save()
+                        # Update product stock with validation
+                        stock_issues = update_product_stock(order)
                         
                         # Clear cart
                         if 'cart' in request.session:
@@ -250,27 +264,33 @@ def paystack_webhook_view(request):
                 payment = Payment.objects.get(paystack_reference=reference)
                 
                 if payment.status != 'completed':
-                    with transaction.atomic():
-                        payment.status = 'completed'
-                        payment.paystack_transaction_id = data['data']['id']
-                        payment.gateway_response = data['data']
-                        payment.paid_at = timezone.now()
+                    # Validate stock before processing payment
+                    order = payment.order
+                    stock_issues = validate_order_stock(order)
+                    if stock_issues:
+                        # If there are stock issues, mark payment as failed
+                        payment.status = 'failed'
+                        payment.failure_reason = f'Insufficient stock for: {", ".join([issue["product"] for issue in stock_issues])}'
+                        payment.failed_at = timezone.now()
                         payment.save()
+                    else:
+                        with transaction.atomic():
+                            payment.status = 'completed'
+                            payment.paystack_transaction_id = data['data']['id']
+                            payment.gateway_response = data['data']
+                            payment.paid_at = timezone.now()
+                            payment.save()
+                            
+                            # Update order
+                            order.payment_status = 'paid'
+                            order.status = 'processing'
+                            order.save()
+                            
+                            # Update product stock with validation
+                            stock_issues = update_product_stock(order)
                         
-                        # Update order
-                        order = payment.order
-                        order.payment_status = 'paid'
-                        order.status = 'processing'
-                        order.save()
-                        
-                        # Update product stock
-                        for item in order.items.all():
-                            product = item.product
-                            product.stock_quantity -= item.quantity
-                            product.save()
-                    
-                    # Send email confirmation
-                    send_order_confirmation_email(order, payment)
+                        # Send email confirmation
+                        send_order_confirmation_email(order, payment)
                     
             except Payment.DoesNotExist:
                 pass
@@ -302,6 +322,41 @@ def paystack_webhook_view(request):
         
     except json.JSONDecodeError:
         return HttpResponse(status=400)
+
+def validate_order_stock(order):
+    """Validate that there's sufficient stock for all order items"""
+    stock_issues = []
+    
+    for item in order.order_items.all():
+        product = item.product
+        if not product.has_sufficient_stock(item.quantity):
+            stock_issues.append({
+                'product': product.name,
+                'requested': item.quantity,
+                'available': product.stock_quantity,
+                'shortfall': item.quantity - product.stock_quantity
+            })
+    
+    return stock_issues
+
+def update_product_stock(order):
+    """Update product stock after successful payment with proper validation"""
+    stock_issues = []
+    
+    for item in order.order_items.all():
+        product = item.product
+        success = product.reduce_stock(item.quantity)
+        
+        if not success:
+            stock_issues.append({
+                'product': product.name,
+                'requested': item.quantity,
+                'available': product.stock_quantity,
+                'shortfall': item.quantity - product.stock_quantity
+            })
+            print(f"Warning: Insufficient stock for product {product.name}. Requested: {item.quantity}")
+    
+    return stock_issues
 
 def send_order_confirmation_email(order, payment):
     """Send order confirmation email to customer"""

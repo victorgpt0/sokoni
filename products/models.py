@@ -77,6 +77,22 @@ class Product(AuditTimestampModel):
     def is_in_stock(self):
         return self.stock_quantity > 0
     
+    def reduce_stock(self, quantity):
+        """Safely reduce stock quantity, preventing negative values"""
+        if self.stock_quantity >= quantity:
+            self.stock_quantity -= quantity
+            self.save()
+            return True
+        else:
+            # Set to 0 if not enough stock
+            self.stock_quantity = 0
+            self.save()
+            return False
+    
+    def has_sufficient_stock(self, quantity):
+        """Check if there's sufficient stock for the requested quantity"""
+        return self.stock_quantity >= quantity
+    
 class ProductImage(AuditTimestampModel):
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='images')
     image = models.ImageField(upload_to='products/')
