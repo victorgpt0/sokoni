@@ -1,9 +1,16 @@
-from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView
+from django.shortcuts import render, get_object_or_404, redirect
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.urls import reverse_lazy, reverse
 from django.db.models import Q, Avg, Count
 from django.core.paginator import Paginator
-from django.http import JsonResponse
-from .models import Product, Category, ProductReview
+from django.http import JsonResponse, HttpResponseForbidden
+from django.forms import modelformset_factory
+from django.db import transaction
+from .models import Product, Category, ProductReview, ProductImage
+from .forms import ProductForm, ProductImageFormSet
 
 class ProductListView(ListView):
     model = Product
@@ -59,9 +66,17 @@ class ProductDetailView(DetailView):
     slug_url_kwarg = 'slug'
     
     def get_queryset(self):
-        return Product.objects.filter(is_active=True).prefetch_related(
-            'images', 'reviews__customer__user', 'category'
-        )
+        # Allow product owners to view their inactive products
+        if self.request.user.is_authenticated:
+            return Product.objects.filter(
+                Q(is_active=True) | Q(user=self.request.user)
+            ).prefetch_related(
+                'images', 'reviews__customer__user', 'category'
+            )
+        else:
+            return Product.objects.filter(is_active=True).prefetch_related(
+                'images', 'reviews__customer__user', 'category'
+            )
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -226,3 +241,118 @@ def add_review_view(request, product_slug):
         return JsonResponse({'message': message})
     
     return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+# CRUD Views for Products
+
+class ProductCreateView(LoginRequiredMixin, CreateView):
+    """Create a new product"""
+    model = Product
+    form_class = ProductForm
+    template_name = 'products/product_form.html'
+    success_url = reverse_lazy('products:my_products')
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        messages.success(self.request, 'Product created successfully!')
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Please correct the errors below.')
+        return super().form_invalid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Create New Product'
+        context['submit_text'] = 'Create Product'
+        return context
+
+class ProductUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """Update an existing product"""
+    model = Product
+    form_class = ProductForm
+    template_name = 'products/product_form.html'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
+    success_url = reverse_lazy('products:my_products')
+    
+    def test_func(self):
+        """Check if user can edit this product"""
+        product = self.get_object()
+        return self.request.user == product.user
+    
+    def form_valid(self, form):
+        messages.success(self.request, 'Product updated successfully!')
+        return super().form_valid(form)
+    
+    def form_invalid(self, form):
+        messages.error(self.request, 'Please correct the errors below.')
+        return super().form_invalid(form)
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Edit Product: {self.object.name}'
+        context['submit_text'] = 'Update Product'
+        return context
+
+class ProductDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """Delete a product"""
+    model = Product
+    template_name = 'products/product_confirm_delete.html'
+    slug_field = 'slug'
+    slug_url_kwarg = 'slug'
+    success_url = reverse_lazy('products:my_products')
+    
+    def test_func(self):
+        """Check if user can delete this product"""
+        product = self.get_object()
+        return self.request.user == product.user
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Product deleted successfully!')
+        return super().delete(request, *args, **kwargs)
+
+@login_required
+def product_manage_images(request, slug):
+    """Manage product images"""
+    product = get_object_or_404(Product, slug=slug, user=request.user)
+    
+    if request.method == 'POST':
+        formset = ProductImageFormSet(request.POST, request.FILES, queryset=product.images.all())
+        if formset.is_valid():
+            instances = formset.save(commit=False)
+            
+            # Set the product for new instances
+            for instance in instances:
+                instance.product = product
+                instance.save()
+            
+            # Handle deletions
+            formset.save()
+            
+            messages.success(request, 'Product images updated successfully!')
+            return redirect('products:product_detail', slug=product.slug)
+    else:
+        formset = ProductImageFormSet(queryset=product.images.all())
+    
+    context = {
+        'product': product,
+        'formset': formset,
+        'title': f'Manage Images for {product.name}'
+    }
+    return render(request, 'products/product_images_form.html', context)
+
+@login_required
+def my_products(request):
+    """View for users to see their own products"""
+    products = Product.objects.filter(user=request.user).order_by('-created_at')
+    
+    # Add pagination
+    paginator = Paginator(products, 12)
+    page_number = request.GET.get('page')
+    products_page = paginator.get_page(page_number)
+    
+    context = {
+        'products': products_page,
+        'title': 'My Products'
+    }
+    return render(request, 'products/my_products.html', context)
