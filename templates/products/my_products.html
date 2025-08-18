@@ -1,0 +1,191 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} - Sokoni{% endblock %}
+
+{% block head %}
+<style>
+    .product-card {
+        transition: all 0.3s ease;
+    }
+    .product-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    }
+    .action-btn {
+        transition: all 0.2s ease;
+    }
+    .action-btn:hover {
+        transform: scale(1.05);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-white">{{ title }}</h1>
+                <p class="text-gray-300 mt-2">Manage your product listings</p>
+            </div>
+            <a href="{% url 'products:product_create' %}" 
+               class="bg-secondary hover:bg-secondary/90 text-primary px-6 py-3 rounded-lg font-semibold transition-colors">
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add New Product
+            </a>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    {% if products %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {% for product in products %}
+                <div class="product-card bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 overflow-hidden">
+                    <!-- Product Image -->
+                    <div class="relative h-48 bg-white/10">
+                        {% if product.images.exists %}
+                            <img src="{{ product.images.first.image.url }}" 
+                                 alt="{{ product.name }}" 
+                                 class="w-full h-full object-cover"
+                                 onerror="this.onerror=null; this.src='https://placehold.co/400x400/374151/9ca3af?text={{ product.name|urlencode }}';">
+                        {% else %}
+                            <img src="https://placehold.co/400x400/374151/9ca3af?text={{ product.name|urlencode }}" 
+                                 alt="{{ product.name }}" 
+                                 class="w-full h-full object-cover">
+                        {% endif %}
+                        
+                        <!-- Status Badge -->
+                        <div class="absolute top-2 left-2">
+                            {% if product.is_active %}
+                                <span class="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                                    Active
+                                </span>
+                            {% else %}
+                                <span class="bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                                    Inactive
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Featured Badge -->
+                        {% if product.is_featured %}
+                            <div class="absolute top-2 right-2">
+                                <span class="bg-yellow-500 text-white px-2 py-1 rounded-full text-xs font-medium">
+                                    Featured
+                                </span>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Product Info -->
+                    <div class="p-4">
+                        <h3 class="text-lg font-semibold text-white mb-2 truncate">{{ product.name }}</h3>
+                        <p class="text-gray-300 text-sm mb-2">{{ product.category.name }}</p>
+                        
+                        <!-- Price -->
+                        <div class="flex items-center mb-3">
+                            <span class="text-xl font-bold text-secondary">${{ product.price }}</span>
+                            {% if product.is_on_sale %}
+                                <span class="text-sm text-gray-400 line-through ml-2">${{ product.compare_price }}</span>
+                                <span class="text-xs bg-red-500 text-white px-2 py-1 rounded ml-2">
+                                    -{{ product.discount_percentage }}%
+                                </span>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Stock Status -->
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-sm text-gray-300">
+                                Stock: {{ product.stock_quantity }} units
+                            </span>
+                            <span class="text-xs px-2 py-1 rounded {% if product.is_in_stock %}bg-green-500/20 text-green-400{% else %}bg-red-500/20 text-red-400{% endif %}">
+                                {% if product.is_in_stock %}In Stock{% else %}Out of Stock{% endif %}
+                            </span>
+                        </div>
+                        
+                        <!-- Action Buttons -->
+                        <div class="flex items-center justify-between">
+                            <div class="flex space-x-2">
+                                <a href="{% url 'products:product_detail' product.slug %}" 
+                                   class="action-btn bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded text-sm transition-colors">
+                                    View
+                                </a>
+                                <a href="{% url 'products:product_update' product.slug %}" 
+                                   class="action-btn bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1.5 rounded text-sm transition-colors">
+                                    Edit
+                                </a>
+                            </div>
+                            
+                            <div class="flex space-x-2">
+                                <a href="{% url 'products:product_manage_images' product.slug %}" 
+                                   class="action-btn bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 rounded text-sm transition-colors">
+                                    Images
+                                </a>
+                                <a href="{% url 'products:product_delete' product.slug %}" 
+                                   class="action-btn bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 rounded text-sm transition-colors">
+                                    Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if products.has_other_pages %}
+            <div class="mt-8 flex items-center justify-center">
+                <nav class="flex items-center space-x-2">
+                    {% if products.has_previous %}
+                        <a href="?page={{ products.previous_page_number }}" 
+                           class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg transition-colors">
+                            Previous
+                        </a>
+                    {% endif %}
+                    
+                    {% for num in products.paginator.page_range %}
+                        {% if products.number == num %}
+                            <span class="bg-secondary text-primary px-3 py-2 rounded-lg font-medium">{{ num }}</span>
+                        {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                            <a href="?page={{ num }}" 
+                               class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg transition-colors">
+                                {{ num }}
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if products.has_next %}
+                        <a href="?page={{ products.next_page_number }}" 
+                           class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg transition-colors">
+                            Next
+                        </a>
+                    {% endif %}
+                </nav>
+            </div>
+        {% endif %}
+        
+    {% else %}
+        <!-- Empty State -->
+        <div class="text-center py-12">
+            <div class="mx-auto w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mb-6">
+                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+            </div>
+            <h3 class="text-xl font-semibold text-white mb-2">No products yet</h3>
+            <p class="text-gray-300 mb-6">Start by adding your first product to your store.</p>
+            <a href="{% url 'products:product_create' %}" 
+               class="bg-secondary hover:bg-secondary/90 text-primary px-6 py-3 rounded-lg font-semibold transition-colors">
+                <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Create Your First Product
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
