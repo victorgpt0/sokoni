@@ -1,0 +1,275 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard - Sokoni{% endblock %}
+
+{% block head %}
+<style>
+    @keyframes slideInFromBottom {
+        0% {
+            transform: translateY(50px);
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+    
+    @keyframes fadeIn {
+        0% { opacity: 0; }
+        100% { opacity: 1; }
+    }
+    
+    .slide-in-bottom {
+        animation: slideInFromBottom 0.6s ease-out;
+    }
+    
+    .fade-in {
+        animation: fadeIn 0.8s ease-out;
+    }
+    
+    .stagger-1 { animation-delay: 0.1s; }
+    .stagger-2 { animation-delay: 0.2s; }
+    .stagger-3 { animation-delay: 0.3s; }
+    .stagger-4 { animation-delay: 0.4s; }
+    
+    .card-hover {
+        transition: all 0.3s ease;
+    }
+    
+    .card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8 fade-in">
+        <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-white mb-2">
+                        Welcome back, {{ user.first_name|default:user.username }}! 👋
+                    </h1>
+                    <p class="text-secondary">Manage your account and track your orders</p>
+                </div>
+                <div class="hidden md:block">
+                    <div class="bg-secondary/20 rounded-full p-4">
+                        <svg class="h-8 w-8 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <!-- Profile -->
+        <a href="{% url 'accounts:profile' %}" class="card-hover bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 block slide-in-bottom stagger-1">
+            <div class="flex items-center">
+                <div class="bg-blue-500/20 rounded-lg p-3 mr-4">
+                    <svg class="h-6 w-6 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white">Profile</h3>
+                    <p class="text-secondary text-sm">Manage your information</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Orders -->
+        <a href="{% url 'accounts:order_history' %}" class="card-hover bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 block slide-in-bottom stagger-2">
+            <div class="flex items-center">
+                <div class="bg-green-500/20 rounded-lg p-3 mr-4">
+                    <svg class="h-6 w-6 text-green-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white">Orders</h3>
+                    <p class="text-secondary text-sm">Track your purchases</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Addresses -->
+        <a href="{% url 'accounts:address_list' %}" class="card-hover bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 block slide-in-bottom stagger-3">
+            <div class="flex items-center">
+                <div class="bg-purple-500/20 rounded-lg p-3 mr-4">
+                    <svg class="h-6 w-6 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white">Addresses</h3>
+                    <p class="text-secondary text-sm">Manage shipping info</p>
+                </div>
+            </div>
+        </a>
+
+        <!-- Settings -->
+        <a href="{% url 'accounts:password_change' %}" class="card-hover bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 block slide-in-bottom stagger-4">
+            <div class="flex items-center">
+                <div class="bg-orange-500/20 rounded-lg p-3 mr-4">
+                    <svg class="h-6 w-6 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white">Settings</h3>
+                    <p class="text-secondary text-sm">Account preferences</p>
+                </div>
+            </div>
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Recent Orders -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 slide-in-bottom stagger-2">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-xl font-bold text-white">Recent Orders</h2>
+                <a href="{% url 'accounts:order_history' %}" class="text-secondary hover:text-white text-sm transition-colors duration-200">
+                    View all
+                </a>
+            </div>
+            
+            {% if recent_orders %}
+                <div class="space-y-4">
+                    {% for order in recent_orders %}
+                    <div class="bg-white/5 rounded-lg p-4 border border-white/10 hover:bg-white/10 transition-colors duration-200">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-semibold text-white">Order #{{ order.order_number }}</p>
+                                <p class="text-secondary text-sm">{{ order.created_at|date:"M d, Y" }}</p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-lg font-bold text-white">${{ order.total_amount }}</p>
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    {% if order.status == 'delivered' %}bg-green-500/20 text-green-400
+                                    {% elif order.status == 'shipped' %}bg-blue-500/20 text-blue-400
+                                    {% elif order.status == 'processing' %}bg-yellow-500/20 text-yellow-400
+                                    {% else %}bg-gray-500/20 text-gray-400{% endif %}">
+                                    {{ order.get_status_display }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8">
+                    <svg class="mx-auto h-12 w-12 text-gray-400 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                    </svg>
+                    <p class="text-gray-400 mb-4">No orders yet</p>
+                    <a href="/" class="inline-flex items-center px-4 py-2 bg-secondary text-primary rounded-lg hover:bg-secondary/90 transition-colors duration-200">
+                        Start Shopping
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Account Summary -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 slide-in-bottom stagger-3">
+            <h2 class="text-xl font-bold text-white mb-6">Account Summary</h2>
+            
+            <div class="space-y-4">
+                <!-- Member Since -->
+                <div class="flex items-center justify-between py-3 border-b border-white/10">
+                    <span class="text-secondary">Member since</span>
+                    <span class="text-white font-semibold">{{ user.date_joined|date:"M Y" }}</span>
+                </div>
+                
+                <!-- Total Orders -->
+                <div class="flex items-center justify-between py-3 border-b border-white/10">
+                    <span class="text-secondary">Total orders</span>
+                    <span class="text-white font-semibold">{{ user.customer.orders.count|default:0 }}</span>
+                </div>
+                
+                <!-- Email -->
+                <div class="flex items-center justify-between py-3 border-b border-white/10">
+                    <span class="text-secondary">Email</span>
+                    <span class="text-white font-semibold text-sm">{{ user.email }}</span>
+                </div>
+                
+                <!-- Phone -->
+                <div class="flex items-center justify-between py-3">
+                    <span class="text-secondary">Phone</span>
+                    <span class="text-white font-semibold">
+                        {% if user.customer.phone_number %}
+                            {{ user.customer.phone_number }}
+                        {% else %}
+                            <a href="{% url 'accounts:profile_edit' %}" class="text-secondary hover:text-white text-sm">Add phone</a>
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Edit Profile Button -->
+            <div class="mt-6">
+                <a href="{% url 'accounts:profile_edit' %}" class="w-full bg-white/10 border border-white/20 text-white py-3 px-4 rounded-lg hover:bg-white/20 transition-colors duration-200 flex items-center justify-center">
+                    <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                    </svg>
+                    Edit Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="mt-8 bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 slide-in-bottom stagger-4">
+        <h2 class="text-xl font-bold text-white mb-6">Quick Links</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <a href="#" class="flex items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200">
+                <svg class="w-5 h-5 text-secondary mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"></path>
+                </svg>
+                <span class="text-white text-sm">Wishlist</span>
+            </a>
+            <a href="#" class="flex items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200">
+                <svg class="w-5 h-5 text-secondary mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-white text-sm">Support</span>
+            </a>
+            <a href="#" class="flex items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200">
+                <svg class="w-5 h-5 text-secondary mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-white text-sm">Downloads</span>
+            </a>
+            <a href="#" class="flex items-center p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors duration-200">
+                <svg class="w-5 h-5 text-secondary mr-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-white text-sm">Rewards</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add some interactive effects
+    const cards = document.querySelectorAll('.card-hover');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+});
+</script>
+{% endblock %}

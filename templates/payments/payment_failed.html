@@ -1,0 +1,258 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Payment Failed - Sokoni{% endblock %}
+
+{% block head %}
+<style>
+    .error-animation {
+        animation: errorShake 0.5s ease-in-out;
+    }
+    @keyframes errorShake {
+        0%, 20%, 40%, 60%, 80% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    }
+    .retry-btn {
+        transition: all 0.3s ease;
+    }
+    .retry-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(229, 228, 226, 0.3);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-16 px-4 sm:px-6 lg:px-8 text-center">
+    <!-- Error Icon -->
+    <div class="error-animation mb-8">
+        <div class="w-32 h-32 bg-red-500 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div class="mb-12">
+        <h1 class="text-4xl font-bold text-white mb-4">Payment Failed</h1>
+        <p class="text-xl text-gray-300 mb-6">
+            We're sorry, but your payment could not be processed at this time.
+        </p>
+        
+        <!-- Error Details -->
+        <div class="bg-red-500/20 border border-red-500/30 rounded-xl p-6 max-w-md mx-auto mb-8">
+            <div class="flex items-center justify-center space-x-3 mb-3">
+                <svg class="w-6 h-6 text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="text-red-400 font-semibold">Payment Declined</span>
+            </div>
+            {% if error_message %}
+                <p class="text-red-300 text-sm mb-3">{{ error_message }}</p>
+            {% endif %}
+            {% if payment_reference %}
+                <p class="text-red-300 text-sm">
+                    Reference: <span class="font-mono text-red-200">{{ payment_reference }}</span>
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- Common Issues -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 text-left max-w-2xl mx-auto">
+            <h3 class="text-lg font-semibold text-white mb-4 text-center">Common Issues & Solutions</h3>
+            <div class="space-y-4">
+                <div class="flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-yellow-400 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-medium text-white">Insufficient Funds</h4>
+                        <p class="text-gray-400 text-sm">Please check your account balance or try a different payment method.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-yellow-400 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-medium text-white">Card Declined</h4>
+                        <p class="text-gray-400 text-sm">Your bank may have declined the transaction for security reasons. Contact your bank or try a different card.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-yellow-400 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-medium text-white">Incorrect Information</h4>
+                        <p class="text-gray-400 text-sm">Please verify your card details, expiry date, and CVV code are correct.</p>
+                    </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                    <svg class="w-5 h-5 text-yellow-400 mt-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+                    </svg>
+                    <div>
+                        <h4 class="font-medium text-white">Network Issues</h4>
+                        <p class="text-gray-400 text-sm">Connection problems can cause payment failures. Please check your internet connection and try again.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12">
+        {% if order %}
+            <button onclick="retryPayment()" 
+                    class="retry-btn bg-secondary text-primary px-8 py-4 rounded-lg font-bold text-lg hover:bg-secondary/90 transition-all duration-300">
+                Try Payment Again
+            </button>
+        {% else %}
+            <a href="{% url 'orders:checkout' %}" 
+               class="retry-btn bg-secondary text-primary px-8 py-4 rounded-lg font-bold text-lg hover:bg-secondary/90 transition-all duration-300">
+                Return to Checkout
+            </a>
+        {% endif %}
+        
+        <a href="{% url 'cart:cart_detail' %}" 
+           class="bg-white/10 border border-white/20 text-white px-8 py-4 rounded-lg font-medium hover:bg-white/20 transition-colors">
+            Return to Cart
+        </a>
+        
+        <a href="{% url 'products:product_list' %}" 
+           class="bg-white/10 border border-white/20 text-white px-6 py-3 rounded-lg hover:bg-white/20 transition-colors">
+            Continue Shopping
+        </a>
+    </div>
+
+    {% if order %}
+        <!-- Order Information -->
+        <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 text-left max-w-2xl mx-auto mb-8">
+            <h3 class="text-lg font-semibold text-white mb-4">Order Information</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                <div>
+                    <span class="text-gray-400">Order Number:</span>
+                    <span class="text-white font-medium ml-2">#{{ order.order_number }}</span>
+                </div>
+                <div>
+                    <span class="text-gray-400">Amount:</span>
+                    <span class="text-white font-medium ml-2">${{ order.total_amount|floatformat:2 }}</span>
+                </div>
+                <div>
+                    <span class="text-gray-400">Items:</span>
+                    <span class="text-white font-medium ml-2">{{ order.items.count }} item{{ order.items.count|pluralize }}</span>
+                </div>
+                <div>
+                    <span class="text-gray-400">Status:</span>
+                    <span class="text-yellow-400 font-medium ml-2">Payment Pending</span>
+                </div>
+            </div>
+            
+            <div class="mt-4 p-3 bg-yellow-500/20 border border-yellow-500/30 rounded-lg">
+                <p class="text-yellow-300 text-sm">
+                    <strong>Don't worry!</strong> Your order has been saved and is waiting for payment. 
+                    You can try again using the same or different payment method.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Alternative Payment Methods -->
+    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 text-left max-w-2xl mx-auto">
+        <h3 class="text-lg font-semibold text-white mb-4 text-center">Alternative Payment Options</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="text-center p-4 bg-white/5 rounded-lg border border-white/10">
+                <div class="w-12 h-8 bg-blue-600 rounded mx-auto mb-2 flex items-center justify-center">
+                    <span class="text-white text-xs font-bold">VISA</span>
+                </div>
+                <p class="text-white text-sm font-medium">Credit/Debit Card</p>
+                <p class="text-gray-400 text-xs">Visa, Mastercard</p>
+            </div>
+            <div class="text-center p-4 bg-white/5 rounded-lg border border-white/10">
+                <div class="w-12 h-8 bg-green-600 rounded mx-auto mb-2 flex items-center justify-center">
+                    <span class="text-white text-xs font-bold">M-Pesa</span>
+                </div>
+                <p class="text-white text-sm font-medium">Mobile Money</p>
+                <p class="text-gray-400 text-xs">M-Pesa, Airtel Money</p>
+            </div>
+            <div class="text-center p-4 bg-white/5 rounded-lg border border-white/10">
+                <div class="w-12 h-8 bg-purple-600 rounded mx-auto mb-2 flex items-center justify-center">
+                    <span class="text-white text-xs font-bold">Bank</span>
+                </div>
+                <p class="text-white text-sm font-medium">Bank Transfer</p>
+                <p class="text-gray-400 text-xs">Direct bank transfer</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Support -->
+    <div class="mt-8 text-center">
+        <p class="text-gray-400 mb-4">Still having trouble? Our support team is here to help.</p>
+        <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6">
+            <a href="mailto:support@sokoni.com" 
+               class="inline-flex items-center space-x-2 text-secondary hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                </svg>
+                <span>support@sokoni.com</span>
+            </a>
+            <a href="tel:+254700000000" 
+               class="inline-flex items-center space-x-2 text-secondary hover:text-white transition-colors">
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                </svg>
+                <span>+254 700 000 000</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+function retryPayment() {
+    {% if order %}
+        // Redirect to payment retry with order ID
+        window.location.href = `{% url 'payments:retry_payment' order.id %}`;
+    {% else %}
+        // Redirect to checkout
+        window.location.href = `{% url 'orders:checkout' %}`;
+    {% endif %}
+}
+
+// Show notification after 3 seconds
+setTimeout(() => {
+    showNotification('Need help with your payment? Contact our support team for assistance.', 'info');
+}, 3000);
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    let bgColor = 'bg-blue-500';
+    if (type === 'error') bgColor = 'bg-red-500';
+    if (type === 'success') bgColor = 'bg-green-500';
+    
+    notification.className = `fixed bottom-4 right-4 p-4 rounded-lg text-white z-50 ${bgColor} max-w-sm`;
+    notification.innerHTML = `
+        <div class="flex items-start space-x-3">
+            <svg class="w-5 h-5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+            </svg>
+            <span class="text-sm">${message}</span>
+            <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white/70 hover:text-white">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                </svg>
+            </button>
+        </div>
+    `;
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 8000);
+}
+</script>
+{% endblock %}

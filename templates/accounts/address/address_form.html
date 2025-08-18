@@ -1,0 +1,408 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Address - Sokoni{% endblock %}
+
+{% block head %}
+<style>
+    /* Select input styling for better visibility */
+    select {
+        background-color: white !important;
+        color: #1f2937 !important; /* text-gray-900 */
+    }
+    
+    select option {
+        background-color: white !important;
+        color: #1f2937 !important; /* text-gray-900 */
+        padding: 8px 12px;
+    }
+    
+    select option:hover {
+        background-color: #f3f4f6 !important; /* bg-gray-100 */
+    }
+    
+    select:focus option:checked {
+        background-color: #4B0082 !important; /* primary color */
+        color: white !important;
+    }
+    
+    /* Ensure select dropdown is visible */
+    select:focus {
+        background-color: white !important;
+        color: #1f2937 !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <!-- Breadcrumb -->
+    <nav class="mb-8">
+        <ol class="flex items-center space-x-2 text-sm">
+            <li><a href="{% url 'accounts:dashboard' %}" class="text-secondary hover:text-white transition-colors">Dashboard</a></li>
+            <li class="text-gray-400">/</li>
+            <li><a href="{% url 'accounts:address_list' %}" class="text-secondary hover:text-white transition-colors">Addresses</a></li>
+            <li class="text-gray-400">/</li>
+            <li class="text-white">{% if form.instance.pk %}Edit{% else %}Add{% endif %}</li>
+        </ol>
+    </nav>
+
+    <!-- Main Card -->
+    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="mx-auto h-16 w-16 bg-purple-500/20 rounded-full flex items-center justify-center mb-4">
+                <svg class="h-8 w-8 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                </svg>
+            </div>
+            <h1 class="text-2xl font-bold text-white mb-2">
+                {% if form.instance.pk %}Edit Address{% else %}Add New Address{% endif %}
+            </h1>
+            <p class="text-secondary text-sm">
+                {% if form.instance.pk %}Update your address information{% else %}Add a new shipping or billing address{% endif %}
+            </p>
+        </div>
+
+        <!-- Address Form -->
+        <form method="post" class="space-y-6" id="addressForm">
+            {% csrf_token %}
+            
+            <!-- Non-field errors -->
+            {% if form.non_field_errors %}
+                <div class="bg-red-500/20 border border-red-500/50 rounded-lg p-4">
+                    {% for error in form.non_field_errors %}
+                        <p class="text-red-200 text-sm flex items-center">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                            </svg>
+                            {{ error }}
+                        </p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <!-- Address Type -->
+            <div class="bg-white/5 rounded-lg p-4 border border-white/10">
+                <h3 class="text-lg font-semibold text-white mb-4">Address Type</h3>
+                <div class="space-y-3">
+                    {% for choice in form.type %}
+                        <label class="flex items-center p-3 bg-white/5 rounded-lg border border-white/10 hover:bg-white/10 transition-colors cursor-pointer">
+                            {{ choice.tag }}
+                            <div class="ml-3">
+                                <div class="text-white font-medium">{{ choice.choice_label }}</div>
+                                <div class="text-sm text-gray-300">
+                                    {% if choice.type == 'billing' %}
+                                        For invoices and payment processing
+                                    {% else %}
+                                        For product delivery and shipping
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </label>
+                    {% endfor %}
+                </div>
+                {% if form.type.errors %}
+                    <div class="mt-2">
+                        {% for error in form.type.errors %}
+                            <p class="text-red-400 text-sm flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Personal Information Section -->
+                <div class="space-y-6">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                        </svg>
+                        Personal Details
+                    </h3>
+
+                    <!-- First Name -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            First Name {% if form.first_name.field.required %}<span class="text-red-400">*</span>{% endif %}
+                        </label>
+                        {{ form.first_name|add_class:"w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {% if form.first_name.errors %}
+                            <div class="mt-2">
+                                {% for error in form.first_name.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Last Name -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            Last Name {% if form.last_name.field.required %}<span class="text-red-400">*</span>{% endif %}
+                        </label>
+                        {{ form.last_name|add_class:"w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {% if form.last_name.errors %}
+                            <div class="mt-2">
+                                {% for error in form.last_name.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Company -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.company.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            Company <span class="text-gray-400">(Optional)</span>
+                        </label>
+                        {{ form.company|add_class:"w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {% if form.company.errors %}
+                            <div class="mt-2">
+                                {% for error in form.company.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Location Information Section -->
+                <div class="space-y-6">
+                    <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Location Details
+                    </h3>
+
+                    <!-- City -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.city.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            City {% if form.city.field.required %}<span class="text-red-400">*</span>{% endif %}
+                        </label>
+                        {{ form.city|add_class:"w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {% if form.city.errors %}
+                            <div class="mt-2">
+                                {% for error in form.city.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- State -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.state.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            State/County <span class="text-gray-400">(Optional)</span>
+                        </label>
+                        {{ form.state|add_class:"w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {% if form.state.errors %}
+                            <div class="mt-2">
+                                {% for error in form.state.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Postal Code -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.postal_code.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            Postal Code <span class="text-gray-400">(Optional)</span>
+                        </label>
+                        {{ form.postal_code|add_class:"w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {% if form.postal_code.errors %}
+                            <div class="mt-2">
+                                {% for error in form.postal_code.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Country -->
+                    <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                        <label for="{{ form.country.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                            Country {% if form.country.field.required %}<span class="text-red-400">*</span>{% endif %}
+                        </label>
+                        {{ form.country|add_class:"w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-300" }}
+                        {% if form.country.errors %}
+                            <div class="mt-2">
+                                {% for error in form.country.errors %}
+                                    <p class="text-red-400 text-sm flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        {{ error }}
+                                    </p>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address Lines (Full Width) -->
+            <div class="space-y-6">
+                <h3 class="text-lg font-semibold text-white mb-4 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-secondary" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-9 9a1 1 0 001.414 1.414L10 4.414l8.293 8.293a1 1 0 001.414-1.414l-9-9z"></path>
+                        <path d="M13 17v-3a1 1 0 00-1-1h-4a1 1 0 00-1 1v3a1 1 0 001 1h4a1 1 0 001-1z"></path>
+                    </svg>
+                    Street Address
+                </h3>
+
+                <!-- Address Line 1 -->
+                <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                    <label for="{{ form.address_line_1.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                        Address Line 1 {% if form.address_line_1.field.required %}<span class="text-red-400">*</span>{% endif %}
+                    </label>
+                    {{ form.address_line_1|add_class:"w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                    {% if form.address_line_1.errors %}
+                        <div class="mt-2">
+                            {% for error in form.address_line_1.errors %}
+                                <p class="text-red-400 text-sm flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="mt-1 text-sm text-gray-300">Street name and number</p>
+                </div>
+
+                <!-- Address Line 2 -->
+                <div class="transform transition-all duration-300 hover:scale-[1.01]">
+                    <label for="{{ form.address_line_2.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
+                        Address Line 2 <span class="text-gray-400">(Optional)</span>
+                    </label>
+                    {{ form.address_line_2|add_class:"w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                    {% if form.address_line_2.errors %}
+                        <div class="mt-2">
+                            {% for error in form.address_line_2.errors %}
+                                <p class="text-red-400 text-sm flex items-center">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <p class="mt-1 text-sm text-gray-300">Apartment, suite, building, floor, etc.</p>
+                </div>
+            </div>
+
+            <!-- Default Address -->
+            <div class="bg-white/5 rounded-lg p-4 border border-white/10">
+                <label class="flex items-center">
+                    {{ form.is_default|add_class:"h-4 w-4 text-secondary bg-white/10 border-secondary/30 rounded focus:ring-secondary focus:ring-2" }}
+                    <div class="ml-3">
+                        <div class="text-white font-medium">Set as default address</div>
+                        <div class="text-sm text-gray-300">Use this address as the primary option for this address type</div>
+                    </div>
+                </label>
+                {% if form.is_default.errors %}
+                    <div class="mt-2">
+                        {% for error in form.is_default.errors %}
+                            <p class="text-red-400 text-sm flex items-center">
+                                <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                {{ error }}
+                            </p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex space-x-4 pt-6 border-t border-white/10">
+                <button 
+                    type="submit" 
+                    class="flex-1 px-6 py-3 bg-secondary text-primary rounded-lg font-medium text-sm transition-all duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-secondary focus:ring-opacity-50 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
+                    id="submitBtn"
+                >
+                    <span>{% if form.instance.pk %}Update Address{% else %}Save Address{% endif %}</span>
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                </button>
+                
+                <a href="{% url 'accounts:address_list' %}" class="flex-1 px-6 py-3 bg-white/10 border border-white/20 text-white rounded-lg font-medium text-sm transition-all duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-white focus:ring-opacity-50 hover:bg-white/20 flex items-center justify-center space-x-2">
+                    <span>Cancel</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('addressForm');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    form.addEventListener('submit', function() {
+        submitBtn.innerHTML = `
+            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            <span>Saving...</span>
+        `;
+        submitBtn.disabled = true;
+    });
+
+    // Add floating animation to input fields
+    const inputs = document.querySelectorAll('input[type="text"], select');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.parentElement.parentElement.classList.add('scale-105');
+        });
+        
+        input.addEventListener('blur', function() {
+            this.parentElement.parentElement.classList.remove('scale-105');
+        });
+    });
+});
+</script>
+{% endblock %}

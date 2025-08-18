@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation - {{ order.order_number }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            border-bottom: 2px solid #4B0082;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4B0082;
+            margin-bottom: 10px;
+        }
+        .order-number {
+            background-color: #4B0082;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        .success-message {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .order-details {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .order-item:last-child {
+            border-bottom: none;
+        }
+        .total {
+            font-weight: bold;
+            font-size: 18px;
+            border-top: 2px solid #4B0082;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        .shipping-info {
+            background-color: #e7f3ff;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .next-steps {
+            background-color: #fff3cd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        .next-steps h3 {
+            color: #856404;
+            margin-top: 0;
+        }
+        .next-steps ol {
+            color: #856404;
+        }
+        .footer {
+            text-align: center;
+            color: #6c757d;
+            font-size: 14px;
+            border-top: 1px solid #dee2e6;
+            padding-top: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #4B0082;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px 5px;
+        }
+        .btn:hover {
+            background-color: #3a0066;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">{{ site_name }}</div>
+            <div class="order-number">Order #{{ order.order_number }}</div>
+        </div>
+
+        <div class="success-message">
+            <h2>🎉 Thank you for your order!</h2>
+            <p>Your payment has been confirmed and your order is being processed. You'll receive updates as your order progresses.</p>
+        </div>
+
+        <div class="order-details">
+            <h3>Order Details</h3>
+            <p><strong>Order Date:</strong> {{ order.created_at|date:"F d, Y \a\t g:i A" }}</p>
+            <p><strong>Payment Method:</strong> {{ payment.get_payment_method_display }}</p>
+            <p><strong>Payment Status:</strong> <span style="color: #28a745;">{{ payment.get_status_display }}</span></p>
+            
+            <h4>Items Ordered:</h4>
+            {% for item in order.items.all %}
+            <div class="order-item">
+                <div>
+                    <strong>{{ item.product_name }}</strong><br>
+                    <small>Quantity: {{ item.quantity }}</small>
+                </div>
+                <div>KES {{ item.get_total_price|floatformat:2 }}</div>
+            </div>
+            {% endfor %}
+            
+            <div class="total">
+                <div class="order-item">
+                    <span>Subtotal:</span>
+                    <span>KES {{ order.subtotal|floatformat:2 }}</span>
+                </div>
+                {% if order.discount_amount %}
+                <div class="order-item">
+                    <span>Discount:</span>
+                    <span style="color: #28a745;">-KES {{ order.discount_amount|floatformat:2 }}</span>
+                </div>
+                {% endif %}
+                <div class="order-item">
+                    <span>Shipping:</span>
+                    <span>{% if order.shipping_cost == 0 %}FREE{% else %}KES {{ order.shipping_cost|floatformat:2 }}{% endif %}</span>
+                </div>
+                <div class="order-item">
+                    <span>Tax:</span>
+                    <span>KES {{ order.tax_amount|floatformat:2 }}</span>
+                </div>
+                <div class="order-item">
+                    <span><strong>Total:</strong></span>
+                    <span><strong>KES {{ order.total_amount|floatformat:2 }}</strong></span>
+                </div>
+            </div>
+        </div>
+
+        {% if order.shipping_address %}
+        <div class="shipping-info">
+            <h3>Shipping Address</h3>
+            <p>
+                {{ order.shipping_address.full_name }}<br>
+                {{ order.shipping_address.address_line_1 }}<br>
+                {% if order.shipping_address.address_line_2 %}{{ order.shipping_address.address_line_2 }}<br>{% endif %}
+                {{ order.shipping_address.city }}, {{ order.shipping_address.state }} {{ order.shipping_address.postal_code }}<br>
+                {{ order.shipping_address.country }}<br>
+                Phone: {{ order.shipping_address.phone_number }}
+            </p>
+        </div>
+        {% endif %}
+
+        <div class="next-steps">
+            <h3>What happens next?</h3>
+            <ol>
+                <li><strong>Order Processing:</strong> We'll prepare your items for shipment within 1-2 business days.</li>
+                <li><strong>Shipping:</strong> You'll receive tracking information once your order ships.</li>
+                <li><strong>Delivery:</strong> Your order will be delivered to your specified address.</li>
+            </ol>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="{{ site_url }}{% url 'accounts:order_detail' order_number=order.order_number %}" class="btn">View Order Details</a>
+            <a href="{{ site_url }}{% url 'products:product_list' %}" class="btn">Continue Shopping</a>
+        </div>
+
+        <div class="footer">
+            <p>If you have any questions about your order, please contact our customer support.</p>
+            <p>Thank you for choosing {{ site_name }}!</p>
+        </div>
+    </div>
+</body>
+</html>

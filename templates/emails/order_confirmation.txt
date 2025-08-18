@@ -1,0 +1,47 @@
+Order Confirmation - {{ order.order_number }}
+
+🎉 Thank you for your order!
+
+Your payment has been confirmed and your order is being processed. You'll receive updates as your order progresses.
+
+ORDER DETAILS
+=============
+Order Number: {{ order.order_number }}
+Order Date: {{ order.created_at|date:"F d, Y \a\t g:i A" }}
+Payment Method: {{ payment.get_payment_method_display }}
+Payment Status: {{ payment.get_status_display }}
+
+ITEMS ORDERED:
+{% for item in order.items.all %}
+- {{ item.product_name }} (Qty: {{ item.quantity }}) - KES {{ item.get_total_price|floatformat:2 }}
+{% endfor %}
+
+ORDER SUMMARY:
+Subtotal: KES {{ order.subtotal|floatformat:2 }}
+{% if order.discount_amount %}Discount: -KES {{ order.discount_amount|floatformat:2 }}{% endif %}
+Shipping: {% if order.shipping_cost == 0 %}FREE{% else %}KES {{ order.shipping_cost|floatformat:2 }}{% endif %}
+Tax: KES {{ order.tax_amount|floatformat:2 }}
+TOTAL: KES {{ order.total_amount|floatformat:2 }}
+
+{% if order.shipping_address %}
+SHIPPING ADDRESS:
+{{ order.shipping_address.full_name }}
+{{ order.shipping_address.address_line_1 }}
+{% if order.shipping_address.address_line_2 %}{{ order.shipping_address.address_line_2 }}{% endif %}
+{{ order.shipping_address.city }}, {{ order.shipping_address.state }} {{ order.shipping_address.postal_code }}
+{{ order.shipping_address.country }}
+Phone: {{ order.shipping_address.phone_number }}
+{% endif %}
+
+WHAT HAPPENS NEXT?
+==================
+1. Order Processing: We'll prepare your items for shipment within 1-2 business days.
+2. Shipping: You'll receive tracking information once your order ships.
+3. Delivery: Your order will be delivered to your specified address.
+
+View your order details: {{ site_url }}{% url 'accounts:order_detail' order_number=order.order_number %}
+Continue shopping: {{ site_url }}{% url 'products:product_list' %}
+
+If you have any questions about your order, please contact our customer support.
+
+Thank you for choosing {{ site_name }}!
