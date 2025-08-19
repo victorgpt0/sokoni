@@ -2,42 +2,163 @@
 {% load static %}
 {% load widget_tweaks %}
 
-{% block title %}Create Account - Sokoni{% endblock %}
+{% block title %}Register - Sokoni{% endblock %}
+
+{% block meta_description %}Create your Sokoni account to start shopping with personalized recommendations, order tracking, and exclusive offers.{% endblock %}
 
 {% block head %}
+<style>
+    .auth-container {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .auth-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+        pointer-events: none;
+    }
+    
+    .auth-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+    
+    .floating-shapes {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        z-index: 0;
+    }
+    
+    .floating-shape {
+        position: absolute;
+        background: linear-gradient(45deg, #ed5aff, #ff6b6b);
+        border-radius: 50%;
+        opacity: 0.1;
+        animation: float 6s ease-in-out infinite;
+    }
+    
+    .floating-shape:nth-child(1) {
+        width: 80px;
+        height: 80px;
+        top: 10%;
+        left: 10%;
+        animation-delay: 0s;
+    }
+    
+    .floating-shape:nth-child(2) {
+        width: 120px;
+        height: 120px;
+        top: 20%;
+        right: 10%;
+        animation-delay: 2s;
+    }
+    
+    .floating-shape:nth-child(3) {
+        width: 60px;
+        height: 60px;
+        bottom: 20%;
+        left: 20%;
+        animation-delay: 4s;
+    }
+    
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(180deg); }
+    }
+    
+    .form-input {
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid rgba(237, 90, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .form-input:focus {
+        background: rgba(255, 255, 255, 1);
+        border-color: #ed5aff;
+        box-shadow: 0 0 0 3px rgba(237, 90, 255, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .btn-primary-gradient {
+        background: linear-gradient(135deg, #ed5aff 0%, #ff6b6b 100%);
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(237, 90, 255, 0.3);
+    }
+    
+    .social-btn {
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px solid rgba(237, 90, 255, 0.2);
+        transition: all 0.3s ease;
+    }
+    
+    .social-btn:hover {
+        background: rgba(237, 90, 255, 0.1);
+        border-color: #ed5aff;
+        transform: translateY(-2px);
+    }
+    
+    .password-strength {
+        height: 4px;
+        border-radius: 2px;
+        transition: all 0.3s ease;
+    }
+    
+    .strength-weak { background: linear-gradient(90deg, #ef4444 0%, #fca5a5 100%); }
+    .strength-fair { background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%); }
+    .strength-good { background: linear-gradient(90deg, #10b981 0%, #34d399 100%); }
+    .strength-strong { background: linear-gradient(90deg, #059669 0%, #10b981 100%); }
+</style>
 {% endblock %}
 
 {% block content %}
-<div class="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-bl from-primary via-purple-900 to-primary">
-    <div class="max-w-md w-full space-y-8 relative">
-        <!-- Animated background elements -->
-        <div class="absolute -top-10 -right-10 w-20 h-20 bg-secondary/20 rounded-full animate-pulse"></div>
-        <div class="absolute -bottom-10 -left-10 w-16 h-16 bg-secondary/30 rounded-full animate-bounce delay-700"></div>
-        <div class="absolute top-1/2 -left-5 w-12 h-12 bg-purple-400/20 rounded-full animate-pulse delay-500"></div>
-        
+<div class="auth-container flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative">
+    <!-- Floating shapes -->
+    <div class="floating-shapes">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+    </div>
+    
+    <div class="max-w-md w-full space-y-8 relative z-10">
         <!-- Main card -->
-        <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20">
+        <div class="auth-card rounded-3xl p-8">
             <!-- Header -->
-            <div class="text-center">
-                <div class="mx-auto h-16 w-16 bg-secondary rounded-full flex items-center justify-center mb-4 transform transition-transform duration-300 hover:rotate-12">
-                    <svg class="h-8 w-8 text-primary" fill="currentColor" viewBox="0 0 20 20">
+            <div class="text-center mb-8">
+                <div class="mx-auto h-20 w-20 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-full flex items-center justify-center mb-6 transform transition-transform duration-300 hover:scale-110">
+                    <svg class="h-10 w-10 text-white" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z"></path>
                     </svg>
                 </div>
-                <h2 class="text-3xl font-bold text-white mb-2">Join Sokoni</h2>
-                <p class="text-secondary text-sm">Create your account and start shopping</p>
+                <h2 class="text-3xl font-bold text-gray-900 mb-2">Join Sokoni</h2>
+                <p class="text-gray-600">Create your account and start shopping</p>
             </div>
             
-            <!-- Registration Form -->
-            <form method="post" class="mt-8 space-y-6" id="registerForm">
-    {% csrf_token %}
+            <!-- Register Form -->
+            <form method="post" class="space-y-6" id="registerForm">
+                {% csrf_token %}
                 
                 <!-- Non-field errors -->
                 {% if form.non_field_errors %}
-                    <div class="bg-red-500/20 border border-red-500/50 rounded-lg p-4 animate-pulse">
+                    <div class="bg-red-50 border border-red-200 rounded-xl p-4 animate-pulse">
                         {% for error in form.non_field_errors %}
-                            <p class="text-red-200 text-sm flex items-center">
-                                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <p class="text-red-600 text-sm flex items-center">
+                                <svg class="w-4 h-4 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                                 </svg>
                                 {{ error }}
@@ -46,24 +167,51 @@
                     </div>
                 {% endif %}
 
-                <!-- Username Field -->
-                <div class="transform transition-all duration-300 hover:scale-[1.01]">
-                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
-                        Username {% if form.username.field.required %}<span class="text-red-400">*</span>{% endif %}
+                <!-- First Name Field -->
+                <div class="space-y-2">
+                    <label for="{{ form.first_name.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                        First Name {% if form.first_name.field.required %}<span class="text-red-500">*</span>{% endif %}
                     </label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"></path>
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        {{ form.username|add_class:"w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {{ form.first_name|add_class:"form-input w-full pl-12 pr-4 py-4 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none"|attr:"placeholder:Enter your first name" }}
                     </div>
-                    {% if form.username.errors %}
-                        <div class="mt-2">
-                            {% for error in form.username.errors %}
-                                <p class="text-red-400 text-sm flex items-center animate-pulse">
-                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                    {% if form.first_name.errors %}
+                        <div class="space-y-1">
+                            {% for error in form.first_name.errors %}
+                                <p class="text-red-600 text-sm flex items-center">
+                                    <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Last Name Field -->
+                <div class="space-y-2">
+                    <label for="{{ form.last_name.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                        Last Name {% if form.last_name.field.required %}<span class="text-red-500">*</span>{% endif %}
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        {{ form.last_name|add_class:"form-input w-full pl-12 pr-4 py-4 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none"|attr:"placeholder:Enter your last name" }}
+                    </div>
+                    {% if form.last_name.errors %}
+                        <div class="space-y-1">
+                            {% for error in form.last_name.errors %}
+                                <p class="text-red-600 text-sm flex items-center">
+                                    <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                                     </svg>
                                     {{ error }}
@@ -74,24 +222,51 @@
                 </div>
 
                 <!-- Email Field -->
-                <div class="transform transition-all duration-300 hover:scale-[1.01]">
-                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
-                        Email {% if form.email.field.required %}<span class="text-red-400">*</span>{% endif %}
+                <div class="space-y-2">
+                    <label for="{{ form.email.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                        Email Address {% if form.email.field.required %}<span class="text-red-500">*</span>{% endif %}
                     </label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
                                 <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
                             </svg>
                         </div>
-                        {{ form.email|add_class:"w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {{ form.email|add_class:"form-input w-full pl-12 pr-4 py-4 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none"|attr:"placeholder:Enter your email address" }}
                     </div>
                     {% if form.email.errors %}
-                        <div class="mt-2">
+                        <div class="space-y-1">
                             {% for error in form.email.errors %}
-                                <p class="text-red-400 text-sm flex items-center animate-pulse">
-                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <p class="text-red-600 text-sm flex items-center">
+                                    <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    {{ error }}
+                                </p>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- Username Field -->
+                <div class="space-y-2">
+                    <label for="{{ form.username.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                        Username {% if form.username.field.required %}<span class="text-red-500">*</span>{% endif %}
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
+                        {{ form.username|add_class:"form-input w-full pl-12 pr-4 py-4 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none"|attr:"placeholder:Choose a username" }}
+                    </div>
+                    {% if form.username.errors %}
+                        <div class="space-y-1">
+                            {% for error in form.username.errors %}
+                                <p class="text-red-600 text-sm flex items-center">
+                                    <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                                     </svg>
                                     {{ error }}
@@ -102,23 +277,36 @@
                 </div>
 
                 <!-- Password Field -->
-                <div class="transform transition-all duration-300 hover:scale-[1.01]">
-                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
-                        Password {% if form.password1.field.required %}<span class="text-red-400">*</span>{% endif %}
+                <div class="space-y-2">
+                    <label for="{{ form.password1.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                        Password {% if form.password1.field.required %}<span class="text-red-500">*</span>{% endif %}
                     </label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        {{ form.password1|add_class:"w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {{ form.password1|add_class:"form-input w-full pl-12 pr-12 py-4 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none"|attr:"placeholder:Create a strong password" }}
+                        <button type="button" class="absolute inset-y-0 right-0 pr-4 flex items-center" onclick="togglePassword('password1')">
+                            <svg id="eye-icon-1" class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
                     </div>
+                    
+                    <!-- Password Strength Indicator -->
+                    <div class="mt-2">
+                        <div class="password-strength" id="password-strength"></div>
+                        <p class="text-xs text-gray-500 mt-1" id="password-feedback"></p>
+                    </div>
+                    
                     {% if form.password1.errors %}
-                        <div class="mt-2">
+                        <div class="space-y-1">
                             {% for error in form.password1.errors %}
-                                <p class="text-red-400 text-sm flex items-center animate-pulse">
-                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <p class="text-red-600 text-sm flex items-center">
+                                    <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                                     </svg>
                                     {{ error }}
@@ -129,23 +317,29 @@
                 </div>
 
                 <!-- Confirm Password Field -->
-                <div class="transform transition-all duration-300 hover:scale-[1.01]">
-                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-medium text-secondary mb-2">
-                        Confirm Password {% if form.password2.field.required %}<span class="text-red-400">*</span>{% endif %}
+                <div class="space-y-2">
+                    <label for="{{ form.password2.id_for_label }}" class="block text-sm font-semibold text-gray-700">
+                        Confirm Password {% if form.password2.field.required %}<span class="text-red-500">*</span>{% endif %}
                     </label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
                             </svg>
                         </div>
-                        {{ form.password2|add_class:"w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-secondary/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent transition-all duration-300 hover:bg-white/15" }}
+                        {{ form.password2|add_class:"form-input w-full pl-12 pr-12 py-4 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none"|attr:"placeholder:Confirm your password" }}
+                        <button type="button" class="absolute inset-y-0 right-0 pr-4 flex items-center" onclick="togglePassword('password2')">
+                            <svg id="eye-icon-2" class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </button>
                     </div>
                     {% if form.password2.errors %}
-                        <div class="mt-2">
+                        <div class="space-y-1">
                             {% for error in form.password2.errors %}
-                                <p class="text-red-400 text-sm flex items-center animate-pulse">
-                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <p class="text-red-600 text-sm flex items-center">
+                                    <svg class="w-4 h-4 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                         <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
                                     </svg>
                                     {{ error }}
@@ -158,112 +352,149 @@
                 <!-- Terms and Conditions -->
                 <div class="flex items-start">
                     <div class="flex items-center h-5">
-                        <input type="checkbox" required class="h-4 w-4 text-secondary bg-white/10 border-secondary/30 rounded focus:ring-secondary focus:ring-2" id="terms">
+                        <input id="terms" name="terms" type="checkbox" required class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
                     </div>
-                    <div class="ml-3">
-                        <label for="terms" class="text-sm text-gray-300">
+                    <div class="ml-3 text-sm">
+                        <label for="terms" class="text-gray-700">
                             I agree to the 
-                            <a href="#" class="text-secondary hover:text-white transition-colors duration-200 underline">Terms and Conditions</a>
+                            <a href="#" class="text-primary-600 hover:text-primary-500 font-medium">Terms of Service</a>
                             and 
-                            <a href="#" class="text-secondary hover:text-white transition-colors duration-200 underline">Privacy Policy</a>
+                            <a href="#" class="text-primary-600 hover:text-primary-500 font-medium">Privacy Policy</a>
                         </label>
                     </div>
                 </div>
 
                 <!-- Submit Button -->
-                <button 
-                    type="submit" 
-                    class="w-full px-6 py-3 bg-secondary text-primary rounded-lg font-medium text-sm transition-all duration-300 transform hover:scale-105 active:scale-95 focus:outline-none focus:ring-4 focus:ring-secondary focus:ring-opacity-50 shadow-lg hover:shadow-xl flex items-center justify-center space-x-2"
-                    id="submitBtn"
-                >
-                    <span>Create Account</span>
-                    <svg class="w-4 h-4 ml-2 transform transition-transform duration-200 group-hover:translate-x-1" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                    </svg>
-                </button>
+                <div>
+                    <button type="submit" class="btn-primary-gradient w-full flex justify-center py-4 px-4 border border-transparent rounded-xl text-sm font-semibold text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+                        </svg>
+                        Create Account
+                    </button>
+                </div>
 
                 <!-- Divider -->
                 <div class="relative">
                     <div class="absolute inset-0 flex items-center">
-                        <div class="w-full border-t border-gray-300/30"></div>
+                        <div class="w-full border-t border-gray-300"></div>
                     </div>
                     <div class="relative flex justify-center text-sm">
-                        <span class="px-2 bg-primary text-gray-300">Already have an account?</span>
+                        <span class="px-2 bg-white text-gray-500">Or continue with</span>
                     </div>
                 </div>
 
-                <!-- Login Link -->
-                <div class="text-center">
-                    <a href="{% url 'accounts:login' %}" class="inline-flex items-center text-secondary hover:text-white transition-colors duration-200 font-medium group">
-                        Sign in instead
-                        <svg class="w-4 h-4 ml-1 transform transition-transform duration-200 group-hover:translate-x-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                <!-- Social Login Buttons -->
+                <div class="grid grid-cols-2 gap-3">
+                    <button type="button" class="social-btn w-full inline-flex justify-center py-3 px-4 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        <svg class="w-5 h-5 mr-2" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                         </svg>
-                    </a>
-    </div>
+                        Google
+                    </button>
+                    <button type="button" class="social-btn w-full inline-flex justify-center py-3 px-4 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                        </svg>
+                        Facebook
+                    </button>
+                </div>
             </form>
+
+            <!-- Sign In Link -->
+            <div class="mt-8 text-center">
+                <p class="text-sm text-gray-600">
+                    Already have an account? 
+                    <a href="{% url 'accounts:login' %}" class="font-semibold text-primary-600 hover:text-primary-500 transition-colors">
+                        Sign in here
+                    </a>
+                </p>
+            </div>
+        </div>
     </div>
-    </div>
-    </div>
+</div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.getElementById('registerForm');
-    const submitBtn = document.getElementById('submitBtn');
+function togglePassword(fieldId) {
+    const passwordInput = document.querySelector(`input[name="${fieldId}"]`);
+    const eyeIcon = document.getElementById(`eye-icon-${fieldId === 'password1' ? '1' : '2'}`);
     
-    form.addEventListener('submit', function(e) {
-        const termsCheckbox = document.getElementById('terms');
-        if (!termsCheckbox.checked) {
-            e.preventDefault();
-            alert('Please accept the Terms and Conditions to continue.');
-            return;
-        }
-        
-        submitBtn.innerHTML = `
-            <svg class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span>Creating account...</span>
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        eyeIcon.innerHTML = `
+            <path fill-rule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clip-rule="evenodd"></path>
+            <path d="M12.454 16.697L9.75 13.992a4 4 0 01-3.742-3.741L2.335 6.578A9.98 9.98 0 00.458 10c1.274 4.057 5.065 7 9.542 7 .847 0 1.669-.105 2.454-.303z"></path>
         `;
-        submitBtn.disabled = true;
-    });
-
-    // Password strength indicator
-    const password1 = document.querySelector('input[name="password1"]');
-    if (password1) {
-        password1.addEventListener('input', function() {
-            const strength = calculatePasswordStrength(this.value);
-            updatePasswordStrengthIndicator(strength);
-        });
+    } else {
+        passwordInput.type = 'password';
+        eyeIcon.innerHTML = `
+            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+        `;
     }
+}
 
-    function calculatePasswordStrength(password) {
-        let strength = 0;
-        if (password.length >= 8) strength++;
-        if (/[a-z]/.test(password)) strength++;
-        if (/[A-Z]/.test(password)) strength++;
-        if (/[0-9]/.test(password)) strength++;
-        if (/[^A-Za-z0-9]/.test(password)) strength++;
-        return strength;
+// Password strength checker
+function checkPasswordStrength(password) {
+    let strength = 0;
+    let feedback = [];
+    
+    if (password.length >= 8) strength++;
+    else feedback.push('At least 8 characters');
+    
+    if (/[a-z]/.test(password)) strength++;
+    else feedback.push('Lowercase letter');
+    
+    if (/[A-Z]/.test(password)) strength++;
+    else feedback.push('Uppercase letter');
+    
+    if (/[0-9]/.test(password)) strength++;
+    else feedback.push('Number');
+    
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+    else feedback.push('Special character');
+    
+    const strengthBar = document.getElementById('password-strength');
+    const feedbackText = document.getElementById('password-feedback');
+    
+    strengthBar.className = 'password-strength';
+    
+    if (strength <= 2) {
+        strengthBar.classList.add('strength-weak');
+        feedbackText.textContent = 'Weak password';
+    } else if (strength === 3) {
+        strengthBar.classList.add('strength-fair');
+        feedbackText.textContent = 'Fair password';
+    } else if (strength === 4) {
+        strengthBar.classList.add('strength-good');
+        feedbackText.textContent = 'Good password';
+    } else {
+        strengthBar.classList.add('strength-strong');
+        feedbackText.textContent = 'Strong password';
     }
+}
 
-    function updatePasswordStrengthIndicator(strength) {
-        // This could be enhanced to show a visual strength indicator
-        console.log('Password strength:', strength);
-    }
+// Add password strength listener
+document.querySelector('input[name="password1"]').addEventListener('input', function() {
+    checkPasswordStrength(this.value);
+});
 
-    // Add floating animation to input fields
-    const inputs = document.querySelectorAll('input[type="text"], input[type="password"], input[type="email"]');
-    inputs.forEach(input => {
-        input.addEventListener('focus', function() {
-            this.parentElement.parentElement.classList.add('scale-105');
-        });
-        
-        input.addEventListener('blur', function() {
-            this.parentElement.parentElement.classList.remove('scale-105');
-        });
-    });
+// Form submission loading state
+document.getElementById('registerForm').addEventListener('submit', function() {
+    const submitBtn = this.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    
+    submitBtn.innerHTML = `
+        <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+        Creating account...
+    `;
+    submitBtn.disabled = true;
 });
 </script>
 {% endblock %}

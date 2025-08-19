@@ -33,6 +33,7 @@ urlpatterns = [
     path('orders/', include('orders.urls')),
     path('coupons/', include('coupons.urls')),
     path('payments/', include('payments.urls')),
+    path('wishlist/', include('wishlist.urls', namespace='wishlist')),
 ]
 
 # Custom admin site headers

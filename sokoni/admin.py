@@ -154,3 +154,5 @@ admin_site.register(Coupon, CouponAdmin)
 # Replace the default admin site
 admin.site = admin_site
 
+
+

@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'coupons',
     'orders',
     'payments',
+    'wishlist',
 ]
 
 MIDDLEWARE = [
@@ -98,6 +99,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'wishlist.context_processors.wishlist_count',
                 'django.contrib.messages.context_processors.messages',
                 'cart.context_processors.cart_context',
             ],

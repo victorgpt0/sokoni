@@ -8,11 +8,11 @@
     <!-- Breadcrumb -->
     <nav class="mb-6">
         <ol class="flex items-center space-x-2 text-sm">
-            <li><a href="{% url 'home' %}" class="text-secondary hover:text-white transition-colors">Home</a></li>
+            <li><a href="{% url 'home' %}" class="text-primary-600 hover:text-primary-700 transition-colors">Home</a></li>
             <li class="text-gray-400">/</li>
-            <li><a href="{% url 'cart:cart_detail' %}" class="text-secondary hover:text-white transition-colors">Cart</a></li>
+            <li><a href="{% url 'cart:cart_detail' %}" class="text-primary-600 hover:text-primary-700 transition-colors">Cart</a></li>
             <li class="text-gray-400">/</li>
-            <li class="text-white">Checkout</li>
+            <li class="text-gray-900">Checkout</li>
         </ol>
     </nav>
 
@@ -23,18 +23,18 @@
         <div class="mb-6">
             <div class="flex items-center justify-center space-x-8">
                 <div class="checkout-step active flex items-center space-x-2">
-                    <div class="w-6 h-6 bg-secondary text-primary rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                    <span class="text-white font-medium">Shipping</span>
+                    <div class="w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
+                    <span class="text-gray-900 font-medium">Shipping</span>
                 </div>
-                <div class="w-8 h-0.5 bg-gray-600"></div>
+                <div class="w-8 h-0.5 bg-gray-300"></div>
                 <div class="checkout-step flex items-center space-x-2">
-                    <div class="w-6 h-6 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                    <span class="text-gray-400 font-medium">Payment</span>
+                    <div class="w-6 h-6 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-bold">2</div>
+                    <span class="text-gray-500 font-medium">Payment</span>
                 </div>
-                <div class="w-8 h-0.5 bg-gray-600"></div>
+                <div class="w-8 h-0.5 bg-gray-300"></div>
                 <div class="checkout-step flex items-center space-x-2">
-                    <div class="w-6 h-6 bg-gray-600 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                    <span class="text-gray-400 font-medium">Confirm</span>
+                    <div class="w-6 h-6 bg-gray-300 text-gray-600 rounded-full flex items-center justify-center text-sm font-bold">3</div>
+                    <span class="text-gray-500 font-medium">Confirm</span>
                 </div>
             </div>
         </div>
@@ -45,17 +45,17 @@
                 <!-- Step 1: Shipping Information -->
                 <div id="shippingStep" class="space-y-4">
                     <!-- Shipping Addresses -->
-                    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
-                        <h3 class="text-lg font-semibold text-white mb-4">Shipping Address</h3>
+                    <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Shipping Address</h3>
                         
                         {% if shipping_addresses %}
                             <div class="space-y-3 mb-4">
                                 {% for address in shipping_addresses %}
-                                <div class="address-card bg-white/5 border border-white/10 rounded-lg p-4 cursor-pointer hover:border-secondary transition-colors">
+                                <div class="address-card bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary-500 transition-colors">
                                     <input type="radio" name="shipping_address" value="{{ address.id }}" 
                                            class="sr-only" id="shipping_{{ address.id }}">
                                     <label for="shipping_{{ address.id }}" class="cursor-pointer block">
-                                        <div class="text-gray-300">
+                                        <div class="text-gray-700">
                                             <p><strong>{{ address.first_name }} {{ address.last_name }}</strong></p>
                                             <p>{{ address.address_line_1 }}</p>
                                             {% if address.address_line_2 %}
@@ -70,14 +70,14 @@
                             </div>
                             
                             <button type="button" onclick="showNewShippingAddressForm()" 
-                                    class="text-secondary hover:text-white transition-colors">
+                                    class="text-primary-600 hover:text-primary-700 transition-colors">
                                 + Add New Shipping Address
                             </button>
                         {% else %}
                             <div class="text-center py-6">
-                                <p class="text-gray-400 mb-4">No shipping addresses found</p>
+                                <p class="text-gray-600 mb-4">No shipping addresses found</p>
                                 <a href="{% url 'accounts:address_add' %}?type=shipping" 
-                                   class="bg-secondary text-primary px-4 py-2 rounded-lg hover:bg-secondary/80 transition-colors">
+                                   class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">
                                     Add Shipping Address
                                 </a>
                             </div>
@@ -85,17 +85,17 @@
                     </div>
 
                     <!-- Billing Addresses -->
-                    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
-                        <h3 class="text-lg font-semibold text-white mb-4">Billing Address</h3>
+                    <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Billing Address</h3>
                         
                         {% if billing_addresses %}
                             <div class="space-y-3 mb-4">
                                 {% for address in billing_addresses %}
-                                <div class="address-card bg-white/5 border border-white/10 rounded-lg p-4 cursor-pointer hover:border-secondary transition-colors">
+                                <div class="address-card bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary-500 transition-colors">
                                     <input type="radio" name="billing_address" value="{{ address.id }}" 
                                            class="sr-only" id="billing_{{ address.id }}">
                                     <label for="billing_{{ address.id }}" class="cursor-pointer block">
-                                        <div class="text-gray-300">
+                                        <div class="text-gray-700">
                                             <p><strong>{{ address.first_name }} {{ address.last_name }}</strong></p>
                                             <p>{{ address.address_line_1 }}</p>
                                             {% if address.address_line_2 %}
@@ -110,14 +110,14 @@
                             </div>
                             
                             <button type="button" onclick="showNewBillingAddressForm()" 
-                                    class="text-secondary hover:text-white transition-colors">
+                                    class="text-primary-600 hover:text-primary-700 transition-colors">
                                 + Add New Billing Address
                             </button>
                         {% else %}
                             <div class="text-center py-6">
-                                <p class="text-gray-400 mb-4">No billing addresses found</p>
+                                <p class="text-gray-600 mb-4">No billing addresses found</p>
                                 <a href="{% url 'accounts:address_add' %}?type=billing" 
-                                   class="bg-secondary text-primary px-4 py-2 rounded-lg hover:bg-secondary/80 transition-colors">
+                                   class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">
                                     Add Billing Address
                                 </a>
                             </div>
@@ -125,19 +125,19 @@
                     </div>
 
                     <!-- Shipping Options -->
-                    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
-                        <h3 class="text-lg font-semibold text-white mb-4">Shipping Options</h3>
+                    <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Shipping Options</h3>
                         <div class="space-y-3">
-                            <div class="shipping-option bg-white/5 border border-white/20 rounded-lg p-4 cursor-pointer" 
+                            <div class="shipping-option bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer" 
                                  onclick="selectShippingOption('standard')" data-shipping="standard">
                                 <input type="radio" name="shipping_method" value="standard" class="sr-only">
                                 <div class="flex items-center justify-between">
                                     <div>
-                                        <h4 class="font-semibold text-white">Standard Shipping</h4>
-                                        <p class="text-sm text-gray-400">3-5 business days</p>
+                                        <h4 class="font-semibold text-gray-900">Standard Shipping</h4>
+                                        <p class="text-sm text-gray-600">3-5 business days</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="font-semibold text-white">
+                                        <p class="font-semibold text-gray-900">
                                             {% if subtotal >= free_shipping_threshold %}
                                                 FREE
                                             {% else %}
@@ -147,16 +147,16 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="shipping-option bg-white/5 border border-white/20 rounded-lg p-4 cursor-pointer" 
+                            <div class="shipping-option bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer" 
                                  onclick="selectShippingOption('express')" data-shipping="express">
                                 <input type="radio" name="shipping_method" value="express" class="sr-only">
                                 <div class="flex items-center justify-between">
                                     <div>
-                                        <h4 class="font-semibold text-white">Express Shipping</h4>
-                                        <p class="text-sm text-gray-400">1-2 business days</p>
+                                        <h4 class="font-semibold text-gray-900">Express Shipping</h4>
+                                        <p class="text-sm text-gray-600">1-2 business days</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="font-semibold text-white">KES 1,000.00</p>
+                                        <p class="font-semibold text-gray-900">KES 1,000.00</p>
                                     </div>
                                 </div>
                             </div>
@@ -166,7 +166,7 @@
                     <!-- Continue to Payment Button -->
                     <div class="flex justify-end">
                         <button type="button" onclick="proceedToPayment()" 
-                                class="bg-secondary text-primary px-8 py-3 rounded-lg font-semibold hover:bg-secondary/80 transition-colors">
+                                class="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
                             Continue to Payment
                         </button>
                     </div>
@@ -174,27 +174,27 @@
 
                 <!-- Step 2: Payment Method -->
                 <div id="paymentStepContent" class="hidden">
-                    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
-                        <h3 class="text-lg font-semibold text-white mb-4">Payment Method</h3>
-                        <p class="text-gray-400 mb-6">You'll be redirected to Paystack to complete your payment securely.</p>
+                    <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Method</h3>
+                        <p class="text-gray-600 mb-6">You'll be redirected to Paystack to complete your payment securely.</p>
                         
                         <div class="flex items-center space-x-3 mb-6">
                             <div class="w-12 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded flex items-center justify-center">
                                 <span class="text-white text-xs font-bold">PS</span>
                             </div>
                             <div>
-                                <h4 class="font-semibold text-white">Paystack Payment</h4>
-                                <p class="text-sm text-gray-400">Secure payment via card, bank transfer, or mobile money</p>
+                                <h4 class="font-semibold text-gray-900">Paystack Payment</h4>
+                                <p class="text-sm text-gray-600">Secure payment via card, bank transfer, or mobile money</p>
                             </div>
                         </div>
 
                         <div class="flex justify-between">
                             <button type="button" onclick="backToShipping()" 
-                                    class="text-gray-400 hover:text-white transition-colors">
+                                    class="text-gray-500 hover:text-gray-700 transition-colors">
                                 ← Back to Shipping
                             </button>
                             <button type="button" onclick="proceedToConfirm()" 
-                                    class="bg-secondary text-primary px-8 py-3 rounded-lg font-semibold hover:bg-secondary/80 transition-colors">
+                                    class="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
                                 Continue to Review
                             </button>
                         </div>
@@ -203,13 +203,13 @@
 
                 <!-- Step 3: Order Confirmation -->
                 <div id="confirmStepContent" class="hidden">
-                    <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
-                        <h3 class="text-lg font-semibold text-white mb-4">Order Review</h3>
+                    <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft">
+                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Order Review</h3>
                         
                         <!-- Selected Address -->
                         <div class="mb-6">
-                            <h4 class="font-medium text-white mb-2">Shipping Address</h4>
-                            <div id="selectedAddressSummary" class="text-gray-300 bg-white/5 rounded-lg p-3">
+                            <h4 class="font-medium text-gray-900 mb-2">Shipping Address</h4>
+                            <div id="selectedAddressSummary" class="text-gray-700 bg-gray-50 rounded-lg p-3">
                                 <!-- Address will be populated by JavaScript -->
                             </div>
                         </div>
@@ -217,21 +217,21 @@
                         <!-- Terms and Conditions -->
                         <div class="mb-6">
                             <label class="flex items-start space-x-3 cursor-pointer">
-                                <input type="checkbox" id="agreeTerms" class="mt-1 w-4 h-4 text-primary bg-white border-gray-300 rounded focus:ring-primary focus:ring-2">
-                                <span class="text-sm text-gray-300">
-                                    I agree to the <a href="#" class="text-secondary hover:text-white">Terms and Conditions</a> and 
-                                    <a href="#" class="text-secondary hover:text-white">Privacy Policy</a>
+                                <input type="checkbox" id="agreeTerms" class="mt-1 w-4 h-4 text-primary-600 bg-white border-gray-300 rounded focus:ring-primary-500 focus:ring-2">
+                                <span class="text-sm text-gray-700">
+                                    I agree to the <a href="#" class="text-primary-600 hover:text-primary-700">Terms and Conditions</a> and 
+                                    <a href="#" class="text-primary-600 hover:text-primary-700">Privacy Policy</a>
                                 </span>
                             </label>
                         </div>
 
                         <div class="flex justify-between">
                             <button type="button" onclick="backToPayment()" 
-                                    class="text-gray-400 hover:text-white transition-colors">
+                                    class="text-gray-500 hover:text-gray-700 transition-colors">
                                 ← Back to Payment
                             </button>
                             <button type="submit" id="placeOrderBtn" 
-                                    class="bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary/80 transition-colors">
+                                    class="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
                                 Place Order
                             </button>
                         </div>
@@ -241,40 +241,40 @@
 
             <!-- Order Summary -->
             <div class="lg:col-span-1">
-                <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 sticky top-8">
-                    <h3 class="text-lg font-semibold text-white mb-4">Order Summary</h3>
+                <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft sticky top-8">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Order Summary</h3>
                     
                     <div class="space-y-3 mb-6">
                         <div class="flex justify-between">
-                            <span class="text-gray-300">Subtotal</span>
-                            <span class="text-white">KES {{ subtotal|floatformat:2 }}</span>
+                            <span class="text-gray-700">Subtotal</span>
+                            <span class="text-gray-900">KES {{ subtotal|floatformat:2 }}</span>
                         </div>
                         {% if discount_amount %}
                         <div class="flex justify-between">
-                            <span class="text-gray-300">Discount</span>
-                            <span class="text-green-400">-KES {{ discount_amount|floatformat:2 }}</span>
+                            <span class="text-gray-700">Discount</span>
+                            <span class="text-green-600">-KES {{ discount_amount|floatformat:2 }}</span>
                         </div>
                         {% endif %}
                         <div class="flex justify-between">
-                            <span class="text-gray-300">Shipping</span>
-                            <span id="shippingCost" class="{% if shipping_cost == 0 %}text-green-400{% endif %}">
+                            <span class="text-gray-700">Shipping</span>
+                            <span id="shippingCost" class="{% if shipping_cost == 0 %}text-green-600{% endif %}">
                                 {% if shipping_cost == 0 %}FREE{% else %}KES {{ shipping_cost|floatformat:2 }}{% endif %}
                             </span>
                         </div>
                         <div class="flex justify-between">
-                            <span class="text-gray-300">Tax</span>
+                            <span class="text-gray-700">Tax</span>
                             <span id="taxAmount">KES {{ tax_amount|floatformat:2 }}</span>
                         </div>
-                        <hr class="border-gray-600">
+                        <hr class="border-gray-200">
                         <div class="flex justify-between text-lg font-semibold">
-                            <span class="text-white">Total</span>
+                            <span class="text-gray-900">Total</span>
                             <span id="totalAmount">KES {{ total_amount|floatformat:2 }}</span>
                         </div>
                     </div>
 
                     {% if free_shipping_remaining > 0 %}
-                    <div class="bg-green-500/10 border border-green-500/20 rounded-lg p-3 mb-4">
-                        <p class="text-sm text-green-400">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-3 mb-4">
+                        <p class="text-sm text-green-700">
                             Add KES {{ free_shipping_remaining|floatformat:2 }} more for FREE shipping!
                         </p>
                     </div>

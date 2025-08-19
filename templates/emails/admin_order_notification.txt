@@ -45,3 +45,5 @@ Edit in admin: {{ site_url }}/admin/orders/order/{{ order.id }}/change/
 
 This is an automated notification from {{ site_name }}.
 
+
+

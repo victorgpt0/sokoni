@@ -1,75 +1,374 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}sokoni{% endblock %}</title>
+    <title>{% block title %}Sokoni - Premium Kenyan Marketplace{% endblock %}</title>
+    <meta name="description" content="{% block meta_description %}Sokoni - Your trusted Kenyan marketplace for quality products, amazing deals, and exceptional shopping experience. Shop with confidence using M-Pesa, cards, and more.{% endblock %}">
+    
+    <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
+    <link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        primary: '#4B0082', // velvet indigo
-                        secondary: '#E5E4E2', // platinumfrost
+                        // New vibrant Kenyan-inspired color palette
+                        primary: {
+                            50: '#fef7ff',
+                            100: '#fdeeff',
+                            200: '#fbdfff',
+                            300: '#f8c0ff',
+                            400: '#f491ff',
+                            500: '#ed5aff',
+                            600: '#d633ff',
+                            700: '#b91cff',
+                            800: '#9a1ad8',
+                            900: '#7e1bb0',
+                            950: '#4c0075'
+                        },
+                        secondary: {
+                            50: '#fff7ed',
+                            100: '#ffedd5',
+                            200: '#fed7aa',
+                            300: '#fdba74',
+                            400: '#fb923c',
+                            500: '#f97316',
+                            600: '#ea580c',
+                            700: '#c2410c',
+                            800: '#9a3412',
+                            900: '#7c2d12',
+                            950: '#431407'
+                        },
+                        accent: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                            950: '#052e16'
+                        },
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        error: '#ef4444',
+                        info: '#3b82f6'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif'],
+                        'display': ['Poppins', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.3s ease-out',
+                        'bounce-gentle': 'bounceGentle 2s infinite',
+                        'pulse-gentle': 'pulseGentle 2s infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(10px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' },
+                        },
+                        bounceGentle: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-5px)' },
+                        },
+                        pulseGentle: {
+                            '0%, 100%': { opacity: '1' },
+                            '50%': { opacity: '0.8' },
+                        },
+                    },
+                    boxShadow: {
+                        'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)',
+                        'medium': '0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+                        'large': '0 10px 40px -10px rgba(0, 0, 0, 0.15), 0 2px 10px -2px rgba(0, 0, 0, 0.05)',
                     }
                 }
             }
         }
     </script>
+    
+    <!-- Alpine.js -->
+    <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    <!-- Custom Styles -->
     <style>
-        /* Global select input styling for better visibility */
-        select {
-            background-color: white !important;
-            color: #1f2937 !important; /* text-gray-900 */
+        /* Global Styles */
+        * {
+            box-sizing: border-box;
         }
         
-        select option {
-            background-color: white !important;
-            color: #1f2937 !important; /* text-gray-900 */
-            padding: 8px 12px;
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background-color: #ffffff;
         }
         
-        select option:hover {
-            background-color: #f3f4f6 !important; /* bg-gray-100 */
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
         }
         
-        select:focus option:checked {
-            background-color: #4B0082 !important; /* primary color */
-            color: white !important;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
         
-        /* Ensure select dropdown is visible */
-        select:focus {
-            background-color: white !important;
-            color: #1f2937 !important;
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
         }
         
-        /* Override any conflicting styles */
-        select.bg-white\/10 {
-            background-color: white !important;
-            color: #1f2937 !important;
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        
+        /* Loading animations */
+        .loading-skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Glass morphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #ed5aff 0%, #f97316 50%, #22c55e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        /* Button hover effects */
+        .btn-primary {
+            background: linear-gradient(135deg, #ed5aff 0%, #d633ff 100%);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(237, 90, 255, 0.3);
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        /* Product card hover effects */
+        .product-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Form styling */
+        .form-input {
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .form-input:focus {
+            border-color: #ed5aff;
+            box-shadow: 0 0 0 3px rgba(237, 90, 255, 0.1);
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+        
+        /* Accessibility improvements */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+        
+        /* Focus styles for accessibility */
+        *:focus {
+            outline: 2px solid #ed5aff;
+            outline-offset: 2px;
+        }
+        
+        /* Skip to main content link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: #ed5aff;
+            color: white;
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 1000;
+        }
+        
+        .skip-link:focus {
+            top: 6px;
         }
     </style>
+    
     {% block head %}{% endblock %}
 </head>
-<body class="bg-gray-900 text-white flex flex-col min-h-screen">
+<body class="bg-white text-gray-900 antialiased" x-data="{ 
+    mobileMenuOpen: false,
+    searchOpen: false,
+    cartOpen: false,
+    notifications: [],
+    addNotification(message, type = 'info') {
+        this.notifications.push({ id: Date.now(), message, type });
+        setTimeout(() => {
+            this.notifications = this.notifications.filter(n => n.id !== this.notifications[0].id);
+        }, 5000);
+    }
+}">
+
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <!-- Loading overlay -->
+    <div id="loading-overlay" class="fixed inset-0 bg-white bg-opacity-90 z-50 flex items-center justify-center transition-opacity duration-300" style="display: none;">
+        <div class="text-center">
+            <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-primary-600 mx-auto mb-4"></div>
+            <p class="text-gray-600 font-medium">Loading Sokoni...</p>
+        </div>
+    </div>
+
+    <!-- Notification system -->
+    <div class="fixed top-4 right-4 z-50 space-y-2">
+        <template x-for="notification in notifications" :key="notification.id">
+            <div x-show="true" 
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="transform translate-x-full opacity-0"
+                 x-transition:enter-end="transform translate-x-0 opacity-100"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="transform translate-x-0 opacity-100"
+                 x-transition:leave-end="transform translate-x-full opacity-0"
+                 :class="{
+                     'bg-success text-white': notification.type === 'success',
+                     'bg-error text-white': notification.type === 'error',
+                     'bg-warning text-white': notification.type === 'warning',
+                     'bg-info text-white': notification.type === 'info'
+                 }"
+                 class="p-4 rounded-lg shadow-lg max-w-sm">
+                <div class="flex items-center justify-between">
+                    <span x-text="notification.message"></span>
+                    <button @click="notifications = notifications.filter(n => n.id !== notification.id)" 
+                            class="ml-4 text-white hover:text-gray-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </template>
+    </div>
 
     {% include "components/navbar.html" %}
 
-    <main class="container mx-auto px-4 py-6 flex-grow">
+    <main id="main-content" class="flex-grow">
         {% if messages %}
-            <div class="mb-4 space-y-2">
-                {% for message in messages %}
-                    <div class="p-3 rounded 
-                        {% if message.tags == 'success' %}bg-green-100 text-green-800
-                        {% elif message.tags == 'error' %}bg-red-100 text-red-800
-                        {% else %}bg-blue-100 text-blue-800{% endif %}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
+            <div class="container mx-auto px-4 py-4">
+                <div class="space-y-3">
+                    {% for message in messages %}
+                        <div x-data="{ show: true }" 
+                             x-show="show" 
+                             x-transition:enter="transition ease-out duration-300"
+                             x-transition:enter-start="transform translate-y-2 opacity-0"
+                             x-transition:enter-end="transform translate-y-0 opacity-100"
+                             x-transition:leave="transition ease-in duration-200"
+                             x-transition:leave-start="transform translate-y-0 opacity-100"
+                             x-transition:leave-end="transform translate-y-2 opacity-0"
+                             class="p-4 rounded-lg shadow-medium border-l-4 
+                                {% if message.tags == 'success' %}bg-green-50 border-green-500 text-green-800
+                                {% elif message.tags == 'error' %}bg-red-50 border-red-500 text-red-800
+                                {% elif message.tags == 'warning' %}bg-yellow-50 border-yellow-500 text-yellow-800
+                                {% else %}bg-blue-50 border-blue-500 text-blue-800{% endif %}">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    {% if message.tags == 'success' %}
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    {% elif message.tags == 'error' %}
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    {% else %}
+                                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    {% endif %}
+                                    <span class="font-medium">{{ message }}</span>
+                                </div>
+                                <button @click="show = false" class="text-gray-400 hover:text-gray-600">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
         {% endif %}
         
@@ -77,6 +376,112 @@
     </main>
 
     {% include "components/footer.html" %}
+
+    <!-- Back to top button -->
+    <button id="back-to-top" 
+            class="fixed bottom-6 right-6 bg-primary-600 text-white p-3 rounded-full shadow-large hover:bg-primary-700 transition-all duration-300 opacity-0 invisible"
+            onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+            aria-label="Back to top">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+        </svg>
+    </button>
+
+    <!-- Global JavaScript -->
+    <script>
+        // Back to top button visibility
+        window.addEventListener('scroll', function() {
+            const backToTop = document.getElementById('back-to-top');
+            if (window.scrollY > 300) {
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        });
+
+        // Loading overlay management
+        let loadingTimeout;
+        const loadingOverlay = document.getElementById('loading-overlay');
+        
+        function showLoadingOverlay() {
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'flex';
+                // Auto-hide after 10 seconds as fallback
+                loadingTimeout = setTimeout(() => {
+                    hideLoadingOverlay();
+                }, 10000);
+            }
+        }
+        
+        function hideLoadingOverlay() {
+            if (loadingOverlay) {
+                loadingOverlay.style.display = 'none';
+                if (loadingTimeout) {
+                    clearTimeout(loadingTimeout);
+                    loadingTimeout = null;
+                }
+            }
+        }
+        
+        // Hide overlay when page loads
+        window.addEventListener('load', hideLoadingOverlay);
+        
+        // Hide overlay when DOM is ready (for cached pages)
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', hideLoadingOverlay);
+        } else {
+            hideLoadingOverlay();
+        }
+        
+        // Show loading overlay on navigation (but not for same-page links)
+        document.addEventListener('click', function(e) {
+            const link = e.target.closest('a');
+            if (link && link.href && !link.href.includes('#') && !link.href.includes('javascript:') && link.href !== window.location.href) {
+                showLoadingOverlay();
+            }
+        });
+        
+        // Hide overlay when navigating back/forward
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                // Page was loaded from cache (back/forward navigation)
+                hideLoadingOverlay();
+            }
+        });
+        
+        // Hide overlay on page unload (when navigating away)
+        window.addEventListener('beforeunload', hideLoadingOverlay);
+
+        // Form submission loading states
+        document.addEventListener('submit', function(e) {
+            const form = e.target;
+            const submitBtn = form.querySelector('button[type="submit"]');
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Processing...';
+            }
+        });
+
+        // Lazy loading for images
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src;
+                        img.classList.remove('lazy');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+    </script>
 
     {% block scripts %}{% endblock %}
 </body>
