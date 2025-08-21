@@ -1,0 +1,258 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}{{ title }} - Sokoni{% endblock %}
+
+{% block head %}
+<style>
+    .form-section {
+        background: white;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
+    }
+    .form-input {
+        background: white;
+        border: 1px solid #d1d5db;
+        color: #374151;
+    }
+    .form-input:focus {
+        background: white;
+        border-color: rgb(237 90 255);
+        box-shadow: 0 0 0 3px rgba(237, 90, 255, 0.1);
+    }
+    .form-input::placeholder {
+        color: #9ca3af;
+    }
+    .form-label {
+        color: #374151;
+        font-weight: 500;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
+            <a href="{% url 'products:product_list' %}" 
+               class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors">
+                ← Back to Products
+            </a>
+        </div>
+    </div>
+
+    <!-- Product Form -->
+    <div class="form-section rounded-xl p-6">
+        <form method="post" enctype="multipart/form-data" class="space-y-6">
+            {% csrf_token %}
+            
+            <!-- Basic Information -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-semibold text-primary-600 mb-4">Basic Information</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.name.id_for_label }}" class="block form-label mb-2">
+                            Product Name *
+                        </label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                            <div class="text-red-400 text-sm mt-1">{{ form.name.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.category.id_for_label }}" class="block form-label mb-2">
+                            Category *
+                        </label>
+                        {{ form.category }}
+                        {% if form.category.errors %}
+                            <div class="text-red-400 text-sm mt-1">{{ form.category.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="{{ form.description.id_for_label }}" class="block form-label mb-2">
+                        Description
+                    </label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="text-red-400 text-sm mt-1">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <!-- Pricing -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-semibold text-primary-600 mb-4">Pricing</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="{{ form.price.id_for_label }}" class="block form-label mb-2">
+                            Price *
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-gray-400">$</span>
+                            {{ form.price }}
+                        </div>
+                        {% if form.price.errors %}
+                            <div class="text-red-400 text-sm mt-1">{{ form.price.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.compare_price.id_for_label }}" class="block form-label mb-2">
+                            Compare Price (Original Price)
+                        </label>
+                        <div class="relative">
+                            <span class="absolute left-3 top-3 text-gray-400">$</span>
+                            {{ form.compare_price }}
+                        </div>
+                        {% if form.compare_price.errors %}
+                            <div class="text-red-400 text-sm mt-1">{{ form.compare_price.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Inventory -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-semibold text-primary-600 mb-4">Inventory</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="{{ form.stock_quantity.id_for_label }}" class="block form-label mb-2">
+                            Stock Quantity
+                        </label>
+                        {{ form.stock_quantity }}
+                        {% if form.stock_quantity.errors %}
+                            <div class="text-red-400 text-sm mt-1">{{ form.stock_quantity.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.weight.id_for_label }}" class="block form-label mb-2">
+                            Weight (lbs)
+                        </label>
+                        {{ form.weight }}
+                        {% if form.weight.errors %}
+                            <div class="text-red-400 text-sm mt-1">{{ form.weight.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.dimensions.id_for_label }}" class="block form-label mb-2">
+                            Dimensions
+                        </label>
+                        {{ form.dimensions }}
+                        {% if form.dimensions.errors %}
+                            <div class="text-red-400 text-sm mt-1">{{ form.dimensions.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Product Options -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-semibold text-primary-600 mb-4">Product Options</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="flex items-center">
+                        {{ form.is_active }}
+                        <label for="{{ form.is_active.id_for_label }}" class="ml-2 form-label">
+                            Active
+                        </label>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        {{ form.is_featured }}
+                        <label for="{{ form.is_featured.id_for_label }}" class="ml-2 form-label">
+                            Featured
+                        </label>
+                    </div>
+                    
+                    <div class="flex items-center">
+                        {{ form.is_digital }}
+                        <label for="{{ form.is_digital.id_for_label }}" class="ml-2 form-label">
+                            Digital Product
+                        </label>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- SEO -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-semibold text-primary-600 mb-4">SEO (Optional)</h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label for="{{ form.meta_title.id_for_label }}" class="block form-label mb-2">
+                            Meta Title
+                        </label>
+                        {{ form.meta_title }}
+                        {% if form.meta_title.errors %}
+                            <div class="text-red-400 text-sm mt-1">{{ form.meta_title.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.meta_description.id_for_label }}" class="block form-label mb-2">
+                            Meta Description
+                        </label>
+                        {{ form.meta_description }}
+                        {% if form.meta_description.errors %}
+                            <div class="text-red-400 text-sm mt-1">{{ form.meta_description.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div>
+                        <label for="{{ form.meta_keywords.id_for_label }}" class="block form-label mb-2">
+                            Meta Keywords
+                        </label>
+                        {{ form.meta_keywords }}
+                        {% if form.meta_keywords.errors %}
+                            <div class="text-red-400 text-sm mt-1">{{ form.meta_keywords.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Form Actions -->
+            <div class="flex items-center justify-between pt-6 border-t border-white/10">
+                <a href="{% url 'products:product_list' %}" 
+                   class="bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-lg transition-colors">
+                    Cancel
+                </a>
+                
+                <button type="submit" 
+                        class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-2 rounded-lg font-semibold transition-colors">
+                    {{ submit_text }}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Add form-input class to all form fields
+    document.addEventListener('DOMContentLoaded', function() {
+        const inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            if (input.type !== 'checkbox' && input.type !== 'radio') {
+                input.classList.add('form-input', 'w-full', 'px-3', 'py-2', 'rounded-lg', 'focus:outline-none', 'focus:ring-2', 'focus:ring-secondary');
+            }
+        });
+        
+        // Style checkboxes
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        checkboxes.forEach(checkbox => {
+                                    checkbox.classList.add('w-4', 'h-4', 'text-primary-600', 'bg-white', 'border-gray-300', 'rounded', 'focus:ring-primary-500');
+        });
+    });
+</script>
+{% endblock %}

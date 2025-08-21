@@ -17,6 +17,8 @@ python manage.py seed_dev --small
 python manage.py seed_dev --clear
 ```
 
+**Note**: Products require users to exist first. The seeding commands handle this automatically, but if running individual commands, ensure users are created before products.
+
 ## Individual Seeders
 
 You can also run individual seeders for more control:
@@ -41,7 +43,7 @@ python manage.py seed_users --count 10
 
 ### 3. Products
 ```bash
-# Create 50 products with realistic data
+# Create 50 products with realistic data (assigned to random users)
 python manage.py seed_products --count 50
 
 # Clear existing products first
@@ -81,6 +83,7 @@ python manage.py seed_all --clear --users 15 --products 30 --orders 20
 
 ### 🛍️ Products
 - **Realistic products**: Category-appropriate items with real names and descriptions
+- **User ownership**: Each product is assigned to a random user
 - **Varied pricing**: From $10 to $3000+ depending on category
 - **Stock levels**: Random stock quantities (0-100)
 - **Product images**: Placeholder image paths

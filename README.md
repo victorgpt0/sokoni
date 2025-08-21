@@ -2,9 +2,9 @@
 
 A modern e-commerce web application built with Django, designed specifically for the Kenyan market. Sokoni (Swahili for "marketplace") provides a complete online shopping experience with user authentication, product management, shopping cart, order processing, and payment integration.
 
-This is a project built 
+This is a project built purposefully for demonstration of DevOps knowledge and know how
 
-## 🚀 Quick Start
+## 🚀 Developer Quick Start
 
 ### Prerequisites
 - Python 3.8+
@@ -68,10 +68,6 @@ This is a project built
 3. Commit your changes (`git commit -m 'Add amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
