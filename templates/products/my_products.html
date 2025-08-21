@@ -27,11 +27,11 @@
     <div class="mb-8">
         <div class="flex items-center justify-between">
             <div>
-                <h1 class="text-3xl font-bold text-white">{{ title }}</h1>
-                <p class="text-gray-300 mt-2">Manage your product listings</p>
+                <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
+                <p class="text-gray-600 mt-2">Manage your product listings</p>
             </div>
             <a href="{% url 'products:product_create' %}" 
-               class="bg-secondary hover:bg-secondary/90 text-primary px-6 py-3 rounded-lg font-semibold transition-colors">
+               class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
                 <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
@@ -44,18 +44,18 @@
     {% if products %}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {% for product in products %}
-                <div class="product-card bg-white/5 backdrop-blur-lg rounded-xl border border-white/10 overflow-hidden">
+                <div class="product-card bg-white rounded-xl border border-gray-200 overflow-hidden shadow-lg">
                     <!-- Product Image -->
-                    <div class="relative h-48 bg-white/10">
+                    <div class="relative h-48 bg-gray-100">
                         {% if product.images.exists %}
                             <img src="{{ product.images.first.image.url }}" 
                                  alt="{{ product.name }}" 
                                  class="w-full h-full object-cover"
-                                 onerror="this.onerror=null; this.src='https://placehold.co/400x400/374151/9ca3af?text={{ product.name|urlencode }}';">
+                                 onerror="this.onerror=null; this.src='https://placehold.co/400x400/f3f4f6/9ca3af?text={{ product.name|urlencode }}';">
                         {% else %}
-                            <img src="https://placehold.co/400x400/374151/9ca3af?text={{ product.name|urlencode }}" 
-                                 alt="{{ product.name }}" 
-                                 class="w-full h-full object-cover">
+                                                    <img src="https://placehold.co/400x400/f3f4f6/9ca3af?text={{ product.name|urlencode }}" 
+                             alt="{{ product.name }}" 
+                             class="w-full h-full object-cover">
                         {% endif %}
                         
                         <!-- Status Badge -->
@@ -83,14 +83,14 @@
                     
                     <!-- Product Info -->
                     <div class="p-4">
-                        <h3 class="text-lg font-semibold text-white mb-2 truncate">{{ product.name }}</h3>
-                        <p class="text-gray-300 text-sm mb-2">{{ product.category.name }}</p>
+                        <h3 class="text-lg font-semibold text-gray-900 mb-2 truncate">{{ product.name }}</h3>
+                        <p class="text-gray-600 text-sm mb-2">{{ product.category.name }}</p>
                         
                         <!-- Price -->
                         <div class="flex items-center mb-3">
-                            <span class="text-xl font-bold text-secondary">${{ product.price }}</span>
+                            <span class="text-xl font-bold text-primary-600">KES {{ product.price }}</span>
                             {% if product.is_on_sale %}
-                                <span class="text-sm text-gray-400 line-through ml-2">${{ product.compare_price }}</span>
+                                <span class="text-sm text-gray-400 line-through ml-2">KES {{ product.compare_price }}</span>
                                 <span class="text-xs bg-red-500 text-white px-2 py-1 rounded ml-2">
                                     -{{ product.discount_percentage }}%
                                 </span>
@@ -99,10 +99,10 @@
                         
                         <!-- Stock Status -->
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-sm text-gray-300">
+                            <span class="text-sm text-gray-600">
                                 Stock: {{ product.stock_quantity }} units
                             </span>
-                            <span class="text-xs px-2 py-1 rounded {% if product.is_in_stock %}bg-green-500/20 text-green-400{% else %}bg-red-500/20 text-red-400{% endif %}">
+                            <span class="text-xs px-2 py-1 rounded {% if product.is_in_stock %}bg-green-100 text-green-800{% else %}bg-red-100 text-red-800{% endif %}">
                                 {% if product.is_in_stock %}In Stock{% else %}Out of Stock{% endif %}
                             </span>
                         </div>
@@ -142,17 +142,17 @@
                 <nav class="flex items-center space-x-2">
                     {% if products.has_previous %}
                         <a href="?page={{ products.previous_page_number }}" 
-                           class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg transition-colors">
+                           class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg transition-colors">
                             Previous
                         </a>
                     {% endif %}
                     
                     {% for num in products.paginator.page_range %}
                         {% if products.number == num %}
-                            <span class="bg-secondary text-primary px-3 py-2 rounded-lg font-medium">{{ num }}</span>
+                            <span class="bg-primary-600 text-white px-3 py-2 rounded-lg font-medium">{{ num }}</span>
                         {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
                             <a href="?page={{ num }}" 
-                               class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg transition-colors">
+                               class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg transition-colors">
                                 {{ num }}
                             </a>
                         {% endif %}
@@ -160,7 +160,7 @@
                     
                     {% if products.has_next %}
                         <a href="?page={{ products.next_page_number }}" 
-                           class="bg-white/10 hover:bg-white/20 text-white px-3 py-2 rounded-lg transition-colors">
+                           class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg transition-colors">
                             Next
                         </a>
                     {% endif %}
@@ -171,15 +171,15 @@
     {% else %}
         <!-- Empty State -->
         <div class="text-center py-12">
-            <div class="mx-auto w-24 h-24 bg-white/10 rounded-full flex items-center justify-center mb-6">
+            <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
                 <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                 </svg>
             </div>
-            <h3 class="text-xl font-semibold text-white mb-2">No products yet</h3>
-            <p class="text-gray-300 mb-6">Start by adding your first product to your store.</p>
+            <h3 class="text-xl font-semibold text-gray-900 mb-2">No products yet</h3>
+            <p class="text-gray-600 mb-6">Start by adding your first product to your store.</p>
             <a href="{% url 'products:product_create' %}" 
-               class="bg-secondary hover:bg-secondary/90 text-primary px-6 py-3 rounded-lg font-semibold transition-colors">
+               class="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors">
                 <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>

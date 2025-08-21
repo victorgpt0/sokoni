@@ -48,8 +48,31 @@ class CustomerRegistrationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class UserProfileForm(forms.ModelForm):
+    """Form for editing User model fields (first_name, last_name, email)"""
     
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')
+        widgets = {
+            'first_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+        }
+    
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        # Check if email is already in use by another user
+        if User.objects.filter(email=email).exclude(pk=self.instance.pk).exists():
+            raise forms.ValidationError("This email is already in use by another account.")
+        return email
+
+
 class CustomerProfileForm(forms.ModelForm):
+    """Form for editing Customer model fields"""
+    
     class Meta:
         model = Customer
         fields = ('phone_number', 'date_of_birth', 'gender')
@@ -58,6 +81,7 @@ class CustomerProfileForm(forms.ModelForm):
             'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'gender': forms.Select(attrs={'class': 'form-control'}),
         }
+
 
 class CustomerAddressForm(forms.ModelForm):
     # Country choices

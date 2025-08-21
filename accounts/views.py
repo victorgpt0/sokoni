@@ -2,13 +2,15 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView as BasePasswordChangeView
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, ListView, DeleteView, DetailView
-from .forms import CustomerRegistrationForm, CustomerProfileForm, CustomerAddressForm
+from .forms import CustomerRegistrationForm, CustomerProfileForm, CustomerAddressForm, UserProfileForm
 from .models import Customer, CustomerAddress
 from orders.models import Order
 from django.contrib.auth import login
 from django.contrib import messages
 from django.http import JsonResponse
 from .mixins import CustomerMixin, CustomerAddressQuerysetMixin
+from cart.models import Cart, CartItem
+from django.conf import settings
 
 class CustomLoginView(LoginView):
     template_name = 'accounts/auth/login.html'
@@ -17,6 +19,50 @@ class CustomLoginView(LoginView):
     def get_success_url(self):
         return reverse('accounts:dashboard')
     
+    def form_valid(self, form):
+        # Store session key before login for cart merging
+        session_key = self.request.session.session_key
+        
+        # Call parent form_valid to perform login
+        response = super().form_valid(form)
+        
+        # Always create or get user cart
+        user_cart, created = Cart.objects.get_or_create(
+            customer=self.request.user.customer,
+            defaults={'session_key': None}
+        )
+        
+        # Merge cart after successful login if anonymous cart exists
+        if session_key:
+            try:
+                anonymous_cart = Cart.objects.get(session_key=session_key, customer=None)
+                if anonymous_cart.cart_items.exists():
+                    # Merge cart items
+                    for item in anonymous_cart.cart_items.all():
+                        user_item, created = CartItem.objects.get_or_create(
+                            cart=user_cart,
+                            product=item.product,
+                            defaults={'quantity': item.quantity}
+                        )
+                        
+                        if not created:
+                            # Add quantities if item already exists
+                            user_item.quantity = min(
+                                user_item.quantity + item.quantity,
+                                getattr(settings, 'CART_ITEM_MAX_QUANTITY', 99)
+                            )
+                            user_item.save()
+                    
+                    # Delete anonymous cart
+                    anonymous_cart.delete()
+                    
+                    messages.success(self.request, 'Your cart items have been merged successfully.')
+                    
+            except Cart.DoesNotExist:
+                pass
+        
+        return response
+
 class CustomLogoutView(LogoutView):
     next_page = 'home'
     def dispatch(self, request, *args, **kwargs):
@@ -29,12 +75,51 @@ class RegisterView(CreateView):
     success_url = reverse_lazy('accounts:dashboard')
 
     def form_valid(self, form):
+        # Store session key before registration for cart merging
+        session_key = self.request.session.session_key
+        
         response = super().form_valid(form)
 
         Customer.objects.create(user=self.object)
 
         login(self.request, self.object)
-        messages.success(self.request, 'Welcome! Your account has been created successfully.')
+        
+        # Always create or get user cart
+        user_cart, created = Cart.objects.get_or_create(
+            customer=self.request.user.customer,
+            defaults={'session_key': None}
+        )
+        
+        # Merge cart after successful registration and login if anonymous cart exists
+        if session_key:
+            try:
+                anonymous_cart = Cart.objects.get(session_key=session_key, customer=None)
+                if anonymous_cart.cart_items.exists():
+                    # Merge cart items
+                    for item in anonymous_cart.cart_items.all():
+                        user_item, created = CartItem.objects.get_or_create(
+                            cart=user_cart,
+                            product=item.product,
+                            defaults={'quantity': item.quantity}
+                        )
+                        
+                        if not created:
+                            # Add quantities if item already exists
+                            user_item.quantity = min(
+                                user_item.quantity + item.quantity,
+                                getattr(settings, 'CART_ITEM_MAX_QUANTITY', 99)
+                            )
+                            user_item.save()
+                    
+                    # Delete anonymous cart
+                    anonymous_cart.delete()
+                    
+                    messages.success(self.request, 'Welcome! Your account has been created successfully and your cart items have been merged.')
+                else:
+                    messages.success(self.request, 'Welcome! Your account has been created successfully.')
+                    
+            except Cart.DoesNotExist:
+                messages.success(self.request, 'Welcome! Your account has been created successfully.')
 
         return response
 
@@ -56,19 +141,41 @@ class ProfileView(CustomerMixin, TemplateView):
         context['recent_orders'] = Order.objects.filter(customer=customer).order_by('-created_at')[:5]
         return context
 
-class ProfileEditView(CustomerMixin, UpdateView):
-    model = Customer
-    form_class = CustomerProfileForm
+class ProfileEditView(CustomerMixin, TemplateView):
     template_name = 'accounts/profile/profile_edit.html'
-    success_url = reverse_lazy('accounts:profile')
-
-    def get_object(self, queryset=None):
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         customer = self.get_customer()
-        return customer
-
-    def form_valid(self, form):
-        messages.success(self.request, 'Your profile has been updated successfully.')
-        return super().form_valid(form)
+        
+        if self.request.method == 'POST':
+            user_form = UserProfileForm(self.request.POST, instance=customer.user)
+            customer_form = CustomerProfileForm(self.request.POST, instance=customer)
+        else:
+            user_form = UserProfileForm(instance=customer.user)
+            customer_form = CustomerProfileForm(instance=customer)
+        
+        context['user_form'] = user_form
+        context['customer_form'] = customer_form
+        context['customer'] = customer
+        return context
+    
+    def post(self, request, *args, **kwargs):
+        customer = self.get_customer()
+        user_form = UserProfileForm(request.POST, instance=customer.user)
+        customer_form = CustomerProfileForm(request.POST, instance=customer)
+        
+        if user_form.is_valid() and customer_form.is_valid():
+            user_form.save()
+            customer_form.save()
+            messages.success(request, 'Your profile has been updated successfully.')
+            return redirect('accounts:profile')
+        
+        # If forms are invalid, re-render with errors
+        context = self.get_context_data()
+        context['user_form'] = user_form
+        context['customer_form'] = customer_form
+        return self.render_to_response(context)
     
 class AddressListView(CustomerAddressQuerysetMixin, ListView):
     model = CustomerAddress

@@ -6,9 +6,9 @@
 {% block head %}
 <style>
     .delete-section {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: white;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04);
     }
 </style>
 {% endblock %}
@@ -17,7 +17,7 @@
 <div class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
     <!-- Header -->
     <div class="mb-8">
-        <h1 class="text-3xl font-bold text-white">Delete Product</h1>
+        <h1 class="text-3xl font-bold text-gray-900">Delete Product</h1>
     </div>
 
     <!-- Delete Confirmation -->
@@ -28,33 +28,33 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
                 </svg>
             </div>
-            <h3 class="text-lg font-medium text-white mb-2">Are you sure you want to delete this product?</h3>
-            <p class="text-gray-300">This action cannot be undone.</p>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">Are you sure you want to delete this product?</h3>
+            <p class="text-gray-600">This action cannot be undone.</p>
         </div>
 
         <!-- Product Info -->
-        <div class="bg-white/5 rounded-lg p-4 mb-6">
-            <h4 class="font-semibold text-secondary mb-2">Product Details:</h4>
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+            <h4 class="font-semibold text-primary-600 mb-2">Product Details:</h4>
             <div class="space-y-2 text-sm">
                 <div class="flex justify-between">
-                    <span class="text-gray-300">Name:</span>
-                    <span class="text-white font-medium">{{ object.name }}</span>
+                    <span class="text-gray-600">Name:</span>
+                    <span class="text-gray-900 font-medium">{{ object.name }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-300">Category:</span>
-                    <span class="text-white">{{ object.category.name }}</span>
+                    <span class="text-gray-600">Category:</span>
+                    <span class="text-gray-900">{{ object.category.name }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-300">Price:</span>
-                    <span class="text-white">${{ object.price }}</span>
+                    <span class="text-gray-600">Price:</span>
+                    <span class="text-gray-900">KES {{ object.price }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-300">SKU:</span>
-                    <span class="text-white">{{ object.sku }}</span>
+                    <span class="text-gray-600">SKU:</span>
+                    <span class="text-gray-900">{{ object.sku }}</span>
                 </div>
                 <div class="flex justify-between">
-                    <span class="text-gray-300">Stock:</span>
-                    <span class="text-white">{{ object.stock_quantity }} units</span>
+                    <span class="text-gray-600">Stock:</span>
+                    <span class="text-gray-900">{{ object.stock_quantity }} units</span>
                 </div>
             </div>
         </div>
@@ -87,7 +87,7 @@
             {% csrf_token %}
             
             <a href="{% url 'products:product_detail' object.slug %}" 
-               class="bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-lg transition-colors">
+               class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg transition-colors">
                 Cancel
             </a>
             
