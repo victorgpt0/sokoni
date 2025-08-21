@@ -44,4 +44,3 @@ View order details: {{ site_url }}{% url 'accounts:order_detail' order_number=or
 Edit in admin: {{ site_url }}/admin/orders/order/{{ order.id }}/change/
 
 This is an automated notification from {{ site_name }}.
-

@@ -36,49 +36,49 @@
     <!-- Breadcrumb -->
     <nav class="mb-8">
         <ol class="flex items-center space-x-2 text-sm">
-            <li><a href="{% url 'home' %}" class="text-secondary hover:text-white transition-colors">Home</a></li>
+            <li><a href="{% url 'home' %}" class="text-primary-600 hover:text-primary-700 transition-colors">Home</a></li>
             <li class="text-gray-400">/</li>
-            <li><a href="{% url 'cart:cart_detail' %}" class="text-secondary hover:text-white transition-colors">Cart</a></li>
+            <li><a href="{% url 'cart:cart_detail' %}" class="text-primary-600 hover:text-primary-700 transition-colors">Cart</a></li>
             <li class="text-gray-400">/</li>
-            <li><a href="{% url 'orders:checkout' %}" class="text-secondary hover:text-white transition-colors">Checkout</a></li>
+            <li><a href="{% url 'orders:checkout' %}" class="text-primary-600 hover:text-primary-700 transition-colors">Checkout</a></li>
             <li class="text-gray-400">/</li>
-            <li class="text-white">Payment</li>
+            <li class="text-gray-900">Payment</li>
         </ol>
     </nav>
 
     <div class="payment-container">
         <div class="payment-card">
             <!-- Order Summary -->
-            <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20 mb-6">
+            <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft mb-6">
                 <div class="text-center mb-6">
-                    <div class="w-16 h-16 bg-purple-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <svg class="w-8 h-8 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+                    <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <svg class="w-8 h-8 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
                             <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"></path>
                         </svg>
                     </div>
-                    <h1 class="text-2xl font-bold text-white mb-2">Complete Your Payment</h1>
-                    <p class="text-secondary">Order #{{ order.order_number }}</p>
+                    <h1 class="text-2xl font-bold text-gray-900 mb-2">Complete Your Payment</h1>
+                    <p class="text-gray-600">Order #{{ order.order_number }}</p>
                 </div>
 
                 <!-- Order Details -->
                 <div class="space-y-4 mb-6">
                     <div class="flex justify-between items-center">
-                        <span class="text-gray-300">Order Total:</span>
-                        <span class="text-xl font-bold text-white">KES {{ order.total_amount|floatformat:2 }}</span>
+                        <span class="text-gray-600">Order Total:</span>
+                        <span class="text-xl font-bold text-gray-900">KES {{ order.total_amount|floatformat:2 }}</span>
                     </div>
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-gray-400">Subtotal:</span>
-                        <span class="text-gray-300">KES {{ order.subtotal|floatformat:2 }}</span>
+                        <span class="text-gray-500">Subtotal:</span>
+                        <span class="text-gray-600">KES {{ order.subtotal|floatformat:2 }}</span>
                     </div>
                     {% if order.discount_amount %}
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-gray-400">Discount:</span>
-                        <span class="text-green-400">-KES {{ order.discount_amount|floatformat:2 }}</span>
+                        <span class="text-gray-500">Discount:</span>
+                        <span class="text-green-600">-KES {{ order.discount_amount|floatformat:2 }}</span>
                     </div>
                     {% endif %}
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-gray-400">Shipping:</span>
-                        <span class="text-gray-300">
+                        <span class="text-gray-500">Shipping:</span>
+                        <span class="text-gray-600">
                             {% if order.shipping_cost == 0 %}
                                 FREE
                             {% else %}
@@ -87,27 +87,27 @@
                         </span>
                     </div>
                     <div class="flex justify-between items-center text-sm">
-                        <span class="text-gray-400">Tax:</span>
-                        <span class="text-gray-300">KES {{ order.tax_amount|floatformat:2 }}</span>
+                        <span class="text-gray-500">Tax:</span>
+                        <span class="text-gray-600">KES {{ order.tax_amount|floatformat:2 }}</span>
                     </div>
                 </div>
 
                 <!-- Payment Method -->
-                <div class="bg-white/5 rounded-lg p-4 border border-white/10 mb-6">
+                <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 mb-6">
                     <div class="flex items-center space-x-3">
                         <div class="w-12 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded flex items-center justify-center">
                             <span class="text-white text-xs font-bold">PS</span>
                         </div>
                         <div>
-                            <h3 class="font-semibold text-white">Paystack Payment</h3>
-                            <p class="text-sm text-gray-400">Secure payment via card, bank transfer, or mobile money</p>
+                            <h3 class="font-semibold text-gray-900">Paystack Payment</h3>
+                            <p class="text-sm text-gray-600">Secure payment via card, bank transfer, or mobile money</p>
                         </div>
                     </div>
                 </div>
 
                 <!-- Payment Button -->
                 <button id="paystackBtn" 
-                        class="w-full bg-secondary text-primary px-6 py-4 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3">
+                        class="w-full bg-primary-600 text-white px-6 py-4 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"></path>
                     </svg>
@@ -117,13 +117,13 @@
                 <!-- Loading State -->
                 <div id="loadingState" class="hidden text-center py-6">
                     <div class="loading-spinner mx-auto mb-4"></div>
-                    <p class="text-white">Initializing payment...</p>
-                    <p class="text-sm text-gray-400 mt-2">Please wait while we redirect you to Paystack</p>
+                    <p class="text-gray-900">Initializing payment...</p>
+                    <p class="text-sm text-gray-600 mt-2">Please wait while we redirect you to Paystack</p>
                 </div>
 
                 <!-- Security Notice -->
                 <div class="mt-6 text-center">
-                    <div class="flex items-center justify-center space-x-2 text-sm text-gray-400">
+                    <div class="flex items-center justify-center space-x-2 text-sm text-gray-500">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
                         </svg>
@@ -135,7 +135,7 @@
             <!-- Cancel Payment -->
             <div class="text-center">
                 <a href="{% url 'accounts:order_detail' order_number=order.order_number %}" 
-                   class="text-gray-400 hover:text-white transition-colors">
+                   class="text-gray-500 hover:text-gray-700 transition-colors">
                     Cancel payment and return to order
                 </a>
             </div>
