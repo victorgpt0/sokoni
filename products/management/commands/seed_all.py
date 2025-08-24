@@ -335,14 +335,14 @@ class Command(BaseCommand):
                 meta_description=template['description']
             )
             
-            # Create 1-3 product images (placeholder URLs)
-            for j in range(random.randint(1, 3)):
-                ProductImage.objects.create(
-                    product=product,
-                    image=f"products/{slugify(name)}/image_{j+1}.jpg",  # Placeholder path
-                    alt_text=f"{name} - Image {j+1}",
-                    is_primary=(j == 0)
-                )
+            # # Create 1-3 product images (placeholder URLs)
+            # for j in range(random.randint(1, 3)):
+            #     ProductImage.objects.create(
+            #         product=product,
+            #         image=f"products/{slugify(name)}/image_{j+1}.jpg",  # Placeholder path
+            #         alt_text=f"{name} - Image {j+1}",
+            #         is_primary=(j == 0)
+            #     )
             
             products.append(product)
 
