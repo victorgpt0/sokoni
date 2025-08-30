@@ -128,15 +128,16 @@ class ProductImageFormSet(forms.BaseModelFormSet):
         super().clean()
         
         # Check if at least one image is marked as primary
-        has_primary = False
-        for form in self.forms:
-            if form.cleaned_data and not form.cleaned_data.get('DELETE', False):
-                if form.cleaned_data.get('is_primary'):
-                    has_primary = True
-                    break
-        
-        if not has_primary:
-            raise ValidationError('At least one image must be marked as primary.')
+        primaries = [
+            form.cleaned_data.get("is_primary")
+            for form in self.forms
+            if form.cleaned_data and not form.cleaned_data.get("DELETE", False)
+        ]
+        if primaries.count(True) == 0:
+            raise ValidationError("At least one image must be marked as primary.")
+        elif primaries.count(True) > 1:
+            raise ValidationError("Only one image can be marked as primary.")
+
 
 # Create formset factory
 ProductImageFormSet = forms.modelformset_factory(

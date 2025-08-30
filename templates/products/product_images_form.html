@@ -141,13 +141,6 @@
                                         {% endif %}
                                     </div>
                                     
-                                    <div class="flex items-center">
-                                        {{ form.is_featured }}
-                                        <label class="ml-2 form-label">Featured</label>
-                                        {% if form.is_featured.errors %}
-                                            <div class="text-red-400 text-sm mt-1">{{ form.is_featured.errors.0 }}</div>
-                                        {% endif %}
-                                    </div>
                                 </div>
 
                                 <!-- Delete Option -->
@@ -260,10 +253,6 @@
                             <div class="flex items-center">
                                 <input type="checkbox" name="form-${formIndex}-is_primary" class="w-4 h-4 text-primary-600 bg-white border-gray-300 rounded focus:ring-primary-500">
                                 <label class="ml-2 form-label">Primary Image</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" name="form-${formIndex}-is_featured" class="w-4 h-4 text-primary-600 bg-white border-gray-300 rounded focus:ring-primary-500">
-                                <label class="ml-2 form-label">Featured</label>
                             </div>
                         </div>
                     </div>
