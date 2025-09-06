@@ -1,4 +1,6 @@
 @Library("my-shared-library") _
 
 
-runPipeline()
+runPipeline(
+    appName: 'sokoni'
+)
