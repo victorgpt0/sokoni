@@ -25,7 +25,7 @@ class Category(AuditTimestampModel):
         return self.name
     
     def get_absolute_url(self):
-        return reverse('category_detail', args=[self.slug])
+        return reverse('products:category_detail', args=[self.slug])
     
 class Product(AuditTimestampModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='products')
@@ -63,7 +63,7 @@ class Product(AuditTimestampModel):
         return self.name
     
     def get_absolute_url(self):
-        return reverse('product_detail', args=[self.slug])
+        return reverse('products:product_detail', args=[self.slug])
     
     @property
     def is_on_sale(self):
