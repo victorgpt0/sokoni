@@ -10,7 +10,10 @@ class CustomerMixin:
         Returns the customer instance associated with the request user.
         """
         if not hasattr(self, 'customer'):
-            self.customer, created = Customer.objects.get_or_create(user=self.request.user)
+            if self.request.user.is_authenticated:
+                self.customer, created = Customer.objects.get_or_create(user=self.request.user)
+            else:
+                self.customer = None
 
         return self.customer
     

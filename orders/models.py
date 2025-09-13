@@ -60,7 +60,7 @@ class Order(AuditTimestampModel):
     def __str__(self):
         return f"Order {self.order_number} - {self.customer.full_name} - {self.status}"
     def get_absolute_url(self):
-        return reverse('order_detail', args=[self.order_number])
+        return reverse('orders:order_detail', args=[self.order_number])
     
 class OrderItem(AuditTimestampModel):
     order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')

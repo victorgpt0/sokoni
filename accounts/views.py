@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView as BasePasswordChangeView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, TemplateView, UpdateView, ListView, DeleteView, DetailView
 from .forms import CustomerRegistrationForm, CustomerProfileForm, CustomerAddressForm, UserProfileForm
@@ -123,7 +124,7 @@ class RegisterView(CreateView):
 
         return response
 
-class PasswordChangeView(CustomerMixin, BasePasswordChangeView):
+class PasswordChangeView(LoginRequiredMixin, CustomerMixin, BasePasswordChangeView):
     template_name = 'accounts/auth/password_change.html'
     success_url = reverse_lazy('accounts:profile')
 
@@ -131,7 +132,7 @@ class PasswordChangeView(CustomerMixin, BasePasswordChangeView):
         messages.success(self.request, 'Your password has been changed successfully.')
         return super().form_valid(form)
     
-class ProfileView(CustomerMixin, TemplateView):
+class ProfileView(LoginRequiredMixin, CustomerMixin, TemplateView):
     template_name = 'accounts/profile/profile.html'
     
     def get_context_data(self, **kwargs):
@@ -141,7 +142,7 @@ class ProfileView(CustomerMixin, TemplateView):
         context['recent_orders'] = Order.objects.filter(customer=customer).order_by('-created_at')[:5]
         return context
 
-class ProfileEditView(CustomerMixin, TemplateView):
+class ProfileEditView(LoginRequiredMixin, CustomerMixin, TemplateView):
     template_name = 'accounts/profile/profile_edit.html'
     
     def get_context_data(self, **kwargs):
