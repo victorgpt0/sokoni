@@ -3,5 +3,4 @@
 
 runPipeline(
     appName: 'sokoni',
-    buildImage: 'python:3.12-slim'
 )
