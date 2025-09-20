@@ -4,9 +4,9 @@ on:
   pull_request:
     branches:
       - staging
+      - main
 
 jobs:
-
   pre-commit:
     name: pre-commit
     runs-on: ubuntu-latest

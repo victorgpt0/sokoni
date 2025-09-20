@@ -8,6 +8,9 @@ repos:
       - id: check-yaml
       - id: check-json
       - id: check-added-large-files
+      - id: detect-aws-credentials
+        args: ["--allow-missing-credentials"]
+      - id: requirements-txt-fixer
 
 # Import sorting
   - repo: https://github.com/pycqa/isort
