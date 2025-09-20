@@ -8,18 +8,24 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('products', '0002_add_stock_quantity_constraint'),
+        ("products", "0002_add_stock_quantity_constraint"),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
         migrations.RemoveConstraint(
-            model_name='product',
-            name='products_product_stock_quantity_non_negative',
+            model_name="product",
+            name="products_product_stock_quantity_non_negative",
         ),
         migrations.AddField(
-            model_name='product',
-            name='user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='products', to=settings.AUTH_USER_MODEL),
+            model_name="product",
+            name="user",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="products",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
     ]

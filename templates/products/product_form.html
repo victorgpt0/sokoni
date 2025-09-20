@@ -36,7 +36,7 @@
     <div class="mb-8">
         <div class="flex items-center justify-between">
             <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
-            <a href="{% url 'products:product_list' %}" 
+            <a href="{% url 'products:product_list' %}"
                class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors">
                 ← Back to Products
             </a>
@@ -47,11 +47,11 @@
     <div class="form-section rounded-xl p-6">
         <form method="post" enctype="multipart/form-data" class="space-y-6">
             {% csrf_token %}
-            
+
             <!-- Basic Information -->
             <div class="space-y-4">
                 <h3 class="text-xl font-semibold text-primary-600 mb-4">Basic Information</h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="{{ form.name.id_for_label }}" class="block form-label mb-2">
@@ -62,7 +62,7 @@
                             <div class="text-red-400 text-sm mt-1">{{ form.name.errors.0 }}</div>
                         {% endif %}
                     </div>
-                    
+
                     <div>
                         <label for="{{ form.category.id_for_label }}" class="block form-label mb-2">
                             Category *
@@ -73,7 +73,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <div>
                     <label for="{{ form.description.id_for_label }}" class="block form-label mb-2">
                         Description
@@ -84,11 +84,11 @@
                     {% endif %}
                 </div>
             </div>
-            
+
             <!-- Pricing -->
             <div class="space-y-4">
                 <h3 class="text-xl font-semibold text-primary-600 mb-4">Pricing</h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label for="{{ form.price.id_for_label }}" class="block form-label mb-2">
@@ -102,7 +102,7 @@
                             <div class="text-red-400 text-sm mt-1">{{ form.price.errors.0 }}</div>
                         {% endif %}
                     </div>
-                    
+
                     <div>
                         <label for="{{ form.compare_price.id_for_label }}" class="block form-label mb-2">
                             Compare Price (Original Price)
@@ -117,11 +117,11 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Inventory -->
             <div class="space-y-4">
                 <h3 class="text-xl font-semibold text-primary-600 mb-4">Inventory</h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div>
                         <label for="{{ form.stock_quantity.id_for_label }}" class="block form-label mb-2">
@@ -132,7 +132,7 @@
                             <div class="text-red-400 text-sm mt-1">{{ form.stock_quantity.errors.0 }}</div>
                         {% endif %}
                     </div>
-                    
+
                     <div>
                         <label for="{{ form.weight.id_for_label }}" class="block form-label mb-2">
                             Weight (lbs)
@@ -142,7 +142,7 @@
                             <div class="text-red-400 text-sm mt-1">{{ form.weight.errors.0 }}</div>
                         {% endif %}
                     </div>
-                    
+
                     <div>
                         <label for="{{ form.dimensions.id_for_label }}" class="block form-label mb-2">
                             Dimensions
@@ -154,11 +154,11 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Product Options -->
             <div class="space-y-4">
                 <h3 class="text-xl font-semibold text-primary-600 mb-4">Product Options</h3>
-                
+
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div class="flex items-center">
                         {{ form.is_active }}
@@ -166,14 +166,14 @@
                             Active
                         </label>
                     </div>
-                    
+
                     <div class="flex items-center">
                         {{ form.is_featured }}
                         <label for="{{ form.is_featured.id_for_label }}" class="ml-2 form-label">
                             Featured
                         </label>
                     </div>
-                    
+
                     <div class="flex items-center">
                         {{ form.is_digital }}
                         <label for="{{ form.is_digital.id_for_label }}" class="ml-2 form-label">
@@ -182,11 +182,11 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- SEO -->
             <div class="space-y-4">
                 <h3 class="text-xl font-semibold text-primary-600 mb-4">SEO (Optional)</h3>
-                
+
                 <div class="space-y-4">
                     <div>
                         <label for="{{ form.meta_title.id_for_label }}" class="block form-label mb-2">
@@ -197,7 +197,7 @@
                             <div class="text-red-400 text-sm mt-1">{{ form.meta_title.errors.0 }}</div>
                         {% endif %}
                     </div>
-                    
+
                     <div>
                         <label for="{{ form.meta_description.id_for_label }}" class="block form-label mb-2">
                             Meta Description
@@ -207,7 +207,7 @@
                             <div class="text-red-400 text-sm mt-1">{{ form.meta_description.errors.0 }}</div>
                         {% endif %}
                     </div>
-                    
+
                     <div>
                         <label for="{{ form.meta_keywords.id_for_label }}" class="block form-label mb-2">
                             Meta Keywords
@@ -219,15 +219,15 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Form Actions -->
             <div class="flex items-center justify-between pt-6 border-t border-white/10">
-                <a href="{% url 'products:product_list' %}" 
+                <a href="{% url 'products:product_list' %}"
                    class="bg-white/10 hover:bg-white/20 text-white px-6 py-2 rounded-lg transition-colors">
                     Cancel
                 </a>
-                
-                <button type="submit" 
+
+                <button type="submit"
                         class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-2 rounded-lg font-semibold transition-colors">
                     {{ submit_text }}
                 </button>
@@ -247,7 +247,7 @@
                 input.classList.add('form-input', 'w-full', 'px-3', 'py-2', 'rounded-lg', 'focus:outline-none', 'focus:ring-2', 'focus:ring-secondary');
             }
         });
-        
+
         // Style checkboxes
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(checkbox => {

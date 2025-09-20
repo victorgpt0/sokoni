@@ -10,16 +10,16 @@
     .product-card {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .product-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     }
-    
+
     .filter-sidebar {
         transition: all 0.3s ease;
     }
-    
+
     .price-slider {
         -webkit-appearance: none;
         appearance: none;
@@ -28,7 +28,7 @@
         background: #e5e7eb;
         outline: none;
     }
-    
+
     .price-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
@@ -39,7 +39,7 @@
         cursor: pointer;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
-    
+
     .price-slider::-moz-range-thumb {
         width: 20px;
         height: 20px;
@@ -49,42 +49,42 @@
         border: none;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
-    
+
     .grid-view {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
         gap: 2rem;
     }
-    
+
     .list-view {
         display: flex;
         flex-direction: column;
         gap: 1.5rem;
     }
-    
+
     .list-view .product-card {
         display: flex;
         flex-direction: row;
         align-items: center;
     }
-    
+
     .list-view .product-card img {
         width: 200px;
         height: 200px;
         object-fit: cover;
     }
-    
+
     .list-view .product-card .product-info {
         flex: 1;
         padding: 1.5rem;
     }
-    
+
     .loading-skeleton {
         background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
         background-size: 200% 100%;
         animation: loading 1.5s infinite;
     }
-    
+
     @keyframes loading {
         0% { background-position: 200% 0; }
         100% { background-position: -200% 0; }
@@ -94,7 +94,7 @@
 
 {% block content %}
 {% csrf_token %}
-<div class="container mx-auto px-4 py-8" x-data="{ 
+<div class="container mx-auto px-4 py-8" x-data="{
     viewMode: 'grid',
     showFilters: false,
     priceRange: [0, 50000],
@@ -102,11 +102,11 @@
     selectedBrands: [],
     sortBy: 'newest',
     loading: false,
-    
+
     toggleView(mode) {
         this.viewMode = mode;
     },
-    
+
     toggleCategory(category) {
         const index = this.selectedCategories.indexOf(category);
         if (index > -1) {
@@ -116,7 +116,7 @@
         }
         this.applyFilters();
     },
-    
+
     toggleBrand(brand) {
         const index = this.selectedBrands.indexOf(brand);
         if (index > -1) {
@@ -126,7 +126,7 @@
         }
         this.applyFilters();
     },
-    
+
     applyFilters() {
         this.loading = true;
         // Simulate API call
@@ -134,7 +134,7 @@
             this.loading = false;
         }, 500);
     },
-    
+
     clearFilters() {
         this.selectedCategories = [];
         this.selectedBrands = [];
@@ -143,7 +143,7 @@
         this.applyFilters();
     }
 }">
-    
+
     <!-- Page Header -->
     <div class="mb-8">
         <div class="flex items-center justify-between mb-4">
@@ -164,9 +164,9 @@
                     {% endif %}
                 </p>
             </div>
-            
+
             <!-- Mobile Filter Toggle -->
-            <button @click="showFilters = !showFilters" 
+            <button @click="showFilters = !showFilters"
                     class="lg:hidden bg-primary-600 text-white px-4 py-2 rounded-lg flex items-center space-x-2">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z"></path>
@@ -174,17 +174,17 @@
                 <span>Filters</span>
             </button>
         </div>
-        
+
         <!-- Search and Sort Bar -->
         <div class="bg-white rounded-2xl shadow-soft p-6 mb-6">
             <div class="flex flex-col lg:flex-row gap-4 items-center justify-between">
                 <!-- Search -->
                 <div class="flex-1 max-w-md">
                     <form method="get" class="relative">
-                        <input type="search" 
-                               name="search" 
-                               value="{{ search_query }}" 
-                               placeholder="Search products..." 
+                        <input type="search"
+                               name="search"
+                               value="{{ search_query }}"
+                               placeholder="Search products..."
                                class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                         <svg class="absolute left-3 top-3.5 h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
@@ -194,11 +194,11 @@
                         </button>
                     </form>
                 </div>
-                
+
                 <!-- Sort and View Controls -->
                 <div class="flex items-center space-x-4">
                     <!-- Sort -->
-                    <select x-model="sortBy" 
+                    <select x-model="sortBy"
                             @change="applyFilters()"
                             class="border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500">
                         <option value="newest">Newest First</option>
@@ -209,17 +209,17 @@
                         <option value="name_desc">Name: Z to A</option>
                         <option value="popular">Most Popular</option>
                     </select>
-                    
+
                     <!-- View Toggle -->
                     <div class="flex items-center bg-gray-100 rounded-lg p-1">
-                        <button @click="toggleView('grid')" 
+                        <button @click="toggleView('grid')"
                                 :class="{ 'bg-white text-primary-600 shadow-sm': viewMode === 'grid' }"
                                 class="p-2 rounded-md transition-all duration-200">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                             </svg>
                         </button>
-                        <button @click="toggleView('list')" 
+                        <button @click="toggleView('list')"
                                 :class="{ 'bg-white text-primary-600 shadow-sm': viewMode === 'list' }"
                                 class="p-2 rounded-md transition-all duration-200">
                             <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -231,7 +231,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="flex gap-8">
         <!-- Filter Sidebar -->
         <div class="lg:w-80 flex-shrink-0">
@@ -243,14 +243,14 @@
                             Clear All
                         </button>
                     </div>
-                    
+
                     <!-- Categories -->
                     <div class="mb-6">
                         <h4 class="font-medium text-gray-900 mb-3">Categories</h4>
                         <div class="space-y-2">
                             {% for category in categories %}
                             <label class="flex items-center">
-                                <input type="checkbox" 
+                                <input type="checkbox"
                                        value="{{ category.slug }}"
                                        x-model="selectedCategories"
                                        @change="toggleCategory('{{ category.slug }}')"
@@ -261,7 +261,7 @@
                             {% endfor %}
                         </div>
                     </div>
-                    
+
                     <!-- Price Range -->
                     <div class="mb-6">
                         <h4 class="font-medium text-gray-900 mb-3">Price Range</h4>
@@ -270,26 +270,26 @@
                                 <span class="text-sm text-gray-600">KES <span x-text="priceRange[0]"></span></span>
                                 <span class="text-sm text-gray-600">KES <span x-text="priceRange[1]"></span></span>
                             </div>
-                            <input type="range" 
-                                   x-model="priceRange[0]" 
-                                   min="0" 
-                                   max="50000" 
+                            <input type="range"
+                                   x-model="priceRange[0]"
+                                   min="0"
+                                   max="50000"
                                    class="price-slider w-full">
-                            <input type="range" 
-                                   x-model="priceRange[1]" 
-                                   min="0" 
-                                   max="50000" 
+                            <input type="range"
+                                   x-model="priceRange[1]"
+                                   min="0"
+                                   max="50000"
                                    class="price-slider w-full">
                         </div>
                     </div>
-                    
+
                     <!-- Brands -->
                     <div class="mb-6">
                         <h4 class="font-medium text-gray-900 mb-3">Brands</h4>
                         <div class="space-y-2 max-h-40 overflow-y-auto">
                             {% for brand in brands %}
                             <label class="flex items-center">
-                                <input type="checkbox" 
+                                <input type="checkbox"
                                        value="{{ brand }}"
                                        x-model="selectedBrands"
                                        @change="toggleBrand('{{ brand }}')"
@@ -299,15 +299,15 @@
                             {% endfor %}
                         </div>
                     </div>
-                    
+
                     <!-- Rating -->
                     <div class="mb-6">
                         <h4 class="font-medium text-gray-900 mb-3">Rating</h4>
                         <div class="space-y-2">
                             {% for rating in "54321" %}
                             <label class="flex items-center">
-                                <input type="radio" 
-                                       name="rating" 
+                                <input type="radio"
+                                       name="rating"
                                        value="{{ rating }}"
                                        class="text-primary-600 focus:ring-primary-500">
                                 <div class="flex items-center ml-2">
@@ -325,7 +325,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Products Grid -->
         <div class="flex-1">
             <!-- Loading State -->
@@ -342,24 +342,24 @@
                 </div>
                 {% endfor %}
             </div>
-            
+
             <!-- Products -->
             <div x-show="!loading" :class="viewMode === 'grid' ? 'grid-view' : 'list-view'">
                 {% if products %}
                     {% for product in products %}
                     <div class="product-card bg-white rounded-2xl shadow-soft overflow-hidden group">
                         <div class="relative overflow-hidden">
-                            <img src="{% if product.images.first.image.url %}{{ product.images.first.image.url }}{% else %}https://placehold.co/400x400/6366f1/ffffff?text={{ product.name|urlencode }}{% endif %}" 
-                                 alt="{{ product.name }}" 
+                            <img src="{% if product.images.first.image.url %}{{ product.images.first.image.url }}{% else %}https://placehold.co/400x400/6366f1/ffffff?text={{ product.name|urlencode }}{% endif %}"
+                                 alt="{{ product.name }}"
                                  class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300">
-                            
+
                             <!-- Sale Badge -->
                             {% if product.discount_percentage %}
                             <div class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                                 -{{ product.discount_percentage }}%
                             </div>
                             {% endif %}
-                            
+
                             <!-- Quick Actions -->
                             <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 <button class="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-colors mb-2">
@@ -375,7 +375,7 @@
                                 </button>
                             </div>
                         </div>
-                        
+
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-2">
                                 <h3 class="font-semibold text-lg text-gray-900 group-hover:text-primary-600 transition-colors">
@@ -393,9 +393,9 @@
                                     <span class="ml-1 text-sm text-gray-600">({{ product.review_count|default:0 }})</span>
                                 </div>
                             </div>
-                            
+
                             <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ product.description|truncatewords:15 }}</p>
-                            
+
                             <div class="flex items-center justify-between">
                                 <div class="flex items-center space-x-2">
                                     {% if product.discount_price %}
@@ -405,8 +405,8 @@
                                     <span class="text-2xl font-bold text-primary-600">KES {{ product.price }}</span>
                                     {% endif %}
                                 </div>
-                                
-                                <button onclick="addToCart({{ product.id }})" 
+
+                                <button onclick="addToCart({{ product.id }})"
                                 class="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">
                                     Add to Cart
                                 </button>
@@ -428,31 +428,31 @@
                     </div>
                 {% endif %}
             </div>
-            
+
             <!-- Pagination -->
             {% if products.has_other_pages %}
             <div class="mt-12 flex justify-center">
                 <nav class="flex items-center space-x-2">
                     {% if products.has_previous %}
-                    <a href="?page={{ products.previous_page_number }}" 
+                    <a href="?page={{ products.previous_page_number }}"
                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                         Previous
                     </a>
                     {% endif %}
-                    
+
                     {% for num in products.paginator.page_range %}
                         {% if products.number == num %}
                         <span class="px-4 py-2 bg-primary-600 text-white rounded-lg">{{ num }}</span>
                         {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
-                        <a href="?page={{ num }}" 
+                        <a href="?page={{ num }}"
                            class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                             {{ num }}
                         </a>
                         {% endif %}
                     {% endfor %}
-                    
+
                     {% if products.has_next %}
-                    <a href="?page={{ products.next_page_number }}" 
+                    <a href="?page={{ products.next_page_number }}"
                        class="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
                         Next
                     </a>
@@ -470,7 +470,7 @@
         console.log('addToCart called with productId:', productId);
         const btn = event.target;
         const originalText = btn.textContent;
-        
+
         // Check if CSRF token exists
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
         if (!csrfToken) {
@@ -478,13 +478,13 @@
             showNotification('Error: CSRF token not found', 'error');
             return;
         }
-        
+
         console.log('CSRF token found:', csrfToken.value);
-        
+
         // Show loading state
         btn.textContent = 'Adding...';
         btn.disabled = true;
-        
+
         console.log('Making fetch request to /cart/add/');
         fetch('/cart/add/', {
             method: 'POST',
@@ -505,13 +505,13 @@
                 btn.textContent = 'Added!';
                 btn.classList.remove('bg-primary-600', 'hover:bg-primary-700');
                 btn.classList.add('bg-green-500');
-                
+
                 // Update cart count
                 updateCartCount(data.cart_count);
-                
+
                 // Show notification
                 showNotification('Product added to cart!', 'success');
-                
+
                 // Reset button after 2 seconds
                 setTimeout(() => {
                     btn.textContent = originalText;
@@ -524,9 +524,9 @@
                 btn.textContent = 'Error';
                 btn.classList.remove('bg-primary-600', 'hover:bg-primary-700');
                 btn.classList.add('bg-red-500');
-                
+
                 showNotification(data.message || 'Error adding to cart', 'error');
-                
+
                 // Reset button after 2 seconds
                 setTimeout(() => {
                     btn.textContent = originalText;
@@ -538,14 +538,14 @@
         })
         .catch(error => {
             console.error('Error:', error);
-            
+
             // Show error state
             btn.textContent = 'Error';
             btn.classList.remove('bg-primary-600', 'hover:bg-primary-700');
             btn.classList.add('bg-red-500');
-            
+
             showNotification('Error adding to cart', 'error');
-            
+
             // Reset button after 2 seconds
             setTimeout(() => {
                 btn.textContent = originalText;
@@ -572,15 +572,15 @@
             'bg-blue-500 text-white'
         }`;
         notification.textContent = message;
-        
+
         // Add to page
         document.body.appendChild(notification);
-        
+
         // Animate in
         setTimeout(() => {
             notification.classList.remove('translate-x-full');
         }, 100);
-        
+
         // Remove after 3 seconds
         setTimeout(() => {
             notification.classList.add('translate-x-full');

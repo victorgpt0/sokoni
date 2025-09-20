@@ -46,7 +46,7 @@ This is a project built purposefully for demonstration of DevOps knowledge and k
    ```bash
    # Quick development setup
    python manage.py seed_dev
-   
+
    # Or for smaller dataset
    python manage.py seed_dev --small
    ```

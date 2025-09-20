@@ -10,30 +10,30 @@
     .hero-gradient {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
-    
+
     .category-card {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
     }
-    
+
     .category-card:hover {
         transform: translateY(-8px) scale(1.02);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     }
-    
+
     .product-card {
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    
+
     .product-card:hover {
         transform: translateY(-8px);
         box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     }
-    
+
     .testimonial-card {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
-    
+
     .floating-shapes {
         position: absolute;
         width: 100%;
@@ -41,14 +41,14 @@
         overflow: hidden;
         z-index: 1;
     }
-    
+
     .floating-shape {
         position: absolute;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 50%;
         animation: float 6s ease-in-out infinite;
     }
-    
+
     .floating-shape:nth-child(1) {
         width: 80px;
         height: 80px;
@@ -56,7 +56,7 @@
         left: 10%;
         animation-delay: 0s;
     }
-    
+
     .floating-shape:nth-child(2) {
         width: 120px;
         height: 120px;
@@ -64,7 +64,7 @@
         right: 10%;
         animation-delay: 2s;
     }
-    
+
     .floating-shape:nth-child(3) {
         width: 60px;
         height: 60px;
@@ -72,16 +72,16 @@
         left: 20%;
         animation-delay: 4s;
     }
-    
+
     @keyframes float {
         0%, 100% { transform: translateY(0px) rotate(0deg); }
         50% { transform: translateY(-20px) rotate(180deg); }
     }
-    
+
     .stats-counter {
         animation: countUp 2s ease-out;
     }
-    
+
     @keyframes countUp {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
@@ -98,31 +98,31 @@
         <div class="floating-shape"></div>
         <div class="floating-shape"></div>
     </div>
-    
+
     <div class="container mx-auto px-4 relative z-10">
         <div class="max-w-6xl mx-auto">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <!-- Hero Content -->
                 <div class="text-center lg:text-left">
                     <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight">
-                        Welcome to 
+                        Welcome to
                         <span class="gradient-text">Sokoni</span>
                     </h1>
                     <p class="text-xl md:text-2xl mb-8 opacity-90 leading-relaxed">
-                        Kenya's premier marketplace for quality products, amazing deals, and exceptional shopping experience. 
+                        Kenya's premier marketplace for quality products, amazing deals, and exceptional shopping experience.
                         Shop with confidence using M-Pesa, cards, and more.
                     </p>
-                    
+
                     <!-- CTA Buttons -->
                     <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
-                        <a href="{% url 'products:product_list' %}" 
+                        <a href="{% url 'products:product_list' %}"
                            class="btn-primary text-white px-8 py-4 rounded-full text-lg font-semibold inline-flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
                             </svg>
                             Shop Now
                         </a>
-                        <a href="#categories" 
+                        <a href="#categories"
                            class="bg-white/20 backdrop-blur-lg text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white/30 transition-all duration-300 inline-flex items-center justify-center">
                             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
@@ -130,7 +130,7 @@
                             Explore Categories
                         </a>
                     </div>
-                    
+
                     <!-- Trust Indicators -->
                     <div class="flex flex-wrap items-center justify-center lg:justify-start gap-6 text-sm">
                         <div class="flex items-center space-x-2">
@@ -153,12 +153,12 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Hero Image -->
                 <div class="relative">
                     <div class="relative z-10">
-                        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" 
-                             alt="Sokoni Marketplace" 
+                        <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80"
+                             alt="Sokoni Marketplace"
                              class="rounded-2xl shadow-2xl w-full h-96 object-cover">
                     </div>
                     <div class="absolute -bottom-6 -right-6 bg-white rounded-2xl p-6 shadow-xl">
@@ -206,10 +206,10 @@
                 Discover amazing products across our carefully curated categories, designed to meet all your needs
             </p>
         </div>
-        
+
         <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
             {% for category in categories|slice:":6" %}
-            <a href="{% url 'products:product_list' %}?category={{ category.slug }}" 
+            <a href="{% url 'products:product_list' %}?category={{ category.slug }}"
                class="category-card rounded-2xl p-6 text-white text-center group">
                 <div class="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center group-hover:bg-white/30 transition-colors">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,22 +233,22 @@
                 Handpicked products that our customers love. Quality guaranteed with competitive prices.
             </p>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {% for product in featured_products|slice:":8" %}
             <div class="product-card bg-white rounded-2xl shadow-soft overflow-hidden group">
                 <div class="relative overflow-hidden">
-                    <img src="{% if product.images.first.image.url %}{{ product.images.first.image.url }}{% else %}https://placehold.co/400x400/6366f1/ffffff?text={{ product.name|urlencode }}{% endif %}" 
-                         alt="{{ product.name }}" 
+                    <img src="{% if product.images.first.image.url %}{{ product.images.first.image.url }}{% else %}https://placehold.co/400x400/6366f1/ffffff?text={{ product.name|urlencode }}{% endif %}"
+                         alt="{{ product.name }}"
                          class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300">
-                    
+
                     <!-- Sale Badge -->
                     {% if product.discount_percentage %}
                     <div class="absolute top-4 left-4 bg-red-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                         -{{ product.discount_percentage }}%
                     </div>
                     {% endif %}
-                    
+
                     <!-- Quick Actions -->
                     <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <button class="bg-white/90 backdrop-blur-sm p-2 rounded-full shadow-lg hover:bg-white transition-colors">
@@ -258,13 +258,13 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="p-6">
                     <h3 class="font-semibold text-lg mb-2 text-gray-900 group-hover:text-primary-600 transition-colors">
                         {{ product.name }}
                     </h3>
                     <p class="text-gray-600 text-sm mb-4 line-clamp-2">{{ product.description|truncatewords:10 }}</p>
-                    
+
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-2">
                             {% if product.discount_price %}
@@ -274,8 +274,8 @@
                             <span class="text-2xl font-bold text-primary-600">KES {{ product.price }}</span>
                             {% endif %}
                         </div>
-                        
-                        <button onclick="addToCart({{ product.id }})" 
+
+                        <button onclick="addToCart({{ product.id }})"
                                 class="add-to-cart-btn bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg transition-colors">
                             Add to Cart
                         </button>
@@ -284,9 +284,9 @@
             </div>
             {% endfor %}
         </div>
-        
+
         <div class="text-center mt-12">
-            <a href="{% url 'products:product_list' %}" 
+            <a href="{% url 'products:product_list' %}"
                class="btn-primary text-white px-8 py-4 rounded-full text-lg font-semibold inline-flex items-center">
                 View All Products
                 <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -306,7 +306,7 @@
                 Join thousands of satisfied customers who trust Sokoni for their shopping needs
             </p>
         </div>
-        
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div class="testimonial-card rounded-2xl p-8 text-white">
                 <div class="flex items-center mb-4">
@@ -319,7 +319,7 @@
                     </div>
                 </div>
                 <p class="text-lg mb-6">
-                    "Amazing shopping experience! The products are authentic and delivery is super fast. 
+                    "Amazing shopping experience! The products are authentic and delivery is super fast.
                     I love how easy it is to pay with M-Pesa."
                 </p>
                 <div class="flex items-center">
@@ -332,7 +332,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="testimonial-card rounded-2xl p-8 text-white">
                 <div class="flex items-center mb-4">
                     <div class="flex text-yellow-400">
@@ -344,7 +344,7 @@
                     </div>
                 </div>
                 <p class="text-lg mb-6">
-                    "Best prices I've found online! The customer service is excellent and they always 
+                    "Best prices I've found online! The customer service is excellent and they always
                     have great deals. Highly recommended!"
                 </p>
                 <div class="flex items-center">
@@ -357,7 +357,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="testimonial-card rounded-2xl p-8 text-white">
                 <div class="flex items-center mb-4">
                     <div class="flex text-yellow-400">
@@ -369,7 +369,7 @@
                     </div>
                 </div>
                 <p class="text-lg mb-6">
-                    "Fast delivery and quality products. The mobile app is so easy to use. 
+                    "Fast delivery and quality products. The mobile app is so easy to use.
                     I shop here regularly now!"
                 </p>
                 <div class="flex items-center">
@@ -394,11 +394,11 @@
             Join thousands of satisfied customers and discover amazing products at unbeatable prices
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="{% url 'products:product_list' %}" 
+            <a href="{% url 'products:product_list' %}"
                class="bg-white text-primary-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-colors">
                 Start Shopping Now
             </a>
-            <a href="{% url 'accounts:register' %}" 
+            <a href="{% url 'accounts:register' %}"
                class="border-2 border-white text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-white hover:text-primary-600 transition-colors">
                 Create Account
             </a>
@@ -432,7 +432,7 @@
         console.log('addToCart called with productId:', productId);
         const btn = event.target;
         const originalText = btn.textContent;
-        
+
         // Check if CSRF token exists
         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
         if (!csrfToken) {
@@ -440,13 +440,13 @@
             showNotification('Error: CSRF token not found', 'error');
             return;
         }
-        
+
         console.log('CSRF token found:', csrfToken.value);
-        
+
         // Show loading state
         btn.textContent = 'Adding...';
         btn.disabled = true;
-        
+
         console.log('Making fetch request to /cart/add/');
         fetch('/cart/add/', {
             method: 'POST',
@@ -467,13 +467,13 @@
                 btn.textContent = 'Added!';
                 btn.classList.remove('bg-primary-600', 'hover:bg-primary-700');
                 btn.classList.add('bg-green-500');
-                
+
                 // Update cart count
                 updateCartCount(data.cart_count);
-                
+
                 // Show notification
                 showNotification('Product added to cart!', 'success');
-                
+
                 // Reset button after 2 seconds
                 setTimeout(() => {
                     btn.textContent = originalText;
@@ -486,9 +486,9 @@
                 btn.textContent = 'Error';
                 btn.classList.remove('bg-primary-600', 'hover:bg-primary-700');
                 btn.classList.add('bg-red-500');
-                
+
                 showNotification(data.message || 'Error adding to cart', 'error');
-                
+
                 // Reset button after 2 seconds
                 setTimeout(() => {
                     btn.textContent = originalText;
@@ -500,14 +500,14 @@
         })
         .catch(error => {
             console.error('Error:', error);
-            
+
             // Show error state
             btn.textContent = 'Error';
             btn.classList.remove('bg-primary-600', 'hover:bg-primary-700');
             btn.classList.add('bg-red-500');
-            
+
             showNotification('Error adding to cart', 'error');
-            
+
             // Reset button after 2 seconds
             setTimeout(() => {
                 btn.textContent = originalText;
@@ -534,15 +534,15 @@
             'bg-blue-500 text-white'
         }`;
         notification.textContent = message;
-        
+
         // Add to page
         document.body.appendChild(notification);
-        
+
         // Animate in
         setTimeout(() => {
             notification.classList.remove('translate-x-full');
         }, 100);
-        
+
         // Remove after 3 seconds
         setTimeout(() => {
             notification.classList.add('translate-x-full');

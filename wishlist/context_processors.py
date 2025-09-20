@@ -7,9 +7,5 @@ def wishlist_count(request):
         count = Wishlist.objects.filter(user=request.user).count()
     else:
         count = 0
-    
-    return {'wishlist_count': count}
 
-
-
-
+    return {"wishlist_count": count}
