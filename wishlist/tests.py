@@ -211,6 +211,10 @@ class WishlistIntegrationTest(TestCase):
         self.assertNotIn(wishlist_item1, self.user.wishlists.all())
         self.assertIn(wishlist_item2, self.user.wishlists.all())
 
+        # recreate item1
+        wishlist_item = Wishlist.objects.create(user=self.user, product=self.product1)
+        self.assertIn(wishlist_item, self.user.wishlists.all())
+
     def test_wishlist_multiple_users_same_product(self):
         """Test multiple users can add same product to wishlist"""
         user2 = self.User.objects.create_user(
@@ -237,6 +241,10 @@ class WishlistIntegrationTest(TestCase):
 
     def test_wishlist_user_product_relationships(self):
         """Test wishlist user-product relationships"""
+
+        # Setup: add both products to user's wishlist
+        Wishlist.objects.create(user=self.user, product=self.product1)
+        Wishlist.objects.create(user=self.user, product=self.product2)
 
         # Test user has both products in wishlist
         user_wishlist_products = [item.product for item in self.user.wishlists.all()]
