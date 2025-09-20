@@ -1,16 +1,13 @@
-import uuid
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.urls import reverse
-from django.utils import timezone
 
 from accounts.models import Customer, CustomerAddress
 from products.models import Category, Product
 
-from .models import Order, OrderItem
+from .models import Order
 
 
 class OrderModelTest(TestCase):

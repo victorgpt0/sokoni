@@ -93,7 +93,7 @@ class Command(BaseCommand):
         """Display a summary of created data."""
         from django.contrib.auth.models import User
 
-        from accounts.models import Customer, CustomerAddress
+        from accounts.models import CustomerAddress
         from coupons.models import Coupon
         from orders.models import Order
         from payments.models import Payment

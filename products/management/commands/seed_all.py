@@ -506,7 +506,7 @@ class Command(BaseCommand):
 
             # Get product template - check if we have specific data for this category
             template = None
-            for parent_name, category_dict in product_templates.items():
+            for _parent_name, category_dict in product_templates.items():
                 if category_name in category_dict:
                     templates = category_dict[category_name]
                     if templates:

@@ -2,17 +2,33 @@ from datetime import timedelta
 
 from django.contrib import admin
 from django.contrib.admin import AdminSite
-from django.db.models import Avg, Count, Sum
-from django.utils import timezone
-from django.utils.html import format_html
+from django.contrib.auth.admin import GroupAdmin, UserAdmin
 
-from accounts.models import Customer
-from cart.models import Cart
+# Register all models with the custom admin site
+from django.contrib.auth.models import Group, User
+from django.db.models import Count, Sum
+from django.utils import timezone
+
+# Import and register all app models
+from accounts.admin import CustomerAddressAdmin, CustomerAdmin
+from accounts.models import Customer, CustomerAddress
+from cart.admin import CartAdmin, CartItemAdmin
+from cart.models import Cart, CartItem
+from coupons.admin import CouponAdmin
 from coupons.models import Coupon
+from orders.admin import OrderAdmin, OrderItemAdmin
 from orders.models import Order, OrderItem
-from payments.models import Payment
+from payments.admin import PaymentAdmin, PaymentAttemptAdmin
+from payments.models import Payment, PaymentAttempt
+from products.admin import (
+    CategoryAdmin,
+    ProductAdmin,
+    ProductImageAdmin,
+    ProductReviewAdmin,
+)
+
 # Import models for statistics
-from products.models import Category, Product
+from products.models import Category, Product, ProductImage, ProductReview
 
 
 class SokoniAdminSite(AdminSite):
@@ -138,28 +154,11 @@ class SokoniAdminSite(AdminSite):
 # Create custom admin site instance
 admin_site = SokoniAdminSite(name="sokoni_admin")
 
-from django.contrib.auth.admin import GroupAdmin, UserAdmin
-# Register all models with the custom admin site
-from django.contrib.auth.models import Group, User
 
 # Register auth models
 admin_site.register(User, UserAdmin)
 admin_site.register(Group, GroupAdmin)
 
-# Import and register all app models
-from accounts.admin import CustomerAddressAdmin, CustomerAdmin, CustomUserAdmin
-from accounts.models import Customer, CustomerAddress
-from cart.admin import CartAdmin, CartItemAdmin
-from cart.models import Cart, CartItem
-from coupons.admin import CouponAdmin
-from coupons.models import Coupon
-from orders.admin import OrderAdmin, OrderItemAdmin
-from orders.models import Order, OrderItem
-from payments.admin import PaymentAdmin, PaymentAttemptAdmin
-from payments.models import Payment, PaymentAttempt
-from products.admin import (CategoryAdmin, ProductAdmin, ProductImageAdmin,
-                            ProductReviewAdmin)
-from products.models import Category, Product, ProductImage, ProductReview
 
 # Register all models
 admin_site.register(Customer, CustomerAdmin)

@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
+from django.db.utils import IntegrityError
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -44,7 +44,7 @@ class WishlistModelTest(TestCase):
         Wishlist.objects.create(user=self.user, product=self.product)
 
         # Try to create another wishlist item with same user and product
-        with self.assertRaises(Exception):  # IntegrityError
+        with self.assertRaises(IntegrityError):  # IntegrityError
             Wishlist.objects.create(user=self.user, product=self.product)
 
     def test_wishlist_ordering(self):
@@ -146,7 +146,6 @@ class WishlistViewsTest(TestCase):
 
     def test_remove_from_wishlist_view_authenticated(self):
         """Test remove from wishlist view for authenticated user"""
-        wishlist_item = Wishlist.objects.create(user=self.user, product=self.product)
 
         self.client.login(username="testuser", password="testpass123")
         response = self.client.post(
@@ -238,10 +237,6 @@ class WishlistIntegrationTest(TestCase):
 
     def test_wishlist_user_product_relationships(self):
         """Test wishlist user-product relationships"""
-        # Create wishlist items
-        wishlist_item1 = Wishlist.objects.create(user=self.user, product=self.product1)
-
-        wishlist_item2 = Wishlist.objects.create(user=self.user, product=self.product2)
 
         # Test user has both products in wishlist
         user_wishlist_products = [item.product for item in self.user.wishlists.all()]

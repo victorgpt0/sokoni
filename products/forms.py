@@ -1,10 +1,7 @@
-import uuid
-
 from django import forms
 from django.core.exceptions import ValidationError
-from django.utils.text import slugify
 
-from .models import Category, Product, ProductImage
+from .models import Product, ProductImage
 
 
 class ProductForm(forms.ModelForm):

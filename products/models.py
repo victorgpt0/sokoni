@@ -11,8 +11,8 @@ from sokoni.models import AuditTimestampModel
 class Category(AuditTimestampModel):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True, blank=True)
-    description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to="categories/", blank=True, null=True)
+    description = models.TextField(blank=True)
+    image = models.ImageField(upload_to="categories/", blank=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:
@@ -35,7 +35,7 @@ class Product(AuditTimestampModel):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="products")
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique=True, blank=True)
-    description = models.TextField(blank=True, null=True)
+    description = models.TextField(blank=True)
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name="products"
     )
@@ -43,18 +43,18 @@ class Product(AuditTimestampModel):
     compare_price = models.DecimalField(
         max_digits=10, decimal_places=2, blank=True, null=True
     )
-    sku = models.CharField(max_length=100, unique=True, blank=True, null=True)
+    sku = models.CharField(max_length=100, unique=True, blank=True)
     stock_quantity = models.PositiveIntegerField(default=0)
     weight = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
-    dimensions = models.CharField(max_length=100, blank=True, null=True)
+    dimensions = models.CharField(max_length=100, blank=True)
 
     is_active = models.BooleanField(default=True)
     is_featured = models.BooleanField(default=False)
     is_digital = models.BooleanField(default=False)
 
-    meta_title = models.CharField(max_length=200, blank=True, null=True)
-    meta_description = models.TextField(blank=True, null=True)
-    meta_keywords = models.CharField(max_length=200, blank=True, null=True)
+    meta_title = models.CharField(max_length=200, blank=True)
+    meta_description = models.TextField(blank=True)
+    meta_keywords = models.CharField(max_length=200, blank=True)
 
     class Meta:
         verbose_name_plural = "Products"
@@ -111,7 +111,7 @@ class ProductImage(AuditTimestampModel):
         Product, on_delete=models.CASCADE, related_name="images"
     )
     image = models.ImageField(upload_to="products/")
-    alt_text = models.CharField(max_length=255, blank=True, null=True)
+    alt_text = models.CharField(max_length=255, blank=True)
     is_primary = models.BooleanField(default=False)
     order = models.PositiveIntegerField(default=0)
     is_featured = models.BooleanField(default=False)
@@ -129,8 +129,8 @@ class ProductReview(AuditTimestampModel):
     )
     customer = models.ForeignKey("accounts.Customer", on_delete=models.CASCADE)
     rating = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 6)])
-    title = models.CharField(max_length=200, blank=True, null=True)
-    comment = models.TextField(blank=True, null=True)
+    title = models.CharField(max_length=200, blank=True)
+    comment = models.TextField(blank=True)
     is_approved = models.BooleanField(default=True)
 
     class Meta:

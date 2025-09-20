@@ -31,10 +31,10 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 ("name", models.CharField(max_length=100, unique=True)),
                 ("slug", models.SlugField(blank=True, max_length=100, unique=True)),
-                ("description", models.TextField(blank=True, null=True)),
+                ("description", models.TextField(blank=True)),
                 (
                     "image",
-                    models.ImageField(blank=True, null=True, upload_to="categories/"),
+                    models.ImageField(blank=True, upload_to="categories/"),
                 ),
                 ("is_active", models.BooleanField(default=True)),
                 (
@@ -79,7 +79,7 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 ("name", models.CharField(max_length=200)),
                 ("slug", models.SlugField(blank=True, max_length=200, unique=True)),
-                ("description", models.TextField(blank=True, null=True)),
+                ("description", models.TextField(blank=True)),
                 ("price", models.DecimalField(decimal_places=2, max_digits=10)),
                 (
                     "compare_price",
@@ -89,9 +89,7 @@ class Migration(migrations.Migration):
                 ),
                 (
                     "sku",
-                    models.CharField(
-                        blank=True, max_length=100, null=True, unique=True
-                    ),
+                    models.CharField(blank=True, max_length=100, unique=True),
                 ),
                 ("stock_quantity", models.PositiveIntegerField(default=0)),
                 (
@@ -100,15 +98,15 @@ class Migration(migrations.Migration):
                         blank=True, decimal_places=2, max_digits=10, null=True
                     ),
                 ),
-                ("dimensions", models.CharField(blank=True, max_length=100, null=True)),
+                ("dimensions", models.CharField(blank=True, max_length=100)),
                 ("is_active", models.BooleanField(default=True)),
                 ("is_featured", models.BooleanField(default=False)),
                 ("is_digital", models.BooleanField(default=False)),
-                ("meta_title", models.CharField(blank=True, max_length=200, null=True)),
-                ("meta_description", models.TextField(blank=True, null=True)),
+                ("meta_title", models.CharField(blank=True, max_length=200)),
+                ("meta_description", models.TextField(blank=True)),
                 (
                     "meta_keywords",
-                    models.CharField(blank=True, max_length=200, null=True),
+                    models.CharField(blank=True, max_length=200),
                 ),
                 (
                     "category",
@@ -159,7 +157,7 @@ class Migration(migrations.Migration):
                 ("created_at", models.DateTimeField(auto_now_add=True)),
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 ("image", models.ImageField(upload_to="products/")),
-                ("alt_text", models.CharField(blank=True, max_length=255, null=True)),
+                ("alt_text", models.CharField(blank=True, max_length=255)),
                 ("is_primary", models.BooleanField(default=False)),
                 ("order", models.PositiveIntegerField(default=0)),
                 ("is_featured", models.BooleanField(default=False)),
@@ -216,8 +214,8 @@ class Migration(migrations.Migration):
                         choices=[(1, 1), (2, 2), (3, 3), (4, 4), (5, 5)]
                     ),
                 ),
-                ("title", models.CharField(blank=True, max_length=200, null=True)),
-                ("comment", models.TextField(blank=True, null=True)),
+                ("title", models.CharField(blank=True, max_length=200)),
+                ("comment", models.TextField(blank=True)),
                 ("is_approved", models.BooleanField(default=True)),
                 (
                     "created_by",

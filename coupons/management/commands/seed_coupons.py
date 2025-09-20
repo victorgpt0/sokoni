@@ -308,11 +308,11 @@ class Command(BaseCommand):
             if discount_type == "percentage":
                 discount_value = random.choice([5, 8, 10, 12, 15, 18, 20])
                 minimum_amount = random.choice([25, 50, 75, 100, 150])
-                maximum_discount = discount_value * 10
+                # maximum_discount = discount_value * 10
             else:  # fixed
                 discount_value = random.choice([10, 15, 20, 25, 30, 40, 50])
                 minimum_amount = discount_value * 3
-                maximum_discount = discount_value
+                # maximum_discount = discount_value
 
             try:
                 now = datetime.now(timezone.utc)
@@ -331,5 +331,5 @@ class Command(BaseCommand):
                     is_active=True,
                 )
 
-            except Exception as e:
+            except Exception:
                 continue  # Skip if error

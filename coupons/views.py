@@ -7,7 +7,6 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render
 from django.utils import timezone
 from django.views.decorators.http import require_POST
-from django.views.generic import ListView
 
 from .models import Coupon
 
@@ -22,7 +21,7 @@ def validate_coupon_api(request):
 
     try:
         cart_total = Decimal(cart_total)
-    except:
+    except Exception:
         cart_total = Decimal("0")
 
     try:
@@ -198,7 +197,7 @@ def apply_coupon_view(request):
 
         try:
             cart_total = Decimal(cart_total)
-        except:
+        except Exception:
             cart_total = Decimal("0")
 
         is_valid, discount_amount, error = apply_coupon_to_order(
@@ -218,7 +217,7 @@ def apply_coupon_view(request):
         else:
             return JsonResponse({"success": False, "error": error})
 
-    except Exception as e:
+    except Exception:
         return JsonResponse(
             {"success": False, "error": "An error occurred while applying coupon"}
         )
@@ -233,7 +232,7 @@ def remove_coupon_view(request):
 
         return JsonResponse({"success": True, "message": "Coupon removed successfully"})
 
-    except Exception as e:
+    except Exception:
         return JsonResponse(
             {"success": False, "error": "An error occurred while removing coupon"}
         )

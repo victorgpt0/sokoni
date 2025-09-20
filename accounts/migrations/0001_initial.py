@@ -30,7 +30,7 @@ class Migration(migrations.Migration):
                 ("updated_at", models.DateTimeField(auto_now=True)),
                 (
                     "phone_number",
-                    models.CharField(blank=True, max_length=15, null=True),
+                    models.CharField(blank=True, max_length=15),
                 ),
                 ("date_of_birth", models.DateField(blank=True, null=True)),
                 (
@@ -39,7 +39,6 @@ class Migration(migrations.Migration):
                         blank=True,
                         choices=[("M", "Male"), ("F", "Female"), ("O", "Other")],
                         max_length=1,
-                        null=True,
                     ),
                 ),
                 (

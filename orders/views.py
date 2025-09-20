@@ -1,4 +1,3 @@
-import uuid
 from decimal import Decimal
 
 from django.conf import settings
@@ -12,10 +11,9 @@ from django.urls import reverse
 from django.views.generic import DetailView, ListView
 
 from accounts.models import CustomerAddress
-from cart.models import Cart, CartItem
+from cart.models import CartItem
 from cart.views import get_or_create_cart
 from coupons.views import apply_coupon_to_order, use_coupon
-from products.models import Product
 
 from .models import Order, OrderItem
 

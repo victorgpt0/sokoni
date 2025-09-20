@@ -8,7 +8,6 @@ from decimal import Decimal
 
 from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
-from django.utils.text import slugify
 
 from accounts.models import Customer
 from products.models import Category, Product

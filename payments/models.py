@@ -31,18 +31,18 @@ class Payment(AuditTimestampModel):
 
     # Payment amounts
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    currency = models.CharField(max_length=3, default="USD")
+    currency = models.CharField(max_length=3, default="KES")
 
     # Paystack specific fields
     paystack_reference = models.CharField(
-        max_length=100, unique=True, null=True, blank=True
+        max_length=100, unique=True, blank=True, default=""
     )
-    paystack_access_code = models.CharField(max_length=100, null=True, blank=True)
-    paystack_transaction_id = models.CharField(max_length=100, null=True, blank=True)
+    paystack_access_code = models.CharField(max_length=100, blank=True, default="")
+    paystack_transaction_id = models.CharField(max_length=100, blank=True, default="")
 
     # Additional payment info
     gateway_response = models.JSONField(default=dict, blank=True)
-    failure_reason = models.TextField(null=True, blank=True)
+    failure_reason = models.TextField(blank=True, default="")
 
     # Timestamps
     paid_at = models.DateTimeField(null=True, blank=True)

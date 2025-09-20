@@ -3,11 +3,8 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
-from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 from coupons.models import Coupon
@@ -150,7 +147,7 @@ def add_to_cart_view(request):
             }
         )
 
-    except Exception as e:
+    except Exception:
         return JsonResponse(
             {"success": False, "error": "An error occurred while adding to cart"}
         )
@@ -201,7 +198,7 @@ def update_cart_item_view(request):
             }
         )
 
-    except Exception as e:
+    except Exception:
         return JsonResponse(
             {"success": False, "error": "An error occurred while updating cart"}
         )
@@ -228,7 +225,7 @@ def remove_cart_item_view(request):
             }
         )
 
-    except Exception as e:
+    except Exception:
         return JsonResponse(
             {"success": False, "error": "An error occurred while removing item"}
         )

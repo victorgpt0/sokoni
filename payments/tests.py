@@ -1,9 +1,7 @@
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.test import Client, TestCase
-from django.urls import reverse
 from django.utils import timezone
 
 from accounts.models import Customer
@@ -134,7 +132,7 @@ class PaymentModelTest(TestCase):
             "cancelled",
             "refunded",
         ]
-        for i, status in enumerate(statuses):
+        for _i, status in enumerate(statuses):
             order = Order.objects.create(
                 customer=self.customer,
                 subtotal=Decimal("100.00"),
@@ -329,21 +327,21 @@ class PaymentIntegrationTest(TestCase):
             status="pending",
         )
 
-        # Create failed attempt
-        failed_attempt = PaymentAttempt.objects.create(
-            payment=payment,
-            paystack_reference="ref_failed",
-            status="failed",
-            gateway_response={"error": "Insufficient funds"},
-        )
+        # # Create failed attempt
+        # failed_attempt = PaymentAttempt.objects.create(
+        #     payment=payment,
+        #     paystack_reference="ref_failed",
+        #     status="failed",
+        #     gateway_response={"error": "Insufficient funds"},
+        # )
 
-        # Create successful attempt
-        successful_attempt = PaymentAttempt.objects.create(
-            payment=payment,
-            paystack_reference="ref_success",
-            status="success",
-            gateway_response={"status": "success", "transaction_id": "txn_123"},
-        )
+        # # Create successful attempt
+        # successful_attempt = PaymentAttempt.objects.create(
+        #     payment=payment,
+        #     paystack_reference="ref_success",
+        #     status="success",
+        #     gateway_response={"status": "success", "transaction_id": "txn_123"},
+        # )
 
         # Update payment status
         payment.status = "completed"

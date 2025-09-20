@@ -68,7 +68,7 @@ class Order(AuditTimestampModel):
     shipped_at = models.DateTimeField(null=True, blank=True)
     delivered_at = models.DateTimeField(null=True, blank=True)
 
-    notes = models.TextField(blank=True, null=True)
+    notes = models.TextField(blank=True, default="")
     tracking_number = models.CharField(max_length=100, blank=True)
 
     class Meta:
