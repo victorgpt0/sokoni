@@ -1,6 +1,6 @@
 name: Sokoni CI/CD Pipeline
 run-name: ${{ github.actor }} is deploying Sokoni on Branch ${{ github.ref }} 🚀
-on: 
+on:
     push:
         branches: [ main, staging ]
     pull_request:
