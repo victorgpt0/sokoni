@@ -35,7 +35,6 @@ class PaymentModelTest(TestCase):
             paystack_access_code="access_123456",
             paystack_transaction_id="txn_123456",
             gateway_response={"status": "success"},
-            failure_reason=None,
         )
 
         self.assertEqual(payment.order, self.order)
