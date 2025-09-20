@@ -14,7 +14,7 @@
         position: relative;
         overflow: hidden;
     }
-    
+
     .auth-container::before {
         content: '';
         position: absolute;
@@ -25,14 +25,14 @@
         background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
         pointer-events: none;
     }
-    
+
     .auth-card {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.2);
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
     }
-    
+
     .floating-shapes {
         position: absolute;
         width: 100%;
@@ -40,7 +40,7 @@
         overflow: hidden;
         z-index: 0;
     }
-    
+
     .floating-shape {
         position: absolute;
         background: linear-gradient(45deg, #ed5aff, #ff6b6b);
@@ -48,7 +48,7 @@
         opacity: 0.1;
         animation: float 6s ease-in-out infinite;
     }
-    
+
     .floating-shape:nth-child(1) {
         width: 80px;
         height: 80px;
@@ -56,7 +56,7 @@
         left: 10%;
         animation-delay: 0s;
     }
-    
+
     .floating-shape:nth-child(2) {
         width: 120px;
         height: 120px;
@@ -64,7 +64,7 @@
         right: 10%;
         animation-delay: 2s;
     }
-    
+
     .floating-shape:nth-child(3) {
         width: 60px;
         height: 60px;
@@ -72,41 +72,41 @@
         left: 20%;
         animation-delay: 4s;
     }
-    
+
     @keyframes float {
         0%, 100% { transform: translateY(0px) rotate(0deg); }
         50% { transform: translateY(-20px) rotate(180deg); }
     }
-    
+
     .form-input {
         background: rgba(255, 255, 255, 0.9);
         border: 2px solid rgba(237, 90, 255, 0.2);
         transition: all 0.3s ease;
     }
-    
+
     .form-input:focus {
         background: rgba(255, 255, 255, 1);
         border-color: #ed5aff;
         box-shadow: 0 0 0 3px rgba(237, 90, 255, 0.1);
         transform: translateY(-2px);
     }
-    
+
     .btn-primary-gradient {
         background: linear-gradient(135deg, #ed5aff 0%, #ff6b6b 100%);
         transition: all 0.3s ease;
     }
-    
+
     .btn-primary-gradient:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(237, 90, 255, 0.3);
     }
-    
+
     .social-btn {
         background: rgba(255, 255, 255, 0.9);
         border: 2px solid rgba(237, 90, 255, 0.2);
         transition: all 0.3s ease;
     }
-    
+
     .social-btn:hover {
         background: rgba(237, 90, 255, 0.1);
         border-color: #ed5aff;
@@ -123,7 +123,7 @@
         <div class="floating-shape"></div>
         <div class="floating-shape"></div>
     </div>
-    
+
     <div class="max-w-md w-full space-y-8 relative z-10">
         <!-- Main card -->
         <div class="auth-card rounded-3xl p-8">
@@ -137,11 +137,11 @@
                 <h2 class="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h2>
                 <p class="text-gray-600">Sign in to your Sokoni account</p>
             </div>
-            
+
             <!-- Login Form -->
             <form method="post" class="space-y-6" id="loginForm">
                 {% csrf_token %}
-                
+
                 <!-- Non-field errors -->
                 {% if form.non_field_errors %}
                     <div class="bg-red-50 border border-red-200 rounded-xl p-4 animate-pulse">
@@ -274,7 +274,7 @@
             <!-- Sign Up Link -->
             <div class="mt-8 text-center">
                 <p class="text-sm text-gray-600">
-                    Don't have an account? 
+                    Don't have an account?
                     <a href="{% url 'accounts:register' %}" class="font-semibold text-primary-600 hover:text-primary-500 transition-colors">
                         Sign up here
                     </a>
@@ -288,7 +288,7 @@
 function togglePassword() {
     const passwordInput = document.querySelector('input[type="password"]');
     const eyeIcon = document.getElementById('eye-icon');
-    
+
     if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
         eyeIcon.innerHTML = `
@@ -308,7 +308,7 @@ function togglePassword() {
 document.getElementById('loginForm').addEventListener('submit', function() {
     const submitBtn = this.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-    
+
     submitBtn.innerHTML = `
         <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

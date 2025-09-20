@@ -162,11 +162,11 @@
                             Previous
                         </a>
                     {% endif %}
-                    
+
                     <span class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white">
                         Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
                     </span>
-                    
+
                     {% if page_obj.has_next %}
                         <a href="?page={{ page_obj.next_page_number }}" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
                             Next
@@ -204,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Filter functionality
     filterSelect.addEventListener('change', function() {
         const selectedStatus = this.value;
-        
+
         orders.forEach(order => {
             const orderStatus = order.dataset.orderStatus;
             if (selectedStatus === 'all' || orderStatus === selectedStatus) {
@@ -218,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Search functionality
     searchInput.addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
-        
+
         orders.forEach(order => {
             const orderText = order.textContent.toLowerCase();
             if (orderText.includes(searchTerm)) {

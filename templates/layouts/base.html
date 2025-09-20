@@ -6,16 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Sokoni - Premium Kenyan Marketplace{% endblock %}</title>
     <meta name="description" content="{% block meta_description %}Sokoni - Your trusted Kenyan marketplace for quality products, amazing deals, and exceptional shopping experience. Shop with confidence using M-Pesa, cards, and more.{% endblock %}">
-    
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
     <link rel="apple-touch-icon" href="{% static 'apple-touch-icon.png' %}">
-    
+
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -105,66 +105,66 @@
             }
         }
     </script>
-    
+
     <!-- Alpine.js -->
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    
+
     <!-- Custom Styles -->
     <style>
         /* Global Styles */
         * {
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Inter', system-ui, sans-serif;
             line-height: 1.6;
             color: #1f2937;
             background-color: #ffffff;
         }
-        
+
         /* Smooth scrolling */
         html {
             scroll-behavior: smooth;
         }
-        
+
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
         }
-        
+
         ::-webkit-scrollbar-track {
             background: #f1f5f9;
         }
-        
+
         ::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 4px;
         }
-        
+
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
-        
+
         /* Loading animations */
         .loading-skeleton {
             background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
             background-size: 200% 100%;
             animation: loading 1.5s infinite;
         }
-        
+
         @keyframes loading {
             0% { background-position: 200% 0; }
             100% { background-position: -200% 0; }
         }
-        
+
         /* Glass morphism effect */
         .glass {
             background: rgba(255, 255, 255, 0.25);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.18);
         }
-        
+
         /* Gradient text */
         .gradient-text {
             background: linear-gradient(135deg, #ed5aff 0%, #f97316 50%, #22c55e 100%);
@@ -172,7 +172,7 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-        
+
         /* Button hover effects */
         .btn-primary {
             background: linear-gradient(135deg, #ed5aff 0%, #d633ff 100%);
@@ -180,12 +180,12 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 10px 25px rgba(237, 90, 255, 0.3);
         }
-        
+
         .btn-primary::before {
             content: '';
             position: absolute;
@@ -196,32 +196,32 @@
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
             transition: left 0.5s;
         }
-        
+
         .btn-primary:hover::before {
             left: 100%;
         }
-        
+
         /* Product card hover effects */
         .product-card {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
         .product-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
-        
+
         /* Form styling */
         .form-input {
             transition: all 0.3s ease;
             border: 2px solid #e5e7eb;
         }
-        
+
         .form-input:focus {
             border-color: #ed5aff;
             box-shadow: 0 0 0 3px rgba(237, 90, 255, 0.1);
         }
-        
+
         /* Mobile optimizations */
         @media (max-width: 768px) {
             .container {
@@ -229,7 +229,7 @@
                 padding-right: 1rem;
             }
         }
-        
+
         /* Accessibility improvements */
         .sr-only {
             position: absolute;
@@ -242,13 +242,13 @@
             white-space: nowrap;
             border: 0;
         }
-        
+
         /* Focus styles for accessibility */
         *:focus {
             outline: 2px solid #ed5aff;
             outline-offset: 2px;
         }
-        
+
         /* Skip to main content link */
         .skip-link {
             position: absolute;
@@ -261,15 +261,15 @@
             border-radius: 4px;
             z-index: 1000;
         }
-        
+
         .skip-link:focus {
             top: 6px;
         }
     </style>
-    
+
     {% block head %}{% endblock %}
 </head>
-<body class="bg-white text-gray-900 antialiased" x-data="{ 
+<body class="bg-white text-gray-900 antialiased" x-data="{
     mobileMenuOpen: false,
     searchOpen: false,
     cartOpen: false,
@@ -296,7 +296,7 @@
     <!-- Notification system -->
     <div class="fixed top-4 right-4 z-50 space-y-2">
         <template x-for="notification in notifications" :key="notification.id">
-            <div x-show="true" 
+            <div x-show="true"
                  x-transition:enter="transition ease-out duration-300"
                  x-transition:enter-start="transform translate-x-full opacity-0"
                  x-transition:enter-end="transform translate-x-0 opacity-100"
@@ -312,7 +312,7 @@
                  class="p-4 rounded-lg shadow-lg max-w-sm">
                 <div class="flex items-center justify-between">
                     <span x-text="notification.message"></span>
-                    <button @click="notifications = notifications.filter(n => n.id !== notification.id)" 
+                    <button @click="notifications = notifications.filter(n => n.id !== notification.id)"
                             class="ml-4 text-white hover:text-gray-200">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -330,15 +330,15 @@
             <div class="container mx-auto px-4 py-4">
                 <div class="space-y-3">
                     {% for message in messages %}
-                        <div x-data="{ show: true }" 
-                             x-show="show" 
+                        <div x-data="{ show: true }"
+                             x-show="show"
                              x-transition:enter="transition ease-out duration-300"
                              x-transition:enter-start="transform translate-y-2 opacity-0"
                              x-transition:enter-end="transform translate-y-0 opacity-100"
                              x-transition:leave="transition ease-in duration-200"
                              x-transition:leave-start="transform translate-y-0 opacity-100"
                              x-transition:leave-end="transform translate-y-2 opacity-0"
-                             class="p-4 rounded-lg shadow-medium border-l-4 
+                             class="p-4 rounded-lg shadow-medium border-l-4
                                 {% if message.tags == 'success' %}bg-green-50 border-green-500 text-green-800
                                 {% elif message.tags == 'error' %}bg-red-50 border-red-500 text-red-800
                                 {% elif message.tags == 'warning' %}bg-yellow-50 border-yellow-500 text-yellow-800
@@ -371,14 +371,14 @@
                 </div>
             </div>
         {% endif %}
-        
+
         {% block content %}{% endblock %}
     </main>
 
     {% include "components/footer.html" %}
 
     <!-- Back to top button -->
-    <button id="back-to-top" 
+    <button id="back-to-top"
             class="fixed bottom-6 right-6 bg-primary-600 text-white p-3 rounded-full shadow-large hover:bg-primary-700 transition-all duration-300 opacity-0 invisible"
             onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
             aria-label="Back to top">
@@ -404,7 +404,7 @@
         // Loading overlay management
         let loadingTimeout;
         const loadingOverlay = document.getElementById('loading-overlay');
-        
+
         function showLoadingOverlay() {
             if (loadingOverlay) {
                 loadingOverlay.style.display = 'flex';
@@ -414,7 +414,7 @@
                 }, 10000);
             }
         }
-        
+
         function hideLoadingOverlay() {
             if (loadingOverlay) {
                 loadingOverlay.style.display = 'none';
@@ -424,17 +424,17 @@
                 }
             }
         }
-        
+
         // Hide overlay when page loads
         window.addEventListener('load', hideLoadingOverlay);
-        
+
         // Hide overlay when DOM is ready (for cached pages)
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', hideLoadingOverlay);
         } else {
             hideLoadingOverlay();
         }
-        
+
         // Show loading overlay on navigation (but not for same-page links)
         document.addEventListener('click', function(e) {
             const link = e.target.closest('a');
@@ -442,7 +442,7 @@
                 showLoadingOverlay();
             }
         });
-        
+
         // Hide overlay when navigating back/forward
         window.addEventListener('pageshow', function(event) {
             if (event.persisted) {
@@ -450,7 +450,7 @@
                 hideLoadingOverlay();
             }
         });
-        
+
         // Hide overlay on page unload (when navigating away)
         window.addEventListener('beforeunload', hideLoadingOverlay);
 

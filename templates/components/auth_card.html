@@ -8,7 +8,7 @@ Usage: {% include "components/auth_card.html" with title="Login" subtitle="Welco
         <!-- Animated background elements -->
         <div class="absolute -top-10 -left-10 w-20 h-20 bg-secondary/20 rounded-full animate-pulse"></div>
         <div class="absolute -bottom-10 -right-10 w-16 h-16 bg-secondary/30 rounded-full animate-bounce delay-1000"></div>
-        
+
         <!-- Main card -->
         <div class="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl p-8 border border-white/20 transform transition-all duration-500 hover:scale-105 hover:shadow-3xl">
             <!-- Header -->
@@ -23,7 +23,7 @@ Usage: {% include "components/auth_card.html" with title="Login" subtitle="Welco
                     <p class="text-secondary text-sm">{{ subtitle }}</p>
                 {% endif %}
             </div>
-            
+
             <!-- Content slot -->
             <div class="mt-8">
                 {% block auth_content %}{% endblock %}

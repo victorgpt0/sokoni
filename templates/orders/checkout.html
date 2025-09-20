@@ -18,7 +18,7 @@
 
     <form id="checkoutForm" method="post">
         {% csrf_token %}
-        
+
         <!-- Checkout Steps -->
         <div class="mb-6">
             <div class="flex items-center justify-center space-x-8">
@@ -47,12 +47,12 @@
                     <!-- Shipping Addresses -->
                     <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Shipping Address</h3>
-                        
+
                         {% if shipping_addresses %}
                             <div class="space-y-3 mb-4">
                                 {% for address in shipping_addresses %}
                                 <div class="address-card bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary-500 transition-colors">
-                                    <input type="radio" name="shipping_address" value="{{ address.id }}" 
+                                    <input type="radio" name="shipping_address" value="{{ address.id }}"
                                            class="sr-only" id="shipping_{{ address.id }}">
                                     <label for="shipping_{{ address.id }}" class="cursor-pointer block">
                                         <div class="text-gray-700">
@@ -68,15 +68,15 @@
                                 </div>
                                 {% endfor %}
                             </div>
-                            
-                            <button type="button" onclick="showNewShippingAddressForm()" 
+
+                            <button type="button" onclick="showNewShippingAddressForm()"
                                     class="text-primary-600 hover:text-primary-700 transition-colors">
                                 + Add New Shipping Address
                             </button>
                         {% else %}
                             <div class="text-center py-6">
                                 <p class="text-gray-600 mb-4">No shipping addresses found</p>
-                                <a href="{% url 'accounts:address_add' %}?type=shipping" 
+                                <a href="{% url 'accounts:address_add' %}?type=shipping"
                                    class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">
                                     Add Shipping Address
                                 </a>
@@ -87,12 +87,12 @@
                     <!-- Billing Addresses -->
                     <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Billing Address</h3>
-                        
+
                         {% if billing_addresses %}
                             <div class="space-y-3 mb-4">
                                 {% for address in billing_addresses %}
                                 <div class="address-card bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary-500 transition-colors">
-                                    <input type="radio" name="billing_address" value="{{ address.id }}" 
+                                    <input type="radio" name="billing_address" value="{{ address.id }}"
                                            class="sr-only" id="billing_{{ address.id }}">
                                     <label for="billing_{{ address.id }}" class="cursor-pointer block">
                                         <div class="text-gray-700">
@@ -108,15 +108,15 @@
                                 </div>
                                 {% endfor %}
                             </div>
-                            
-                            <button type="button" onclick="showNewBillingAddressForm()" 
+
+                            <button type="button" onclick="showNewBillingAddressForm()"
                                     class="text-primary-600 hover:text-primary-700 transition-colors">
                                 + Add New Billing Address
                             </button>
                         {% else %}
                             <div class="text-center py-6">
                                 <p class="text-gray-600 mb-4">No billing addresses found</p>
-                                <a href="{% url 'accounts:address_add' %}?type=billing" 
+                                <a href="{% url 'accounts:address_add' %}?type=billing"
                                    class="bg-primary-600 text-white px-4 py-2 rounded-lg hover:bg-primary-700 transition-colors">
                                     Add Billing Address
                                 </a>
@@ -128,7 +128,7 @@
                     <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Shipping Options</h3>
                         <div class="space-y-3">
-                            <div class="shipping-option bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer" 
+                            <div class="shipping-option bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer"
                                  onclick="selectShippingOption('standard')" data-shipping="standard">
                                 <input type="radio" name="shipping_method" value="standard" class="sr-only">
                                 <div class="flex items-center justify-between">
@@ -147,7 +147,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="shipping-option bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer" 
+                            <div class="shipping-option bg-gray-50 border border-gray-200 rounded-lg p-4 cursor-pointer"
                                  onclick="selectShippingOption('express')" data-shipping="express">
                                 <input type="radio" name="shipping_method" value="express" class="sr-only">
                                 <div class="flex items-center justify-between">
@@ -165,7 +165,7 @@
 
                     <!-- Continue to Payment Button -->
                     <div class="flex justify-end">
-                        <button type="button" onclick="proceedToPayment()" 
+                        <button type="button" onclick="proceedToPayment()"
                                 class="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
                             Continue to Payment
                         </button>
@@ -177,7 +177,7 @@
                     <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Payment Method</h3>
                         <p class="text-gray-600 mb-6">You'll be redirected to Paystack to complete your payment securely.</p>
-                        
+
                         <div class="flex items-center space-x-3 mb-6">
                             <div class="w-12 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded flex items-center justify-center">
                                 <span class="text-white text-xs font-bold">PS</span>
@@ -189,11 +189,11 @@
                         </div>
 
                         <div class="flex justify-between">
-                            <button type="button" onclick="backToShipping()" 
+                            <button type="button" onclick="backToShipping()"
                                     class="text-gray-500 hover:text-gray-700 transition-colors">
                                 ← Back to Shipping
                             </button>
-                            <button type="button" onclick="proceedToConfirm()" 
+                            <button type="button" onclick="proceedToConfirm()"
                                     class="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
                                 Continue to Review
                             </button>
@@ -205,7 +205,7 @@
                 <div id="confirmStepContent" class="hidden">
                     <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft">
                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Order Review</h3>
-                        
+
                         <!-- Selected Address -->
                         <div class="mb-6">
                             <h4 class="font-medium text-gray-900 mb-2">Shipping Address</h4>
@@ -219,18 +219,18 @@
                             <label class="flex items-start space-x-3 cursor-pointer">
                                 <input type="checkbox" id="agreeTerms" class="mt-1 w-4 h-4 text-primary-600 bg-white border-gray-300 rounded focus:ring-primary-500 focus:ring-2">
                                 <span class="text-sm text-gray-700">
-                                    I agree to the <a href="#" class="text-primary-600 hover:text-primary-700">Terms and Conditions</a> and 
+                                    I agree to the <a href="#" class="text-primary-600 hover:text-primary-700">Terms and Conditions</a> and
                                     <a href="#" class="text-primary-600 hover:text-primary-700">Privacy Policy</a>
                                 </span>
                             </label>
                         </div>
 
                         <div class="flex justify-between">
-                            <button type="button" onclick="backToPayment()" 
+                            <button type="button" onclick="backToPayment()"
                                     class="text-gray-500 hover:text-gray-700 transition-colors">
                                 ← Back to Payment
                             </button>
-                            <button type="submit" id="placeOrderBtn" 
+                            <button type="submit" id="placeOrderBtn"
                                     class="bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
                                 Place Order
                             </button>
@@ -243,7 +243,7 @@
             <div class="lg:col-span-1">
                 <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-soft sticky top-8">
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Order Summary</h3>
-                    
+
                     <div class="space-y-3 mb-6">
                         <div class="flex justify-between">
                             <span class="text-gray-700">Subtotal</span>
@@ -322,13 +322,13 @@ function selectShippingOption(method) {
     document.querySelectorAll('.shipping-option').forEach(option => {
         option.classList.remove('border-secondary', 'bg-secondary/10');
     });
-    
+
     const selectedOption = document.querySelector(`[data-shipping="${method}"]`);
     selectedOption.classList.add('border-secondary', 'bg-secondary/10');
-    
+
     const radio = selectedOption.querySelector('input[type="radio"]');
     radio.checked = true;
-    
+
     // Update totals
     updateTotals(method);
 }
@@ -343,10 +343,10 @@ function updateTotals(shippingMethod) {
             shippingCost = DEFAULT_SHIPPING_COST;
         }
     }
-    
+
     const taxAmount = SUBTOTAL * TAX_RATE;
     const total = SUBTOTAL + shippingCost + taxAmount;
-    
+
     // Update display
     document.getElementById('shippingCost').textContent = shippingCost === 0 ? 'FREE' : `KES ${shippingCost.toFixed(2)}`;
     document.getElementById('taxAmount').textContent = `KES ${taxAmount.toFixed(2)}`;
@@ -357,32 +357,32 @@ function updateTotals(shippingMethod) {
 function proceedToPayment() {
     // Validate shipping information
     const selectedShippingAddress = document.querySelector('input[name="shipping_address"]:checked');
-    
+
     if (!selectedShippingAddress) {
         showNotification('Please select a shipping address', 'error');
         return;
     }
-    
+
     // Validate billing information
     const selectedBillingAddress = document.querySelector('input[name="billing_address"]:checked');
-    
+
     if (!selectedBillingAddress) {
         showNotification('Please select a billing address', 'error');
         return;
     }
-    
+
     // Validate shipping method
     const selectedShippingMethod = document.querySelector('input[name="shipping_method"]:checked');
-    
+
     if (!selectedShippingMethod) {
         showNotification('Please select a shipping method', 'error');
         return;
     }
-    
+
     // Show payment step
     document.getElementById('shippingStep').classList.add('hidden');
     document.getElementById('paymentStepContent').classList.remove('hidden');
-    
+
     // Update progress
     updateStepProgress(2);
     currentStep = 2;
@@ -399,10 +399,10 @@ function proceedToConfirm() {
     // Show confirmation step
     document.getElementById('paymentStepContent').classList.add('hidden');
     document.getElementById('confirmStepContent').classList.remove('hidden');
-    
+
     // Update address summary
     updateAddressSummary();
-    
+
     // Update progress
     updateStepProgress(3);
     currentStep = 3;
@@ -421,9 +421,9 @@ function updateStepProgress(step) {
         const stepNum = index + 1;
         const circle = el.querySelector('div');
         const text = el.querySelector('span');
-        
+
         el.classList.remove('active', 'completed');
-        
+
         if (stepNum < step) {
             el.classList.add('completed');
             circle.className = 'w-6 h-6 bg-green-500 text-white rounded-full flex items-center justify-center text-sm font-bold';
@@ -445,7 +445,7 @@ function updateStepProgress(step) {
 function updateAddressSummary() {
     const selectedAddress = document.querySelector('input[name="shipping_address"]:checked');
     const summaryEl = document.getElementById('selectedAddressSummary');
-    
+
     if (selectedAddress) {
         const addressCard = selectedAddress.closest('.address-card');
         const addressText = addressCard.querySelector('.text-gray-300').innerHTML;
@@ -466,19 +466,19 @@ function showNewBillingAddressForm() {
 // Form submission
 document.getElementById('checkoutForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
+
     if (!document.getElementById('agreeTerms').checked) {
         showNotification('Please agree to the terms and conditions', 'error');
         return;
     }
-    
+
     const submitBtn = document.getElementById('placeOrderBtn');
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<svg class="animate-spin h-5 w-5 mx-auto" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25"></circle><path fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" class="opacity-75"></path></svg>';
-    
+
     // Submit the form
     const formData = new FormData(this);
-    
+
     fetch('{% url "orders:create_order" %}', {
         method: 'POST',
         body: formData,
@@ -510,7 +510,7 @@ function showNotification(message, type) {
     notification.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-50 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
     notification.textContent = message;
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
         notification.remove();
     }, 3000);

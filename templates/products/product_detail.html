@@ -10,25 +10,25 @@
     .product-gallery {
         position: relative;
     }
-    
+
     .main-image {
         transition: all 0.3s ease;
     }
-    
+
     .thumbnail {
         cursor: pointer;
         transition: all 0.3s ease;
         border: 2px solid transparent;
     }
-    
+
     .thumbnail.active {
         border-color: rgb(237 90 255);
     }
-    
+
     .thumbnail:hover {
         transform: scale(1.05);
     }
-    
+
     .quantity-input {
         -webkit-appearance: none;
         appearance: none;
@@ -38,43 +38,43 @@
         text-align: center;
         font-weight: 600;
     }
-    
+
     .quantity-input:focus {
         outline: none;
         border-color: rgb(237 90 255);
         box-shadow: 0 0 0 3px rgba(237, 90, 255, 0.1);
     }
-    
+
     .review-card {
         transition: all 0.3s ease;
     }
-    
+
     .review-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
     }
-    
+
     .related-product {
         transition: all 0.3s ease;
     }
-    
+
     .related-product:hover {
         transform: translateY(-4px);
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
     }
-    
+
     .tab-content {
         display: none;
     }
-    
+
     .tab-content.active {
         display: block;
     }
-    
+
     .tab-button {
         transition: all 0.3s ease;
     }
-    
+
     .tab-button.active {
         background-color: rgb(237 90 255);
         color: white;
@@ -84,29 +84,29 @@
 
 {% block content %}
 {% csrf_token %}
-<div class="container mx-auto px-4 py-8" x-data="{ 
+<div class="container mx-auto px-4 py-8" x-data="{
     currentImage: 0,
     quantity: 1,
     activeTab: 'description',
-    
+
     changeImage(index) {
         this.currentImage = index;
     },
-    
+
     increaseQuantity() {
         this.quantity++;
     },
-    
+
     decreaseQuantity() {
         if (this.quantity > 1) {
             this.quantity--;
         }
     },
-    
+
     setTab(tab) {
         this.activeTab = tab;
     },
-    
+
     addToCart(productId, quantity) {
         fetch('/cart/add/', {
             method: 'POST',
@@ -125,7 +125,7 @@
             if (data.success) {
                 // Update cart count
                 updateCartCount(data.cart_count);
-                
+
                 // Show notification
                 showNotification('Product added to cart!', 'success');
             } else {
@@ -137,7 +137,7 @@
             showNotification('Error adding to cart', 'error');
         });
     },
-    
+
     buyNow(productId, quantity) {
         // Add to cart first, then redirect to checkout
         fetch('/cart/add/', {
@@ -167,7 +167,7 @@
         });
     }
 }">
-    
+
     <!-- Breadcrumb -->
     <nav class="mb-8">
         <ol class="flex items-center space-x-2 text-sm text-gray-600">
@@ -180,23 +180,23 @@
             <li class="text-gray-900 font-medium">{{ product.name }}</li>
         </ol>
     </nav>
-    
+
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
         <!-- Product Gallery -->
         <div class="product-gallery">
             <!-- Main Image -->
             <div class="relative mb-6">
-                <img :src="productImages[currentImage]" 
+                <img :src="productImages[currentImage]"
                      :alt="product.name"
                      class="w-full h-96 lg:h-[500px] object-cover rounded-2xl shadow-soft">
-                
+
                 <!-- Sale Badge -->
                 {% if product.discount_percentage %}
                 <div class="absolute top-4 left-4 bg-red-500 text-white px-4 py-2 rounded-full text-sm font-semibold">
                     -{{ product.discount_percentage }}% OFF
                 </div>
                 {% endif %}
-                
+
                 <!-- Wishlist Button -->
                 <button class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm p-3 rounded-full shadow-lg hover:bg-white transition-colors"
                         onclick="toggleWishlist({{ product.id }})"
@@ -207,7 +207,7 @@
                     </svg>
                 </button>
             </div>
-            
+
             <!-- Thumbnail Images -->
             {% if product.images.all %}
             <div class="grid grid-cols-5 gap-4">
@@ -215,7 +215,7 @@
                 <div class="thumbnail rounded-lg overflow-hidden cursor-pointer"
                      :class="{ 'active': currentImage === {{ forloop.counter0 }} }"
                      @click="changeImage({{ forloop.counter0 }})">
-                    <img src="{{ image.image.url }}" 
+                    <img src="{{ image.image.url }}"
                          alt="{{ image.alt_text|default:product.name }}"
                          class="w-full h-20 object-cover">
                 </div>
@@ -223,13 +223,13 @@
             </div>
             {% endif %}
         </div>
-        
+
         <!-- Product Info -->
         <div class="space-y-6">
             <!-- Product Title and Rating -->
             <div>
                 <h1 class="text-3xl font-bold text-gray-900 mb-4">{{ product.name }}</h1>
-                
+
                 <!-- Rating -->
                 <div class="flex items-center space-x-4 mb-4">
                     <div class="flex items-center">
@@ -246,7 +246,7 @@
                     <span class="text-gray-600">SKU: {{ product.sku|default:"N/A" }}</span>
                 </div>
             </div>
-            
+
             <!-- Price -->
             <div class="space-y-2">
                 <div class="flex items-center space-x-4">
@@ -260,34 +260,34 @@
                     <span class="text-4xl font-bold text-primary-600">KES {{ product.price }}</span>
                     {% endif %}
                 </div>
-                
+
                 {% if product.discount_percentage %}
                 <p class="text-green-600 font-medium">Limited time offer! Save {{ product.discount_percentage }}%</p>
                 {% endif %}
             </div>
-            
+
             <!-- Description -->
             <div>
                 <p class="text-gray-700 leading-relaxed">{{ product.description }}</p>
             </div>
-            
+
             <!-- Quantity and Add to Cart -->
             <div class="space-y-4">
                 <div class="flex items-center space-x-4">
                     <label class="text-gray-700 font-medium">Quantity:</label>
                     <div class="flex items-center border border-gray-300 rounded-lg">
-                        <button @click="decreaseQuantity()" 
+                        <button @click="decreaseQuantity()"
                                 class="px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path>
                             </svg>
                         </button>
-                        <input type="number" 
-                               x-model="quantity" 
-                               min="1" 
+                        <input type="number"
+                               x-model="quantity"
+                               min="1"
                                class="quantity-input w-16 text-center"
                                readonly>
-                        <button @click="increaseQuantity()" 
+                        <button @click="increaseQuantity()"
                                 class="px-3 py-2 text-gray-600 hover:text-gray-900 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -295,23 +295,23 @@
                         </button>
                     </div>
                 </div>
-                
+
                 <div class="flex flex-col sm:flex-row gap-4">
-                    <button @click="addToCart({{ product.id }}, quantity)" 
+                    <button @click="addToCart({{ product.id }}, quantity)"
                             class="flex-1 bg-primary-600 hover:bg-primary-700 text-white py-4 px-8 rounded-lg font-semibold transition-colors flex items-center justify-center space-x-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"></path>
                         </svg>
                         <span>Add to Cart</span>
                     </button>
-                    
-                    <button @click="buyNow({{ product.id }}, quantity)" 
+
+                    <button @click="buyNow({{ product.id }}, quantity)"
                             class="flex-1 bg-secondary-600 hover:bg-secondary-700 text-white py-4 px-8 rounded-lg font-semibold transition-colors">
                         Buy Now
                     </button>
                 </div>
             </div>
-            
+
             <!-- Trust Signals -->
             <div class="border-t border-gray-200 pt-6">
                 <div class="grid grid-cols-2 gap-4">
@@ -343,34 +343,34 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Product Tabs -->
     <div class="mt-16">
         <div class="border-b border-gray-200">
             <nav class="flex space-x-8">
-                <button @click="setTab('description')" 
+                <button @click="setTab('description')"
                         :class="{ 'active': activeTab === 'description' }"
                         class="tab-button py-4 px-1 border-b-2 font-medium text-sm">
                     Description
                 </button>
-                <button @click="setTab('specifications')" 
+                <button @click="setTab('specifications')"
                         :class="{ 'active': activeTab === 'specifications' }"
                         class="tab-button py-4 px-1 border-b-2 font-medium text-sm">
                     Specifications
                 </button>
-                <button @click="setTab('reviews')" 
+                <button @click="setTab('reviews')"
                         :class="{ 'active': activeTab === 'reviews' }"
                         class="tab-button py-4 px-1 border-b-2 font-medium text-sm">
                     Reviews ({{ product.review_count|default:0 }})
                 </button>
-                <button @click="setTab('shipping')" 
+                <button @click="setTab('shipping')"
                         :class="{ 'active': activeTab === 'shipping' }"
                         class="tab-button py-4 px-1 border-b-2 font-medium text-sm">
                     Shipping & Returns
                 </button>
             </nav>
         </div>
-        
+
         <div class="py-8">
             <!-- Description Tab -->
             <div x-show="activeTab === 'description'" class="tab-content active">
@@ -379,7 +379,7 @@
                     <p class="text-gray-700 leading-relaxed">{{ product.description }}</p>
                 </div>
             </div>
-            
+
             <!-- Specifications Tab -->
             <div x-show="activeTab === 'specifications'" class="tab-content">
                 <h3 class="text-xl font-semibold mb-4">Product Specifications</h3>
@@ -400,11 +400,11 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Reviews Tab -->
             <div x-show="activeTab === 'reviews'" class="tab-content">
                 <h3 class="text-xl font-semibold mb-6">Customer Reviews</h3>
-                
+
                 {% if product.reviews.all %}
                 <div class="space-y-6">
                     {% for review in product.reviews.all %}
@@ -441,7 +441,7 @@
                 </div>
                 {% endif %}
             </div>
-            
+
             <!-- Shipping Tab -->
             <div x-show="activeTab === 'shipping'" class="tab-content">
                 <h3 class="text-xl font-semibold mb-4">Shipping & Returns</h3>
@@ -468,7 +468,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Related Products -->
     {% if related_products %}
     <div class="mt-16">
@@ -477,22 +477,22 @@
             {% for related_product in related_products %}
             <div class="related-product bg-white rounded-2xl shadow-soft overflow-hidden group">
                 <div class="relative overflow-hidden">
-                    <img src="{% if related_product.get_main_image.url %}{{ related_product.get_main_image.url }}{% else %}https://placehold.co/400x400/6366f1/ffffff?text={{ related_product.name|urlencode }}{% endif %}" 
-                         alt="{{ related_product.name }}" 
+                    <img src="{% if related_product.get_main_image.url %}{{ related_product.get_main_image.url }}{% else %}https://placehold.co/400x400/6366f1/ffffff?text={{ related_product.name|urlencode }}{% endif %}"
+                         alt="{{ related_product.name }}"
                          class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300">
-                    
+
                     {% if related_product.discount_percentage %}
                     <div class="absolute top-2 left-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                         -{{ related_product.discount_percentage }}%
                     </div>
                     {% endif %}
                 </div>
-                
+
                 <div class="p-4">
                     <h3 class="font-semibold text-gray-900 mb-2 group-hover:text-primary-600 transition-colors">
                         <a href="{% url 'products:product_detail' related_product.slug %}">{{ related_product.name }}</a>
                     </h3>
-                    
+
                     <div class="flex items-center justify-between">
                         <div class="flex items-center space-x-2">
                             {% if related_product.discount_price %}
@@ -502,8 +502,8 @@
                             <span class="font-bold text-primary-600">KES {{ related_product.price }}</span>
                             {% endif %}
                         </div>
-                        
-                        <button onclick="addToCart({{ related_product.id }}, 1)" 
+
+                        <button onclick="addToCart({{ related_product.id }}, 1)"
                                 class="bg-primary-600 hover:bg-primary-700 text-white px-3 py-1 rounded text-sm transition-colors">
                             Add
                         </button>
@@ -542,7 +542,7 @@ function toggleWishlist(productId) {
             // Update wishlist icon
             const wishlistBtn = document.querySelector(`[data-product-id="${productId}"]`);
             const wishlistIcon = wishlistBtn.querySelector('.wishlist-icon');
-            
+
             if (data.in_wishlist) {
                 wishlistIcon.classList.add('text-red-500');
                 wishlistIcon.classList.remove('text-gray-700');
@@ -552,10 +552,10 @@ function toggleWishlist(productId) {
                 wishlistIcon.classList.add('text-gray-700');
                 wishlistBtn.setAttribute('title', 'Add to wishlist');
             }
-            
+
             // Update wishlist count in navbar
             updateWishlistCount();
-            
+
             // Show notification
             showNotification(data.message, 'success');
         }
@@ -592,14 +592,14 @@ function showNotification(message, type = 'info') {
     // Create notification element
     const notification = document.createElement('div');
     notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm ${
-        type === 'success' ? 'bg-green-500 text-white' : 
-        type === 'error' ? 'bg-red-500 text-white' : 
+        type === 'success' ? 'bg-green-500 text-white' :
+        type === 'error' ? 'bg-red-500 text-white' :
         'bg-blue-500 text-white'
     }`;
     notification.textContent = message;
-    
+
     document.body.appendChild(notification);
-    
+
     // Remove after 3 seconds
     setTimeout(() => {
         notification.remove();

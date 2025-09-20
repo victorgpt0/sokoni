@@ -49,7 +49,7 @@
     <div class="mb-8">
         <div class="flex items-center justify-between">
             <h1 class="text-3xl font-bold text-gray-900">{{ title }}</h1>
-            <a href="{% url 'products:product_detail' product.slug %}" 
+            <a href="{% url 'products:product_detail' product.slug %}"
                class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-lg transition-colors">
                 ← Back to Product
             </a>
@@ -60,12 +60,12 @@
     <div class="bg-gray-50 rounded-lg p-4 mb-6">
         <div class="flex items-center space-x-4">
             {% if product.images.exists %}
-                <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}" 
+                <img src="{{ product.images.first.image.url }}" alt="{{ product.name }}"
                      class="w-16 h-16 object-cover rounded-lg"
                      onerror="this.onerror=null; this.src='https://placehold.co/64x64/f3f4f6/9ca3af?text={{ product.name|urlencode }}';">
             {% else %}
-                <img src="https://placehold.co/64x64/f3f4f6/9ca3af?text={{ product.name|urlencode }}" 
-                     alt="{{ product.name }}" 
+                <img src="https://placehold.co/64x64/f3f4f6/9ca3af?text={{ product.name|urlencode }}"
+                     alt="{{ product.name }}"
                      class="w-16 h-16 object-cover rounded-lg">
             {% endif %}
             <div>
@@ -80,7 +80,7 @@
         <form method="post" enctype="multipart/form-data" class="space-y-6">
             {% csrf_token %}
             {{ formset.management_form }}
-            
+
             <div class="mb-4">
                 <h3 class="text-xl font-semibold text-primary-600 mb-4">Product Images</h3>
                 <p class="text-gray-600 text-sm mb-4">
@@ -99,7 +99,7 @@
                                     <img src="{{ form.instance.image.url }}" alt="Product image" class="image-preview"
                                          onerror="this.onerror=null; this.src='https://placehold.co/150x150/374151/9ca3af?text={{ product.name|urlencode }}';">
                                 {% else %}
-                                    <img src="https://placehold.co/150x150/374151/9ca3af?text={{ product.name|urlencode }}" 
+                                    <img src="https://placehold.co/150x150/374151/9ca3af?text={{ product.name|urlencode }}"
                                          alt="Product image placeholder" class="image-preview">
                                 {% endif %}
                             </div>
@@ -114,7 +114,7 @@
                                             <div class="text-red-400 text-sm mt-1">{{ form.image.errors.0 }}</div>
                                         {% endif %}
                                     </div>
-                                    
+
                                     <div>
                                         <label class="block form-label mb-2">Alt Text</label>
                                         {{ form.alt_text }}
@@ -132,7 +132,7 @@
                                             <div class="text-red-400 text-sm mt-1">{{ form.order.errors.0 }}</div>
                                         {% endif %}
                                     </div>
-                                    
+
                                     <div class="flex items-center">
                                         {{ form.is_primary }}
                                         <label class="ml-2 form-label">Primary Image</label>
@@ -140,7 +140,7 @@
                                             <div class="text-red-400 text-sm mt-1">{{ form.is_primary.errors.0 }}</div>
                                         {% endif %}
                                     </div>
-                                    
+
                                 </div>
 
                                 <!-- Delete Option -->
@@ -158,7 +158,7 @@
 
             <!-- Add New Image Button -->
             <div class="text-center">
-                <button type="button" id="add-image-btn" 
+                <button type="button" id="add-image-btn"
                         class="bg-secondary hover:bg-secondary/90 text-primary px-6 py-3 rounded-lg font-semibold transition-colors">
                     <svg class="w-5 h-5 inline mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -169,12 +169,12 @@
 
             <!-- Form Actions -->
             <div class="flex items-center justify-between pt-6 border-t border-white/10">
-                <a href="{% url 'products:product_detail' product.slug %}" 
+                <a href="{% url 'products:product_detail' product.slug %}"
                    class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg transition-colors">
                     Cancel
                 </a>
-                
-                <button type="submit" 
+
+                <button type="submit"
                         class="bg-secondary hover:bg-secondary/90 text-primary px-8 py-2 rounded-lg font-semibold transition-colors">
                     Save Images
                 </button>
@@ -194,7 +194,7 @@
                 input.classList.add('form-input', 'w-full', 'px-3', 'py-2', 'rounded-lg', 'focus:outline-none', 'focus:ring-2', 'focus:ring-secondary');
             }
         });
-        
+
         // Style checkboxes
         const checkboxes = document.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach(checkbox => {
@@ -226,12 +226,12 @@
             const newForm = document.createElement('div');
             newForm.className = 'image-form';
             newForm.setAttribute('data-form-index', formIndex);
-            
+
             // Create a new form HTML (you might need to adjust this based on your formset structure)
             newForm.innerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start">
                     <div class="md:col-span-1">
-                        <img src="https://placehold.co/150x150/374151/9ca3af?text=New+Image" 
+                        <img src="https://placehold.co/150x150/374151/9ca3af?text=New+Image"
                              alt="New image placeholder" class="image-preview">
                     </div>
                     <div class="md:col-span-3 space-y-4">
@@ -258,7 +258,7 @@
                     </div>
                 </div>
             `;
-            
+
             imageForms.appendChild(newForm);
             totalFormsInput.value = formIndex + 1;
             formIndex++;

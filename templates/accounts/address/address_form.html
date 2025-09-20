@@ -40,7 +40,7 @@
             <!-- Address Form -->
             <form method="post" class="space-y-6" id="addressForm">
                 {% csrf_token %}
-                
+
                 <!-- Non-field errors -->
                 {% if form.non_field_errors %}
                     <div class="bg-red-50 border border-red-200 rounded-lg p-4">

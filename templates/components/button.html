@@ -7,7 +7,7 @@ Variants: primary, secondary, danger, success
 {% load static %}
 
 {% with variant=variant|default:"primary" %}
-<button 
+<button
     type="{{ type|default:'button' }}"
     {% if onclick %}onclick="{{ onclick }}"{% endif %}
     class="

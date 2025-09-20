@@ -106,7 +106,7 @@
                 </div>
 
                 <!-- Payment Button -->
-                <button id="paystackBtn" 
+                <button id="paystackBtn"
                         class="w-full bg-primary-600 text-white px-6 py-4 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3">
                     <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                         <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4zM18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"></path>
@@ -134,7 +134,7 @@
 
             <!-- Cancel Payment -->
             <div class="text-center">
-                <a href="{% url 'accounts:order_detail' order_number=order.order_number %}" 
+                <a href="{% url 'accounts:order_detail' order_number=order.order_number %}"
                    class="text-gray-500 hover:text-gray-700 transition-colors">
                     Cancel payment and return to order
                 </a>
@@ -147,12 +147,12 @@
 document.addEventListener('DOMContentLoaded', function() {
     const paystackBtn = document.getElementById('paystackBtn');
     const loadingState = document.getElementById('loadingState');
-    
+
     paystackBtn.addEventListener('click', function() {
         // Show loading state
         paystackBtn.classList.add('hidden');
         loadingState.classList.remove('hidden');
-        
+
         // Initialize Paystack payment
         const handler = PaystackPop.setup({
             key: '{{ paystack_public_key }}',
@@ -170,10 +170,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 paystackBtn.classList.remove('hidden');
             }
         });
-        
+
         handler.openIframe();
     });
-    
+
     // Auto-trigger payment after 2 seconds
     setTimeout(function() {
         if (!loadingState.classList.contains('hidden')) {

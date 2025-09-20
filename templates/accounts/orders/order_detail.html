@@ -34,7 +34,7 @@
                         <span class="text-2xl font-bold text-gray-900">KES {{ order.total_amount|floatformat:2 }}</span>
                     </div>
                 </div>
-                
+
                 <!-- Order Status -->
                 <div class="text-right">
                     {% if order.status == 'pending' %}
@@ -74,7 +74,7 @@
                             Cancelled
                         </span>
                     {% endif %}
-                    
+
                     <!-- Payment Status -->
                     <div class="mt-2">
                         {% if order.payment_status == 'pending' %}
@@ -144,7 +144,7 @@
                                 <p class="text-sm text-gray-600">{{ order.created_at|date:"F d, Y g:i A" }}</p>
                             </div>
                         </div>
-                        
+
                         {% if order.status != 'cancelled' %}
                             {% if order.status in 'processing,shipped,delivered' %}
                             <div class="flex items-center space-x-4">
@@ -159,7 +159,7 @@
                                 </div>
                             </div>
                             {% endif %}
-                            
+
                             {% if order.status in 'shipped,delivered' %}
                             <div class="flex items-center space-x-4">
                                 <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
@@ -174,7 +174,7 @@
                                 </div>
                             </div>
                             {% endif %}
-                            
+
                             {% if order.status == 'delivered' %}
                             <div class="flex items-center space-x-4">
                                 <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
@@ -301,4 +301,3 @@
     </div>
 </div>
 {% endblock %}
-
