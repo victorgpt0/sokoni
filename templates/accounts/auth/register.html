@@ -14,7 +14,7 @@
         position: relative;
         overflow: hidden;
     }
-    
+
     .auth-container::before {
         content: '';
         position: absolute;
@@ -25,14 +25,14 @@
         background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
         pointer-events: none;
     }
-    
+
     .auth-card {
         background: rgba(255, 255, 255, 0.95);
         backdrop-filter: blur(20px);
         border: 1px solid rgba(255, 255, 255, 0.2);
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
     }
-    
+
     .floating-shapes {
         position: absolute;
         width: 100%;
@@ -40,7 +40,7 @@
         overflow: hidden;
         z-index: 0;
     }
-    
+
     .floating-shape {
         position: absolute;
         background: linear-gradient(45deg, #ed5aff, #ff6b6b);
@@ -48,7 +48,7 @@
         opacity: 0.1;
         animation: float 6s ease-in-out infinite;
     }
-    
+
     .floating-shape:nth-child(1) {
         width: 80px;
         height: 80px;
@@ -56,7 +56,7 @@
         left: 10%;
         animation-delay: 0s;
     }
-    
+
     .floating-shape:nth-child(2) {
         width: 120px;
         height: 120px;
@@ -64,7 +64,7 @@
         right: 10%;
         animation-delay: 2s;
     }
-    
+
     .floating-shape:nth-child(3) {
         width: 60px;
         height: 60px;
@@ -72,53 +72,53 @@
         left: 20%;
         animation-delay: 4s;
     }
-    
+
     @keyframes float {
         0%, 100% { transform: translateY(0px) rotate(0deg); }
         50% { transform: translateY(-20px) rotate(180deg); }
     }
-    
+
     .form-input {
         background: rgba(255, 255, 255, 0.9);
         border: 2px solid rgba(237, 90, 255, 0.2);
         transition: all 0.3s ease;
     }
-    
+
     .form-input:focus {
         background: rgba(255, 255, 255, 1);
         border-color: #ed5aff;
         box-shadow: 0 0 0 3px rgba(237, 90, 255, 0.1);
         transform: translateY(-2px);
     }
-    
+
     .btn-primary-gradient {
         background: linear-gradient(135deg, #ed5aff 0%, #ff6b6b 100%);
         transition: all 0.3s ease;
     }
-    
+
     .btn-primary-gradient:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 25px rgba(237, 90, 255, 0.3);
     }
-    
+
     .social-btn {
         background: rgba(255, 255, 255, 0.9);
         border: 2px solid rgba(237, 90, 255, 0.2);
         transition: all 0.3s ease;
     }
-    
+
     .social-btn:hover {
         background: rgba(237, 90, 255, 0.1);
         border-color: #ed5aff;
         transform: translateY(-2px);
     }
-    
+
     .password-strength {
         height: 4px;
         border-radius: 2px;
         transition: all 0.3s ease;
     }
-    
+
     .strength-weak { background: linear-gradient(90deg, #ef4444 0%, #fca5a5 100%); }
     .strength-fair { background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%); }
     .strength-good { background: linear-gradient(90deg, #10b981 0%, #34d399 100%); }
@@ -134,7 +134,7 @@
         <div class="floating-shape"></div>
         <div class="floating-shape"></div>
     </div>
-    
+
     <div class="max-w-md w-full space-y-8 relative z-10">
         <!-- Main card -->
         <div class="auth-card rounded-3xl p-8">
@@ -148,11 +148,11 @@
                 <h2 class="text-3xl font-bold text-gray-900 mb-2">Join Sokoni</h2>
                 <p class="text-gray-600">Create your account and start shopping</p>
             </div>
-            
+
             <!-- Register Form -->
             <form method="post" class="space-y-6" id="registerForm">
                 {% csrf_token %}
-                
+
                 <!-- Non-field errors -->
                 {% if form.non_field_errors %}
                     <div class="bg-red-50 border border-red-200 rounded-xl p-4 animate-pulse">
@@ -295,13 +295,13 @@
                             </svg>
                         </button>
                     </div>
-                    
+
                     <!-- Password Strength Indicator -->
                     <div class="mt-2">
                         <div class="password-strength" id="password-strength"></div>
                         <p class="text-xs text-gray-500 mt-1" id="password-feedback"></p>
                     </div>
-                    
+
                     {% if form.password1.errors %}
                         <div class="space-y-1">
                             {% for error in form.password1.errors %}
@@ -356,9 +356,9 @@
                     </div>
                     <div class="ml-3 text-sm">
                         <label for="terms" class="text-gray-700">
-                            I agree to the 
+                            I agree to the
                             <a href="#" class="text-primary-600 hover:text-primary-500 font-medium">Terms of Service</a>
-                            and 
+                            and
                             <a href="#" class="text-primary-600 hover:text-primary-500 font-medium">Privacy Policy</a>
                         </label>
                     </div>
@@ -407,7 +407,7 @@
             <!-- Sign In Link -->
             <div class="mt-8 text-center">
                 <p class="text-sm text-gray-600">
-                    Already have an account? 
+                    Already have an account?
                     <a href="{% url 'accounts:login' %}" class="font-semibold text-primary-600 hover:text-primary-500 transition-colors">
                         Sign in here
                     </a>
@@ -421,7 +421,7 @@
 function togglePassword(fieldId) {
     const passwordInput = document.querySelector(`input[name="${fieldId}"]`);
     const eyeIcon = document.getElementById(`eye-icon-${fieldId === 'password1' ? '1' : '2'}`);
-    
+
     if (passwordInput.type === 'password') {
         passwordInput.type = 'text';
         eyeIcon.innerHTML = `
@@ -441,27 +441,27 @@ function togglePassword(fieldId) {
 function checkPasswordStrength(password) {
     let strength = 0;
     let feedback = [];
-    
+
     if (password.length >= 8) strength++;
     else feedback.push('At least 8 characters');
-    
+
     if (/[a-z]/.test(password)) strength++;
     else feedback.push('Lowercase letter');
-    
+
     if (/[A-Z]/.test(password)) strength++;
     else feedback.push('Uppercase letter');
-    
+
     if (/[0-9]/.test(password)) strength++;
     else feedback.push('Number');
-    
+
     if (/[^A-Za-z0-9]/.test(password)) strength++;
     else feedback.push('Special character');
-    
+
     const strengthBar = document.getElementById('password-strength');
     const feedbackText = document.getElementById('password-feedback');
-    
+
     strengthBar.className = 'password-strength';
-    
+
     if (strength <= 2) {
         strengthBar.classList.add('strength-weak');
         feedbackText.textContent = 'Weak password';
@@ -486,7 +486,7 @@ document.querySelector('input[name="password1"]').addEventListener('input', func
 document.getElementById('registerForm').addEventListener('submit', function() {
     const submitBtn = this.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
-    
+
     submitBtn.innerHTML = `
         <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

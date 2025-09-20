@@ -39,7 +39,7 @@
         <p class="text-xl text-gray-600 mb-6">
             We're sorry, but your payment could not be processed at this time.
         </p>
-        
+
         <!-- Error Details -->
         <div class="bg-red-50 border border-red-200 rounded-xl p-6 max-w-md mx-auto mb-8">
             <div class="flex items-center justify-center space-x-3 mb-3">
@@ -105,23 +105,23 @@
     <!-- Action Buttons -->
     <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-6 mb-12">
         {% if order %}
-            <button onclick="retryPayment()" 
+            <button onclick="retryPayment()"
                     class="retry-btn bg-primary-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-primary-700 transition-all duration-300">
                 Try Payment Again
             </button>
         {% else %}
-            <a href="{% url 'orders:checkout' %}" 
+            <a href="{% url 'orders:checkout' %}"
                class="retry-btn bg-primary-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-primary-700 transition-all duration-300">
                 Return to Checkout
             </a>
         {% endif %}
-        
-        <a href="{% url 'cart:cart_detail' %}" 
+
+        <a href="{% url 'cart:cart_detail' %}"
            class="bg-gray-100 border border-gray-300 text-gray-700 px-8 py-4 rounded-lg font-medium hover:bg-gray-200 transition-colors">
             Return to Cart
         </a>
-        
-        <a href="{% url 'products:product_list' %}" 
+
+        <a href="{% url 'products:product_list' %}"
            class="bg-gray-100 border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors">
             Continue Shopping
         </a>
@@ -149,10 +149,10 @@
                     <span class="text-yellow-600 font-medium ml-2">Payment Pending</span>
                 </div>
             </div>
-            
+
             <div class="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p class="text-yellow-700 text-sm">
-                    <strong>Don't worry!</strong> Your order has been saved and is waiting for payment. 
+                    <strong>Don't worry!</strong> Your order has been saved and is waiting for payment.
                     You can try again using the same or different payment method.
                 </p>
             </div>
@@ -191,7 +191,7 @@
     <div class="mt-8 text-center">
         <p class="text-gray-600 mb-4">Still having trouble? Our support team is here to help.</p>
         <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6">
-            <a href="mailto:support@sokoni.com" 
+            <a href="mailto:support@sokoni.com"
                class="inline-flex items-center space-x-2 text-primary-600 hover:text-primary-700 transition-colors">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
@@ -199,7 +199,7 @@
                 </svg>
                 <span>support@sokoni.com</span>
             </a>
-            <a href="tel:+254700000000" 
+            <a href="tel:+254700000000"
                class="inline-flex items-center space-x-2 text-primary-600 hover:text-primary-700 transition-colors">
                 <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
@@ -231,7 +231,7 @@ function showNotification(message, type) {
     let bgColor = 'bg-blue-500';
     if (type === 'error') bgColor = 'bg-red-500';
     if (type === 'success') bgColor = 'bg-green-500';
-    
+
     notification.className = `fixed bottom-4 right-4 p-4 rounded-lg text-white z-50 ${bgColor} max-w-sm`;
     notification.innerHTML = `
         <div class="flex items-start space-x-3">
@@ -247,7 +247,7 @@ function showNotification(message, type) {
         </div>
     `;
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
         if (notification.parentElement) {
             notification.remove();

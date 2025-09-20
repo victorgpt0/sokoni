@@ -41,7 +41,7 @@
                     <span class="text-2xl font-bold text-white">${{ order.total_amount|floatformat:2 }}</span>
                 </div>
             </div>
-            
+
             <!-- Order Status -->
             <div class="text-right">
                 {% if order.status == 'pending' %}
@@ -88,7 +88,7 @@
                         Cancelled
                     </span>
                 {% endif %}
-                
+
                 <!-- Payment Status -->
                 <div class="mt-2">
                     {% if order.payment_status == 'pending' %}
@@ -114,16 +114,16 @@
 
         <!-- Action Buttons -->
         <div class="flex items-center space-x-4 mt-6">
-            <a href="{% url 'accounts:order_history' %}" 
+            <a href="{% url 'accounts:order_history' %}"
                class="inline-flex items-center space-x-2 bg-white/10 border border-white/20 text-white px-4 py-2 rounded-lg hover:bg-white/20 transition-colors">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
                 </svg>
                 <span>Back to Orders</span>
             </a>
-            
+
             {% if order.status != 'cancelled' and order.status != 'delivered' %}
-                <button onclick="cancelOrder()" 
+                <button onclick="cancelOrder()"
                         class="inline-flex items-center space-x-2 bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-2 rounded-lg hover:bg-red-500/30 transition-colors">
                     <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -131,8 +131,8 @@
                     <span>Cancel Order</span>
                 </button>
             {% endif %}
-            
-            <button onclick="downloadInvoice()" 
+
+            <button onclick="downloadInvoice()"
                     class="inline-flex items-center space-x-2 bg-secondary text-primary px-4 py-2 rounded-lg hover:bg-secondary/90 transition-colors">
                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd"></path>
@@ -148,7 +148,7 @@
             <!-- Order Timeline -->
             <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
                 <h2 class="text-xl font-bold text-white mb-6">Order Timeline</h2>
-                
+
                 <div class="space-y-6">
                     <!-- Order Placed -->
                     <div class="timeline-item flex items-start space-x-4">
@@ -254,7 +254,7 @@
             <!-- Order Items -->
             <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
                 <h2 class="text-xl font-bold text-white mb-6">Order Items</h2>
-                
+
                 <div class="space-y-4">
                     {% for item in order.items.all %}
                         <div class="order-item flex items-start space-x-4 p-4 rounded-lg border border-white/10">
@@ -262,7 +262,7 @@
                             <div class="w-20 h-20 bg-gray-700 rounded-lg overflow-hidden flex-shrink-0">
                                 {% with item.product.images.first as image %}
                                     {% if image %}
-                                        <img src="{{ image.image.url }}" alt="{{ item.product.name }}" 
+                                        <img src="{{ image.image.url }}" alt="{{ item.product.name }}"
                                              class="w-full h-full object-cover">
                                     {% else %}
                                         <div class="w-full h-full flex items-center justify-center">
@@ -277,13 +277,13 @@
                             <!-- Product Details -->
                             <div class="flex-1">
                                 <h3 class="font-semibold text-white mb-1">
-                                    <a href="{% url 'products:product_detail' item.product.slug %}" 
+                                    <a href="{% url 'products:product_detail' item.product.slug %}"
                                        class="hover:text-secondary transition-colors">
                                         {{ item.product.name }}
                                     </a>
                                 </h3>
                                 <p class="text-sm text-gray-400 mb-2">{{ item.product.category.name }}</p>
-                                
+
                                 <div class="flex items-center justify-between">
                                     <div class="text-sm text-gray-300">
                                         <span>Qty: {{ item.quantity }}</span>
@@ -306,7 +306,7 @@
             <!-- Order Summary -->
             <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
                 <h3 class="text-lg font-semibold text-white mb-6">Order Summary</h3>
-                
+
                 <div class="space-y-4">
                     <div class="flex justify-between text-gray-300">
                         <span>Subtotal</span>
@@ -326,9 +326,9 @@
                         <span>Tax</span>
                         <span>${{ order.tax_amount|floatformat:2 }}</span>
                     </div>
-                    
+
                     <hr class="border-white/20">
-                    
+
                     <div class="flex justify-between text-xl font-bold text-white">
                         <span>Total</span>
                         <span>${{ order.total_amount|floatformat:2 }}</span>
@@ -339,7 +339,7 @@
             <!-- Shipping Address -->
             <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
                 <h3 class="text-lg font-semibold text-white mb-4">Shipping Address</h3>
-                
+
                 <div class="text-gray-300 text-sm space-y-1">
                     <p class="font-medium text-white">{{ order.shipping_address.full_name }}</p>
                     <p>{{ order.shipping_address.street_address }}</p>
@@ -358,7 +358,7 @@
             {% if order.billing_address and order.billing_address != order.shipping_address %}
                 <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
                     <h3 class="text-lg font-semibold text-white mb-4">Billing Address</h3>
-                    
+
                     <div class="text-gray-300 text-sm space-y-1">
                         <p class="font-medium text-white">{{ order.billing_address.full_name }}</p>
                         <p>{{ order.billing_address.street_address }}</p>
@@ -377,7 +377,7 @@
             <!-- Payment Information -->
             <div class="bg-white/10 backdrop-blur-lg rounded-xl p-6 border border-white/20">
                 <h3 class="text-lg font-semibold text-white mb-4">Payment Information</h3>
-                
+
                 <div class="space-y-3">
                     <div class="flex items-center space-x-3">
                         <div class="w-12 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded flex items-center justify-center">
@@ -388,7 +388,7 @@
                             <p class="text-gray-400 text-sm">Payment Gateway</p>
                         </div>
                     </div>
-                    
+
                     {% if order.payment_reference %}
                         <div class="text-sm">
                             <span class="text-gray-400">Reference:</span>
@@ -406,7 +406,7 @@ function cancelOrder() {
     if (!confirm('Are you sure you want to cancel this order?')) {
         return;
     }
-    
+
     fetch(`{% url 'orders:cancel_order' order.id %}`, {
         method: 'POST',
         headers: {
@@ -436,7 +436,7 @@ function showNotification(message, type) {
     notification.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-50 ${type === 'success' ? 'bg-green-500' : 'bg-red-500'}`;
     notification.textContent = message;
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
         notification.remove();
     }, 3000);

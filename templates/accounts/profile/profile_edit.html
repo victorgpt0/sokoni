@@ -36,7 +36,7 @@
             <!-- Profile Edit Form -->
             <form method="post" class="space-y-6" id="profileEditForm">
                 {% csrf_token %}
-                
+
                 <!-- Non-field errors for user form -->
                 {% if user_form.non_field_errors %}
                     <div class="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -238,12 +238,12 @@
 
                 <!-- Form Actions -->
                 <div class="flex items-center justify-between pt-6 border-t border-gray-200">
-                    <a href="{% url 'accounts:profile' %}" 
+                    <a href="{% url 'accounts:profile' %}"
                        class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-6 py-2 rounded-lg transition-colors">
                         Cancel
                     </a>
-                    
-                    <button type="submit" 
+
+                    <button type="submit"
                             class="bg-primary-600 hover:bg-primary-700 text-white px-8 py-2 rounded-lg font-semibold transition-colors">
                         Save Changes
                     </button>

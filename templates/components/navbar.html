@@ -1,4 +1,4 @@
-<header class="bg-white shadow-soft sticky top-0 z-40" x-data="{ 
+<header class="bg-white shadow-soft sticky top-0 z-40" x-data="{
     mobileMenuOpen: false,
     searchOpen: false,
     userMenuOpen: false,
@@ -8,7 +8,7 @@
             this.searchResults = [];
             return;
         }
-        
+
         // For now, redirect to product list with search query
         // TODO: Implement AJAX search API
         window.location.href = `/products/?search=${encodeURIComponent(this.searchQuery)}`;
@@ -67,7 +67,7 @@
             <!-- Desktop Search -->
             <div class="hidden lg:flex flex-1 max-w-2xl mx-8 relative">
                 <div class="w-full relative">
-                    <input type="text" 
+                    <input type="text"
                            x-model="searchQuery"
                            @keyup.enter="searchProducts()"
                            placeholder="Search for products, brands, or categories..."
@@ -110,7 +110,7 @@
                 <!-- User Menu -->
                 {% if user.is_authenticated %}
                     <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" 
+                        <button @click="open = !open"
                                 class="flex items-center space-x-2 text-gray-600 hover:text-primary-600 transition-colors">
                             <div class="w-8 h-8 bg-gradient-to-br from-primary-600 to-secondary-600 rounded-full flex items-center justify-center">
                                 <span class="text-white font-medium text-sm">
@@ -124,7 +124,7 @@
                         </button>
 
                         <!-- Dropdown Menu -->
-                        <div x-show="open" 
+                        <div x-show="open"
                              @click.away="open = false"
                              x-transition:enter="transition ease-out duration-200"
                              x-transition:enter-start="transform opacity-0 scale-95"
@@ -205,7 +205,7 @@
                 {% endif %}
 
                 <!-- Mobile menu button -->
-                <button @click="mobileMenuOpen = !mobileMenuOpen" 
+                <button @click="mobileMenuOpen = !mobileMenuOpen"
                         class="lg:hidden text-gray-600 hover:text-primary-600 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path x-show="!mobileMenuOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
@@ -218,7 +218,7 @@
         <!-- Mobile Search -->
         <div class="lg:hidden mb-4">
             <div class="relative">
-                <input type="text" 
+                <input type="text"
                        x-model="searchQuery"
                        @keyup.enter="searchProducts()"
                        placeholder="Search products..."
@@ -254,7 +254,7 @@
     </div>
 
     <!-- Mobile Menu -->
-    <div x-show="mobileMenuOpen" 
+    <div x-show="mobileMenuOpen"
          x-transition:enter="transition ease-out duration-200"
          x-transition:enter-start="transform opacity-0 scale-95"
          x-transition:enter-end="transform opacity-100 scale-100"
@@ -275,9 +275,9 @@
                     <a href="{% url 'products:product_list' %}?category=books" class="block py-2 text-gray-600 hover:text-primary-600 transition-colors">Books</a>
                 </div>
             </div>
-            
+
             <hr class="border-gray-200">
-            
+
             <div class="space-y-2">
                 <h3 class="text-sm font-semibold text-gray-900 uppercase tracking-wider">Quick Links</h3>
                 <div class="space-y-1">

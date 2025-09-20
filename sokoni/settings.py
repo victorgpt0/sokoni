@@ -10,10 +10,12 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-from pathlib import Path
-import environ
 import os
 from decimal import Decimal
+from pathlib import Path
+
+import environ
+from django.contrib.messages import constants as messages
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,22 +24,22 @@ env = environ.Env(
     DEBUG=(bool, False),
 )
 
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-DEBUG = env('DEBUG')
-SECRET_KEY = env('SECRET_KEY', default='django-insecure-key')
+DEBUG = env("DEBUG")
+SECRET_KEY = env("SECRET_KEY", default="django-insecure-key")
 
 ALLOWED_HOSTS = [
-    '491bc5dd1d1a.ngrok-free.app',
-    '127.0.0.1',
-    'localhost',
+    "491bc5dd1d1a.ngrok-free.app",
+    "127.0.0.1",
+    "localhost",
 ]
 
 # CSRF settings for ngrok
 CSRF_TRUSTED_ORIGINS = [
-    'https://491bc5dd1d1a.ngrok-free.app',
-    'http://127.0.0.1:8000',
-    'http://localhost:8000',
+    "https://491bc5dd1d1a.ngrok-free.app",
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
 ]
 
 # Additional security settings for ngrok development
@@ -46,76 +48,71 @@ SESSION_COOKIE_SECURE = False  # Set to True in production
 SECURE_SSL_REDIRECT = False  # Set to True in production
 
 # For ngrok development - allow insecure cookies
-CSRF_COOKIE_SAMESITE = 'Lax'
-SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "Lax"
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-
+    "django.contrib.admin",
+    "django.contrib.auth",
+    "django.contrib.contenttypes",
+    "django.contrib.sessions",
+    "django.contrib.messages",
+    "django.contrib.staticfiles",
     # Third party apps
-    'widget_tweaks',
-
+    "widget_tweaks",
     # Local apps
-    'accounts',
-    'products',
-    'cart',
-    'coupons',
-    'orders',
-    'payments',
-    'wishlist',
+    "accounts",
+    "products",
+    "cart",
+    "coupons",
+    "orders",
+    "payments",
+    "wishlist",
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    
-    #AuditTimestampModel requires the current user
-    'sokoni.middleware.CurrentUserMiddleware',
-
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.common.CommonMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    # AuditTimestampModel requires the current user
+    "sokoni.middleware.CurrentUserMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-ROOT_URLCONF = 'sokoni.urls'
+ROOT_URLCONF = "sokoni.urls"
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'wishlist.context_processors.wishlist_count',
-                'django.contrib.messages.context_processors.messages',
-                'cart.context_processors.cart_context',
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [BASE_DIR / "templates"],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "wishlist.context_processors.wishlist_count",
+                "django.contrib.messages.context_processors.messages",
+                "cart.context_processors.cart_context",
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = 'sokoni.wsgi.application'
+WSGI_APPLICATION = "sokoni.wsgi.application"
 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db(),  # Automatically reads DATABASE_URL
+    "default": env.db(),  # Automatically reads DATABASE_URL
 }
 
 
@@ -124,16 +121,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
     },
     {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
     },
 ]
 
@@ -141,9 +138,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = "en-us"
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "UTC"
 
 USE_I18N = True
 
@@ -153,57 +150,57 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
-MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_URL = "media/"
+MEDIA_ROOT = BASE_DIR / "media"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-LOGIN_URL = '/accounts/login/'
-LOGIN_REDIRECT_URL = '/accounts/dashboard/'
-LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = "/accounts/login/"
+LOGIN_REDIRECT_URL = "/accounts/dashboard/"
+LOGOUT_REDIRECT_URL = "/"
 
 # Session configuration
 SESSION_COOKIE_AGE = 86400 * 30  # 30 days
 SESSION_SAVE_EVERY_REQUEST = True
 
 # Messages framework
-from django.contrib.messages import constants as messages
+
 MESSAGE_TAGS = {
-    messages.DEBUG: 'debug',
-    messages.INFO: 'info',
-    messages.SUCCESS: 'success',
-    messages.WARNING: 'warning',
-    messages.ERROR: 'danger',
+    messages.DEBUG: "debug",
+    messages.INFO: "info",
+    messages.SUCCESS: "success",
+    messages.WARNING: "warning",
+    messages.ERROR: "danger",
 }
 
 # Ecommerce specific settings
-CART_SESSION_ID = 'cart'
+CART_SESSION_ID = "cart"
 CART_ITEM_MAX_QUANTITY = 99
 
 # Currency settings
-CURRENCY_CODE = 'KES'
-CURRENCY_SYMBOL = 'KES'
+CURRENCY_CODE = "KES"
+CURRENCY_SYMBOL = "KES"
 
 # Email settings
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # For development
-DEFAULT_FROM_EMAIL = 'noreply@sokoni.com'
-ADMIN_EMAIL = 'admin@sokoni.com'  # Admin email for notifications
-SITE_URL = 'http://localhost:8000'  # Site URL for email links
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"  # For development
+DEFAULT_FROM_EMAIL = "noreply@sokoni.com"
+ADMIN_EMAIL = "admin@sokoni.com"  # Admin email for notifications
+SITE_URL = "http://localhost:8000"  # Site URL for email links
 
 # Tax settings (Kenyan VAT rate)
-TAX_RATE = Decimal('0.16')  # 16% VAT in Kenya
+TAX_RATE = Decimal("0.16")  # 16% VAT in Kenya
 
 # Shipping settings
-FREE_SHIPPING_THRESHOLD = Decimal('5000.00')  # KES 5000 for free shipping
-DEFAULT_SHIPPING_COST = Decimal('500.00')  # KES 500 default shipping
+FREE_SHIPPING_THRESHOLD = Decimal("5000.00")  # KES 5000 for free shipping
+DEFAULT_SHIPPING_COST = Decimal("500.00")  # KES 500 default shipping
 
 # Pagination
 PRODUCTS_PER_PAGE = 12
@@ -211,11 +208,11 @@ ORDERS_PER_PAGE = 10
 
 # Image settings
 PRODUCT_IMAGE_MAX_SIZE = 2 * 1024 * 1024  # 2MB
-ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.webp']
+ALLOWED_IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png", ".webp"]
 
 # Paystack settings
-PAYSTACK_PUBLIC_KEY = env('PAYSTACK_PUBLIC_KEY', default='')
-PAYSTACK_SECRET_KEY = env('PAYSTACK_SECRET_KEY', default='')
+PAYSTACK_PUBLIC_KEY = env("PAYSTACK_PUBLIC_KEY", default="")
+PAYSTACK_SECRET_KEY = env("PAYSTACK_SECRET_KEY", default="")
 
 # Paystack webhook URL for ngrok development
 # Set this in your Paystack dashboard: https://491bc5dd1d1a.ngrok-free.app/payments/webhook/paystack/
