@@ -19,6 +19,7 @@ FROM base AS builder
 # into this layer.
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
+    python -m pip install --upgrade pip \
     python -m pip install --user -r requirements.txt
 
 # Production stage

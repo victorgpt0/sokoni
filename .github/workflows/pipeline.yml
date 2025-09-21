@@ -60,10 +60,11 @@ jobs:
           docker build -t ${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }} -t ${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-latest .
 
       - name: Run Django Check
-        env:
-          DATABASE_URL: ${{ secrets.TEST_DB_URL }}
         run: |
-          docker run --rm ${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }} python manage.py check
+          docker run \
+          -e DATABASE_URL=${{ secrets.TEST_DB_URL }} \
+          --rm ${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }} \
+          python manage.py check
 
 
 
