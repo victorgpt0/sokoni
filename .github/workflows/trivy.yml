@@ -30,13 +30,13 @@ jobs:
               uses: aquasecurity/trivy-action@0.28.0
               with:
                 image-ref: '${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }}'
-                format: 'template'
-                template: "@$HOME/.local/bin/trivy-bin/contrib/html.tpl"
+                format: 'sarif'
                 output: 'trivy-results.sarif'
                 severity: 'CRITICAL,HIGH'
             
             - name: Upload Results to GitHub Security
               uses: github/codeql-action/upload-sarif@v3
+              if: always()
               with: 
                 sarif_file: 'trivy-results.sarif'
 
