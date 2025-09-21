@@ -5,7 +5,7 @@ on:
     push:
         branches: [ main, staging, development ]
     schedule:
-        - cron: $cron-weekly
+        - cron: '0 0 * * 0'
 
 permissions:
     security-events: write
