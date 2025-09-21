@@ -31,7 +31,7 @@ jobs:
               with:
                 image-ref: '${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }}'
                 format: 'template'
-                template: '@/contrib/sarif.tp1'
+                template: "@$HOME/.local/bin/trivy-bin/contrib/html.tpl"
                 output: 'trivy-results.sarif'
                 severity: 'CRITICAL,HIGH'
             
