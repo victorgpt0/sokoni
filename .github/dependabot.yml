@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/" # where your requirements.txt lives
+    schedule:
+      interval: "weekly"
+    # 👇 Force Dependabot to resolve with Python 3.12
+    python-version: "3.12"
+    # Optional: limit open PRs
+    open-pull-requests-limit: 5
