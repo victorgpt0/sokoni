@@ -1,4 +1,5 @@
 name: Sonarqube Scan
+run-name: Static App Security Testing on Sokoni 🧿
 on:
   push:
     branches: [ main, staging, development ]
@@ -16,7 +17,3 @@ jobs:
         uses: SonarSource/sonarqube-scan-action@v5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ vars.SONAR_ORG }}
