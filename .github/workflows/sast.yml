@@ -37,6 +37,11 @@ jobs:
       
       - name: Perform Analysis
         uses: github/codeql-action/analyze@v3
+        with:
+          upload: false
+          
+      - name: Show SARIF results
+        run: cat ./results/*.sarif
 
 
 
