@@ -2,8 +2,6 @@ name: Trivy Docker Image Scan
 run-name: Trivy is scanning Sokoni Docker Image 🐋
 
 on: 
-    push:
-        branches: [ main, staging, development ]
     schedule:
         - cron: '0 0 * * 0'
 
