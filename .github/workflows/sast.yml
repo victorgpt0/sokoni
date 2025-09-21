@@ -1,11 +1,45 @@
-name: Sonarqube Scan
+name: SAST Scan
 run-name: Static App Security Testing on Sokoni 🧿
 on:
   push:
     branches: [ main, staging, development ]
   pull_request:
     types: [opened, synchronize, reopened]
+  schedule: 
+    - cron: '0 0 * * 0'
+
 jobs:
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Init CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+      
+      - name: Build Pip Deps
+        run: |
+          pip install -r requirements.txt
+      
+      - name: Perform Analysis
+        uses: github/codeql-action/analyze@v3
+
+
+
   sonarqube:
     name: SonarQube
     runs-on: ubuntu-latest
