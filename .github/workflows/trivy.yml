@@ -1,4 +1,5 @@
 name: Trivy Docker Image Scan
+run-name: Trivy is scanning Sokoni Docker Image 🐋
 
 on: 
     push:
