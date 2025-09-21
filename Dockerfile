@@ -52,16 +52,7 @@ USER appuser
 EXPOSE 8000
 
 # Run the application.
-CMD ["/bin/sh", "-c", "\
-    if [ \"$DJANGO_ENV\" = 'development' ]; then \
-        echo '🚀 Starting in development mode...'; \
-        python manage.py runserver 0.0.0.0:8000; \
-    else \
-        echo '🧿 Collecting static files...'; \
-        python manage.py collectstatic --noinput; \
-        echo '🔄 Running migrations...'; \
-        python manage.py migrate --noinput; \
-        echo '🚀 Starting in production mode..'; \
-        gunicorn 'sokoni.wsgi' --bind=0.0.0.0:8000; \
-    fi \
-    "]
+CMD ["gunicorn", "sokoni.wsgi:application", "--bind=0.0.0.0:8000", "--workers=4", "--threads=2", "--timeout=120"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl --fail http://localhost:8000/ || exit 1
