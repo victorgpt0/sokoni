@@ -34,9 +34,10 @@ jobs:
                 output: 'trivy-results.sarif'
                 severity: 'CRITICAL,HIGH'
             
-            - name: Upload Results to GitHub Security
-              uses: github/codeql-action/upload-sarif@v3
+            - name: Upload Results as Artifact
+              uses: actions/upload-artifact@v4
               if: always()
               with: 
-                sarif_file: 'trivy-results.sarif'
+                name: trivy-scan-results
+                path: 'trivy-results.sarif'
 
