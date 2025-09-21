@@ -69,7 +69,7 @@ jobs:
         run: |
           docker run \
           -e DATABASE_URL=${{ secrets.TEST_DB_URL }} \
-          --rm ${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }} \
+          --rm ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }} \
           python manage.py check
 
       - name: Push Image to DockerHub
