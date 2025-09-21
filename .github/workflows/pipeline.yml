@@ -3,8 +3,7 @@ run-name: ${{ github.actor }} is deploying Sokoni on Branch ${{ github.ref }} ðŸ
 on:
     push:
         branches: [ main, staging, development ]
-    pull_request:
-        branches: [ main, staging ]
+
 jobs:
   # test:
   #   name: Run Django Tests
@@ -74,10 +73,10 @@ jobs:
 
       - name: Push Image to DockerHub
         run: |
-          docker push ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-latest
+          docker push --all-tags ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}
 
 
-  deploy:
+  deploy-staging:
     runs-on: ubuntu-latest
     needs: build
     steps:
