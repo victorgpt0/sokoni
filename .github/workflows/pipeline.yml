@@ -49,18 +49,18 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 
+      - name: Checkout
         uses: actions/checkout@v5
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker Image
-        run: | 
+        run: |
           docker build -t ${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }} -t ${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-latest .
 
       - name: Run Django Check
-        run: | 
+        run: |
           docker run --rm ${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }} python manage.py check
 
 
