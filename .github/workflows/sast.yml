@@ -38,11 +38,18 @@ jobs:
       - name: Perform Analysis
         uses: github/codeql-action/analyze@v3
         with:
+          output: 'codeql_results'
           upload: false
-          
-      - name: Show SARIF results
-        run: cat ./results/*.sarif
 
+      - name: Show SARIF results
+        run: cat ./codeql_results/*.sarif
+
+      - name: Upload Results as Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with: 
+          name: codeql-results
+          path: 'codeql_results'
 
 
   sonarqube:
