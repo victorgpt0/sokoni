@@ -50,6 +50,7 @@ jobs:
         with:
           target: 'http://localhost:8000'
           cmd_options: '-r zap_report.html'
+          docker_name: 'ghcr.io/zaproxy/zap-stable'
           
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
