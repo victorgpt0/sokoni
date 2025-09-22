@@ -1,0 +1,41 @@
+name: DAST Scan
+run-name: Dynamic App Security Testing on Sokoni 🧿
+on:
+  push:
+    branches: [ main, staging, development ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+  schedule: 
+    - cron: '0 0 * * 0'
+
+jobs:
+
+  zap: 
+    name: OWASP ZAP Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python Environment
+        uses: actions/setup-python@v4
+        with:
+            python-version: 3.12
+
+      - name: Start Application
+        run: |
+          docker-compose up -d -e DATABASE_URL=${{ secrets.TEST_DB_URL }}
+        
+      - name: Wait for Application to be Ready
+        run: |
+          echo "Waiting for application to be ready..."
+          sleep 20
+
+      - name: Run OWASP ZAP Baseline Scan
+        uses: zaproxy/action-baseline@v0.6.0
+        with:
+          target: 'http://localhost:8000'
+          cmd_options: '-r zap_report.html'
+      - name: Upload ZAP Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: zap-report
+          path: 'zap_report.html'
