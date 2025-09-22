@@ -25,22 +25,41 @@ jobs:
 
       - name: Run Container
         run: |
-          docker run \
+          docker run -d \
+            --name sokoni-app \
             -e DATABASE_URL=${{ secrets.TEST_DB_URL }} \
-            --rm ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }} 
-        
-      - name: Wait for Application to be Ready
+            -p 8000:8000 \
+            ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }}
+
+      - name: Wait for App to be Ready
         run: |
-          echo "Waiting for application to be ready..."
-          sleep 30
+          for i in {1..30}; do
+            if curl -s http://localhost:8000/ > /dev/null; then
+              echo "Up!"
+              exit 0
+            fi
+            echo "Waiting..."
+            sleep 5
+          done
+          echo ""Failed to start" >&2
+          docker logs sokoni-app
+          exit 1
 
       - name: Run OWASP ZAP Baseline Scan
         uses: zaproxy/action-baseline@v0.6.0
         with:
           target: 'http://localhost:8000'
           cmd_options: '-r zap_report.html'
+          
       - name: Upload ZAP Report
         uses: actions/upload-artifact@v4
         with:
           name: zap-report
           path: 'zap_report.html'
+
+      - name: Stop Django Container
+        if: always()
+        run: |
+          docker stop sokoni-app
+          docker rm sokoni-app
+          
