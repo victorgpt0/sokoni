@@ -11,6 +11,10 @@ on:
 jobs:
 
   zap: 
+    permissions:
+      contents: read
+      issues: write
+      
     name: OWASP ZAP Scan
     runs-on: ubuntu-latest
     steps:
