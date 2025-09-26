@@ -46,6 +46,7 @@ jobs:
   build:
     permissions:
       id-token: write
+      contents: read
 
     name: Build and Push Docker Image
     needs: test
