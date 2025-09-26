@@ -2,7 +2,7 @@ name: DAST Scan
 run-name: Dynamic App Security Testing on Sokoni 🧿
 on:
   push:
-    branches: [ main, staging, development ]
+    branches: [ main, staging ]
   pull_request:
     types: [opened, synchronize, reopened]
   schedule: 

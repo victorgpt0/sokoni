@@ -2,7 +2,7 @@ name: Sokoni CI/CD Pipeline
 run-name: ${{ github.actor }} is deploying Sokoni on Branch ${{ github.ref }} 🚀
 on:
     push:
-        branches: [ main, staging ]
+        branches: [ main, staging, development ]
 
 jobs:
   test:
@@ -44,6 +44,9 @@ jobs:
           python manage.py test
 
   build:
+    permissions:
+      id-token: write
+
     name: Build and Push Docker Image
     needs: test
     runs-on: ubuntu-latest
@@ -51,12 +54,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
 
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with: 
-          username: ${{ vars.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ECR_ROLE_ARN }}
+          aws-region: us-east-1
 
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+        
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -87,8 +94,10 @@ jobs:
           python manage.py check
 
       - name: Push Image to DockerHub
+        env:
+          AWS_ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         run: |
-          docker push --all-tags ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}
+          docker push --all-tags $REGISTRY/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}
 
 
   deploy-staging:
