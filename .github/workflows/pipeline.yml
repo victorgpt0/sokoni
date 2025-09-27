@@ -134,7 +134,6 @@ jobs:
           cd .github/infra/staging
           terraform init
           terraform plan -var="container_image=418272801832.dkr.ecr.us-east-1.amazonaws.com/victor/sokoni:development-latest" \
-            -var="vault_addr=${{ secrets.VAULT_ADDR }}" \
-            -var="vault_token=${{ secrets.VAULT_TOKEN }}"
+            -input=false
           terraform validate
-          terraform apply -auto-approve
+          terraform apply -auto-approve -input=false

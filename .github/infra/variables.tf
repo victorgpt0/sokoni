@@ -82,14 +82,3 @@ variable "alb_sg_cidr_blocks" {
   type    = list(string)
   default = ["0.0.0.0/0"]
 }
-
-variable "vault_addr" {
-  description = "Vault address"
-  type        = string
-}
-
-variable "vault_token" {
-  description = "Vault token for fetching secrets"
-  type        = string
-  sensitive   = true
-}
