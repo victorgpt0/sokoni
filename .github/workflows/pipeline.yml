@@ -126,6 +126,9 @@ jobs:
           role-to-assume: ${{ secrets.AWS_TF_ROLE_ARN }}
           aws-region: us-east-1
 
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+
       - name: Navigate to Infra Directory
         run: cd .github/infra/staging
 
