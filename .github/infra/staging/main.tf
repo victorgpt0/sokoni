@@ -22,7 +22,7 @@ module "app" {
     db_allocated_storage = 20
     db_multi_az = false
     db_storage_type = "gp2"
-    vault_db_secret_path = "kv/data/sokoni/staging/db"
+    vault_db_secret_path = "/v1/admin/sokoni/kv/data/sokoni/staging/db"
 
     vault_addr = var.vault_addr
     vault_token = var.vault_token
