@@ -28,7 +28,7 @@ variable "task_memory" {
   default = 512
 }
 variable "container_image" {
-  type    = string  
+  type    = string
 }
 variable "desired_count" {
   type    = number

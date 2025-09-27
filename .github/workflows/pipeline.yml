@@ -129,11 +129,9 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
-      - name: Navigate to Infra Directory
-        run: cd .github/infra/staging
-
       - name: Terraform Init & Apply
         run: |
+          cd home/runner/sokoni/.github/infra/staging
           terraform init
           terraform plan
           terraform validate
