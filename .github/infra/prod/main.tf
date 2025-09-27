@@ -13,6 +13,7 @@ module "app" {
     task_cpu = 256
     task_memory = 512
     desired_count = 2
+    container_image = var.container_image
    
     db_port = 5432
     db_engine = "postgres"

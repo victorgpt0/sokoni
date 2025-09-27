@@ -13,6 +13,7 @@ module "app" {
     task_cpu = 256
     task_memory = 512
     desired_count = 1
+    container_image = var.container_image
    
     db_port = 5432
     db_engine = "postgres"
@@ -22,5 +23,5 @@ module "app" {
     db_multi_az = false
     db_storage_type = "gp2"
     vault_db_secret_path = "kv/data/sokoni/staging/db"
-    
+
 }
