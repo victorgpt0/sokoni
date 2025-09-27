@@ -27,8 +27,8 @@ variable "task_memory" {
   type    = number
   default = 512
 }
-locals{
-  container_image = "sokoni:${var.env}-latest"
+variable "container_image" {
+  type    = string  
 }
 variable "desired_count" {
   type    = number
@@ -71,6 +71,10 @@ variable "db_name" {
 variable "vault_db_secret_path" {
   type    = string
   default = "secret/data/sokoni/db"
+}
+locals {
+   db = data.vault_generic_secret.db.data
+   database_url = "${var.db_engine}://${local.db["username"]}:${local.db["password"]}@${aws_db_instance.this.address}:${var.db_port}/${var.db_name}"
 }
 
 #ALB configuration variables

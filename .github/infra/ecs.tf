@@ -45,7 +45,7 @@ resource "aws_ecs_task_definition" "app" {
   container_definitions = jsonencode([
     {
       name      = "app"
-      image     = local.container_image
+      image     = var.container_image
       essential = true
       portMappings = [
         {
@@ -57,8 +57,20 @@ resource "aws_ecs_task_definition" "app" {
         {
           name  = "APP_ENV"
           value = var.env
+        },
+        {
+          name  = "DATABASE_URL"
+          value = local.database_url
         }
       ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/sokoni-${var.env}"
+          "awslogs-region"        = "us-east-1"
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
     }
   ])
 
