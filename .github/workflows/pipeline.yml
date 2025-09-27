@@ -129,9 +129,16 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
 
+      - name: Change to correct directory
+        run: |
+          echo "Current directory: $(pwd)"
+          ls -la
+          cd .github/infra/staging
+          echo "Now in staging dir: $(pwd)"
+          ls -la
+
       - name: Terraform Init & Apply
         run: |
-          cd home/runner/sokoni/.github/infra/staging
           terraform init
           terraform plan
           terraform validate
