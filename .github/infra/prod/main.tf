@@ -24,4 +24,7 @@ module "app" {
     db_storage_type = "gp2"
     vault_db_secret_path = "kv/data/sokoni/production/db"
 
+    vault_addr = var.vault_addr
+    vault_token = var.vault_token
+
 }
