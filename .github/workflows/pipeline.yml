@@ -130,6 +130,9 @@ jobs:
         uses: hashicorp/setup-terraform@v1
 
       - name: Terraform Init & Apply
+        env:
+          VAULT_ADDR: ${{ secrets.VAULT_ADDR }}
+          VAULT_TOKEN: ${{ secrets.VAULT_TOKEN }}
         run: |
           cd .github/infra/staging
           terraform init
