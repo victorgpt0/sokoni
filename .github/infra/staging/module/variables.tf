@@ -73,7 +73,7 @@ variable "vault_db_secret_path" {
   default = "secret/data/sokoni/db"
 }
 locals {
-   db = vault_kv_secret_v2.db.secret_data
+   db = vault_kv_secret_v2.db.data
    database_url = "${var.db_engine}://${local.db["username"]}:${local.db["password"]}@${aws_db_instance.this.address}:${var.db_port}/${var.db_name}"
 }
 
