@@ -22,4 +22,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-provider "vault" {}
+provider "vault" {
+  auth_login_aws {}
+}
