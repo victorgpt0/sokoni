@@ -11,6 +11,10 @@ data "aws_secretsmanager_secret" "db" {
   name = var.aws_secretsmanager_db_secret_name
 }
 
+data "aws_secretsmanager_secret_version" "db" {
+  secret_id = data.aws_secretsmanager_secret.db.id
+}
+
 resource "aws_db_instance" "this" {
   identifier = "${var.env}-sokoni-db"
     engine     = var.db_engine
@@ -23,8 +27,8 @@ resource "aws_db_instance" "this" {
     storage_type = var.db_storage_type
     skip_final_snapshot = true
     publicly_accessible = false
-    username = data.aws_secretsmanager_secret.db.data["username"]
-    password = data.aws_secretsmanager_secret.db.data["password"]
+    username = data.aws_secretsmanager_secret_version.db.secret_string == "" ? "" : jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)["username"]
+    password = data.aws_secretsmanager_secret_version.db.secret_string == "" ? "" : jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)["password"]
     db_name = var.db_name
     port = var.db_port
 }

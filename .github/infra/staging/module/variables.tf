@@ -73,7 +73,7 @@ variable "aws_secretsmanager_db_secret_name" {
   default = "secret/data/sokoni/db"
 }
 locals {
-   db = jsondecode(data.aws_secretsmanager_secret.db.secret_string)
+   db = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)
    database_url = "${var.db_engine}://${local.db["username"]}:${local.db["password"]}@${aws_db_instance.this.address}:${var.db_port}/${var.db_name}"
 }
 
