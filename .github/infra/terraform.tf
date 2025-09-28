@@ -1,4 +1,10 @@
 terraform {
+  cloud {
+    organization = "victorgpt0"
+    workspaces {
+      name = "sokoni-${var.env}"
+    }
+  }
   required_providers {
     aws = {
       source  = "hashicorp/aws"
