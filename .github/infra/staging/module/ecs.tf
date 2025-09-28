@@ -10,7 +10,7 @@ resource "aws_instance" "ecs_node" {
   instance_type = "t3.micro"
   subnet_id     = aws_subnet.public[0].id
   associate_public_ip_address = true
-  security_groups = [aws_security_group.ecs.id] ]
+  security_groups = [aws_security_group.ecs.id]
   
   user_data = <<-EOF
               #!/bin/bash
