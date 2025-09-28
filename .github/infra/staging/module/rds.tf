@@ -31,3 +31,8 @@ resource "aws_db_instance" "this" {
     db_name = var.db_name
     port = var.db_port
 }
+
+output "db_endpoint" {
+  description = "The endpoint of the RDS instance"
+  value       = aws_db_instance.this.endpoint
+}

@@ -67,7 +67,7 @@ resource "aws_iam_policy_attachment" "ecs_task_execution_policy" {
 resource "aws_ecs_task_definition" "app" {
   family                   = "sokoni-${var.env}-task"
   execution_role_arn      = aws_iam_role.ecs_task_execution_role.arn
-  network_mode             = "awsvpc"
+  network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
   cpu                      = var.task_cpu
   memory                   = var.task_memory
@@ -115,9 +115,10 @@ resource "aws_ecs_service" "app" {
     task_definition = aws_ecs_task_definition.app.arn
     desired_count = var.desired_count
     launch_type = "EC2"
-    network_configuration {
-        subnets          = [aws_subnet.public[0].id]
-        security_groups = [ aws_security_group.ecs.id ]
-        assign_public_ip = false
-    }
+    depends_on = [ aws_instance.ecs_node ]
+}
+
+output "ecs_elastic_ip" {
+  description = "The Public IP of the ECS service"
+  value       = aws_eip.ecs_eip.public_ip
 }
