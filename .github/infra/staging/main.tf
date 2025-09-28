@@ -21,6 +21,6 @@ module "app" {
     db_allocated_storage = 20
     db_multi_az = false
     db_storage_type = "gp2"
-    vault_db_secret_path = "sokoni/staging/db"
+    aws_secretsmanager_db_secret_name  = "sokoni/staging/db"
 
 }

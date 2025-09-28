@@ -7,9 +7,8 @@ resource "aws_db_subnet_group" "this" {
   }
 }
 
-resource "vault_kv_secret_v2" "db" {
-  mount = "secret"
-  name = var.vault_db_secret_path
+data "aws_secretsmanager_secret" "db" {
+  name = var.aws_secretsmanager_db_secret_name
 }
 
 resource "aws_db_instance" "this" {
@@ -24,8 +23,8 @@ resource "aws_db_instance" "this" {
     storage_type = var.db_storage_type
     skip_final_snapshot = true
     publicly_accessible = false
-    username = vault_kv_secret_v2.db.data["username"]
-    password = vault_kv_secret_v2.db.data["password"]
+    username = data.aws_secretsmanager_secret.db.data["username"]
+    password = data.aws_secretsmanager_secret.db.data["password"]
     db_name = var.db_name
     port = var.db_port
 }
