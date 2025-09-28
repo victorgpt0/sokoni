@@ -3,8 +3,8 @@ module "app" {
     env = "staging"
 
     availability_zones = [ "us-east-1c" ]
-    public_subnets = [ "10.10.1.0/24", "10.10.2.0/24" ]
-    private_subnets = [ "10.10.101.0/24", "10.10.102.0/24" ]
+    public_subnets = [ "10.0.1.0/24", "10.0.2.0/24" ]
+    private_subnets = [ "10.0.101.0/24", "10.0.102.0/24" ]
 
     alb_sg_cidr_blocks = ["41.90.172.241/32"]
 

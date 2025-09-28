@@ -108,7 +108,7 @@ jobs:
 
   plan-deploy:
   
-    name: Plan to Deploy to AWS ECS using Terraform
+    name: Terraform Plan
     runs-on: ubuntu-latest
     # needs: build
     permissions: 
@@ -147,7 +147,7 @@ jobs:
           plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
 
   deploy:
-    name: Deploy to AWS ECS using Terraform
+    name: Terraform Apply
     runs-on: ubuntu-latest
     needs: plan-deploy
     permissions: 
