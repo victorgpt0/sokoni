@@ -24,6 +24,6 @@ provider "aws" {
 
 provider "vault" {
   auth_login_aws {
-    role = "approle"
+    role = "terraform-role"
   }
 }

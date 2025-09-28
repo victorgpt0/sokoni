@@ -8,7 +8,7 @@ resource "aws_db_subnet_group" "this" {
 }
 
 data "vault_kv_secret" "db" {
-    path = var.vault_db_secret_path
+  path = var.vault_db_secret_path
 }
 
 resource "aws_db_instance" "this" {
