@@ -1,3 +1,20 @@
+resource "aws_eip" "ecs_eip" {
+  vpc = true
+
+  tags = {
+    terraform = "true"
+  }  
+}
+
+resource "aws_network_interface" "ecs_eni" {
+  subnet_id = aws_subnet.public[0].id
+  security_groups = [aws_security_group.ecs.id]
+}
+
+resource "aws_eip_association" "ecs_eip_assoc" {
+  allocation_id = aws_eip.ecs_eip.id
+  network_interface_id = aws_network_interface.ecs_eni.id
+}
 resource "aws_ecs_cluster" "this" {
   name = "sokoni-${var.env}-ecs-cluster"
 
@@ -38,7 +55,7 @@ resource "aws_ecs_task_definition" "app" {
   family                   = "sokoni-${var.env}-task"
   execution_role_arn      = aws_iam_role.ecs_task_execution_role.arn
   network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
+  requires_compatibilities = ["EC2"]
   cpu                      = var.task_cpu
   memory                   = var.task_memory
 
@@ -84,10 +101,10 @@ resource "aws_ecs_service" "app" {
     cluster = aws_ecs_cluster.this.id
     task_definition = aws_ecs_task_definition.app.arn
     desired_count = var.desired_count
-    launch_type = "FARGATE"
+    launch_type = "EC2"
     network_configuration {
-        subnets          = aws_subnet.public[*].id
+        subnets          = [aws_subnet.public[0].id]
         security_groups = [ aws_security_group.ecs.id ]
-        assign_public_ip = true
+        assign_public_ip = false
     }
 }

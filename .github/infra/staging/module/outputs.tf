@@ -1,10 +1,6 @@
-data "aws_ecs_task" "running" {
-  cluster = aws_ecs_cluster.this.id
-  task_arn = tolist(aws_ecs_service.app.deployments)[0].task_definition
-}
-output "ecs_public_ip" {
-  description = "The Public IP name of the ECS service"
-  value       = data.aws_ecs_task.running.attachments[0].details[*].value
+output "ecs_elastic_ip" {
+  description = "The Public IP of the ECS service"
+  value       = aws_eip.ecs_eip.public_ip
 }
 
 output "db_endpoint" {
