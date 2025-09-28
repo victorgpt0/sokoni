@@ -23,7 +23,7 @@ provider "aws" {
 }
 
 provider "vault" {
-  auth_login_aws {
-    role = "terraform-role"
+  auth_login {
+    path = "auth/approle/login"
   }
 }
