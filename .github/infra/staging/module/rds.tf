@@ -24,8 +24,8 @@ resource "aws_db_instance" "this" {
     storage_type = var.db_storage_type
     skip_final_snapshot = true
     publicly_accessible = false
-    username = data.vault_kv_secret_v2.db.data.username
-    password = data.vault_kv_secret_v2.db.data.password
+    username = vault_kv_secret_v2.db.secret_data.username
+    password = vault_kv_secret_v2.db.secret_data.password
     db_name = var.db_name
     port = var.db_port
 }
