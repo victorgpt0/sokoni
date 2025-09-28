@@ -16,7 +16,6 @@ module "app" {
    
     db_port = 5432
     db_engine = "postgres"
-    db_engine_version = "14.5"
     db_instance_class = "db.t3.micro"
     db_allocated_storage = 20
     db_multi_az = false
