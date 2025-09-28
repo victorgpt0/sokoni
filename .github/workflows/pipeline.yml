@@ -166,3 +166,10 @@ jobs:
         uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
         with:
           plan: ${{ fromJSON(steps.plan-run.outputs.payload).data.relationships.plan.data.id }}
+
+      - name: Terraform Apply
+        uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
+        if: ${{ fromJSON(steps.plan-run.outputs.payload).data.attributes.status == 'planned' }}
+        with:
+          run: ${{ steps.plan-run.outputs.run_id }}
+          comment: "Apply Run from GitHub Actions CI for ${{ github.ref_name }} branch for SHA ${{ github.sha }}"
