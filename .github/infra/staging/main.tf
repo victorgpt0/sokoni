@@ -1,6 +1,5 @@
 module "app" {
-  source = "../."
-    
+  source = "./module"    
     env = "staging"
 
     availability_zones = [ "us-east-1c" ]

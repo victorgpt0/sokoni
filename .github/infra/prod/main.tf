@@ -1,5 +1,5 @@
 module "app" {
-  source = "../."
+  source = "./module"
     
     env = "production"
 
