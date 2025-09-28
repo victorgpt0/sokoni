@@ -7,7 +7,7 @@ resource "aws_db_subnet_group" "this" {
   }
 }
 
-data "vault_kv_secret_v2" "db" {
+resource "vault_kv_secret_v2" "db" {
   mount = "secret"
   name = var.vault_db_secret_path
 }
