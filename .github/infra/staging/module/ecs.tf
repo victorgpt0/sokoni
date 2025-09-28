@@ -1,20 +1,33 @@
-resource "aws_eip" "ecs_eip" {
-  vpc = true
-
-  tags = {
-    terraform = "true"
-  }  
-}
+resource "aws_eip" "ecs_eip" {}
 
 resource "aws_network_interface" "ecs_eni" {
   subnet_id = aws_subnet.public[0].id
   security_groups = [aws_security_group.ecs.id]
 }
 
+resource "aws_instance" "ecs_node" {
+  ami           = "ami-0ac561104e1187443"
+  instance_type = "t3.micro"
+  subnet_id     = aws_subnet.public[0].id
+  associate_public_ip_address = true
+  security_groups = [aws_security_group.ecs.id] ]
+  
+  user_data = <<-EOF
+              #!/bin/bash
+              echo ECS_CLUSTER=${aws_ecs_cluster.this.name} >> /etc/ecs/ecs.config
+              EOF
+
+  tags = {
+    Name      = "sokoni-${var.env}-ecs-node"
+    terraform = "true"
+  }  
+}
+
 resource "aws_eip_association" "ecs_eip_assoc" {
   allocation_id = aws_eip.ecs_eip.id
-  network_interface_id = aws_network_interface.ecs_eni.id
+  instance_id = aws_instance.ecs_node.id
 }
+
 resource "aws_ecs_cluster" "this" {
   name = "sokoni-${var.env}-ecs-cluster"
 
