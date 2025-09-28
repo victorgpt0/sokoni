@@ -148,7 +148,7 @@ jobs:
         with:
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
-          plan-only: true
+          plan_only: true
 
       # - name: Terraform Init & Apply
       #   env:
