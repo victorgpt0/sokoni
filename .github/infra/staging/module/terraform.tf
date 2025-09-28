@@ -23,5 +23,7 @@ provider "aws" {
 }
 
 provider "vault" {
-  auth_login_aws {}
+  auth_login_aws {
+    role = "approle"
+  }
 }
