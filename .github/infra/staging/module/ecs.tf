@@ -6,15 +6,17 @@ resource "aws_network_interface" "ecs_eni" {
 }
 
 resource "aws_instance" "ecs_node" {
-  ami           = "ami-0ac561104e1187443"
+  ami           = "ami-0b570770164588ab4"
   instance_type = "t3.micro"
   subnet_id     = aws_subnet.public[0].id
   associate_public_ip_address = true
   security_groups = [aws_security_group.ecs.id]
+  iam_instance_profile = aws_iam_instance_profile.ecs_instance_profile.name
   
   user_data = <<-EOF
               #!/bin/bash
               echo ECS_CLUSTER=${aws_ecs_cluster.this.name} >> /etc/ecs/ecs.config
+              systemctl enable --now ecs
               EOF
 
   tags = {
@@ -90,8 +92,19 @@ resource "aws_iam_role_policy_attachment" "ecs_instance_role_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   
 }
+
+resource "aws_iam_instance_profile" "ecs_instance_profile" {
+  name = "sokoni-${var.env}-ecs-instance-profile"
+  role = aws_iam_role.ecs_instance_role.name
+
+  tags = {
+    terraform = "true"
+  }
+  
+}
 resource "aws_ecs_task_definition" "app" {
   family                   = "sokoni-${var.env}-task"
+  task_role_arn = aws_iam_role.ecs_task_execution_role.arn
   execution_role_arn      = aws_iam_role.ecs_task_execution_role.arn
   network_mode             = "bridge"
   requires_compatibilities = ["EC2"]
@@ -107,6 +120,7 @@ resource "aws_ecs_task_definition" "app" {
         {
           containerPort = var.app_port
           protocol      = "tcp"
+          hostPort      = var.app_port
         }
       ]
       environment = [
@@ -137,11 +151,10 @@ resource "aws_ecs_task_definition" "app" {
 
 resource "aws_ecs_service" "app" {
   name = "sokoni-${var.env}-ecs-service"
-    cluster = aws_ecs_cluster.this.id
+    cluster = aws_ecs_cluster.this.arn
     task_definition = aws_ecs_task_definition.app.arn
     desired_count = var.desired_count
     launch_type = "EC2"
-    depends_on = [ aws_instance.ecs_node ]
 }
 
 output "ecs_elastic_ip" {
