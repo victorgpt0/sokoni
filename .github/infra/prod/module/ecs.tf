@@ -62,60 +62,6 @@ resource "aws_ecs_task_definition" "app" {
         {
           name  = "DATABASE_URL"
           value = local.database_url
-        },
-        {
-          name  = "RUN_MIGRATIONS"
-          value = "false"
-        }
-      ]
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
-          "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "ecs"
-        }
-      }
-    }
-  ])
-
-  tags = {
-    terraform = "true"
-  }
-}
-
-resource "aws_ecs_task_definition" "migrations" {
-  family                   = "sokoni-${var.env}-migrate"
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  network_mode             = "awsvpc"
-  requires_compatibilities = ["FARGATE"]
-  cpu                      = var.task_cpu
-  memory                   = var.task_memory
-
-  container_definitions = jsonencode([
-    {
-      name      = "app"
-      image     = var.container_image
-      essential = true
-      portMappings = [
-        {
-          containerPort = var.app_port
-          hostPort      = var.app_port
-          protocol      = "tcp"
-        }
-      ]
-      environment = [
-        {
-          name  = "APP_ENV"
-          value = var.env
-        },
-        {
-          name  = "DATABASE_URL"
-          value = local.database_url
-        },
-        {
-          name  = "RUN_MIGRATIONS"
-          value = "true"
         }
       ]
       logConfiguration = {
@@ -160,5 +106,59 @@ resource "aws_ecs_service" "app" {
     container_name   = "app"
     container_port   = var.app_port
   }
-  depends_on = [aws_alb_listener.http]
+  depends_on = [aws_alb_listener.http, null_resource.run_migrations]
+}
+
+resource "aws_ecs_task_definition" "migrations" {
+  family                   = "sokoni-${var.env}-migrate"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = var.task_cpu
+  memory                   = var.task_memory
+
+  container_definitions = jsonencode([
+    {
+      name      = "app"
+      image     = var.container_image
+      essential = true
+      command = ["sh", "-c", "python manage.py migrate --no-input"]
+      environment = [
+        {
+          name  = "APP_ENV"
+          value = var.env
+        },
+        {
+          name  = "DATABASE_URL"
+          value = local.database_url
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "migrations"
+        }
+      }
+    }
+  ])
+
+  tags = {
+    terraform = "true"
+  }
+}
+
+resource "null_resource" "run_migrations" {
+  depends_on = [ aws_ecs_task_definition.migrations ]
+
+  provisioner "local-exec" {
+    command = <<EOT
+    aws ecs run-task \
+      --cluster ${aws_ecs_cluster.this.id} \
+      --task-definition ${aws_ecs_task_definition.migrations.arn} \
+      --launch-type FARGATE \
+      --network-configuration "awsvpcConfiguration={subnets=[${join(",", aws_subnet.public[*].id)}],securityGroups=[${aws_security_group.ecs.id}],assignPublicIp=ENABLED}"
+    EOT
+  }
 }
