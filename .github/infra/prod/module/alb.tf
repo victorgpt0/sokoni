@@ -30,6 +30,9 @@ resource "aws_alb_target_group" "app_tg" {
     Name      = "sokoni-${var.env}-tg"
     terraform = "true"
   }
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "aws_alb_listener" "http" {
@@ -42,6 +45,6 @@ resource "aws_alb_listener" "http" {
   }
 
   lifecycle {
-    create_before_destroy = true
+    ignore_changes = [ default_action ]
   }
 }
