@@ -12,7 +12,7 @@ resource "aws_instance" "ecs_node" {
   associate_public_ip_address = true
   security_groups = [aws_security_group.ecs.id]
   iam_instance_profile = aws_iam_instance_profile.ecs_instance_profile.name
-  
+
   user_data = <<-EOF
               #!/bin/bash
               echo ECS_CLUSTER=${aws_ecs_cluster.this.name} >> /etc/ecs/ecs.config
@@ -22,7 +22,7 @@ resource "aws_instance" "ecs_node" {
   tags = {
     Name      = "sokoni-${var.env}-ecs-node"
     terraform = "true"
-  }  
+  }
 }
 
 resource "aws_eip_association" "ecs_eip_assoc" {
@@ -57,13 +57,13 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   tags = {
     terraform = "true"
   }
-  
+
 }
 
 resource "aws_iam_policy_attachment" "ecs_task_execution_policy" {
   name       = "sokoni-${var.env}-ecs-task-execution-policy"
   roles      = [aws_iam_role.ecs_task_execution_role.name]
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"  
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_iam_role" "ecs_instance_role" {
@@ -84,13 +84,13 @@ resource "aws_iam_role" "ecs_instance_role" {
 
   tags = {
     terraform = "true"
-  }  
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_instance_role_policy" {
   role       = aws_iam_role.ecs_instance_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  
+
 }
 
 resource "aws_iam_instance_profile" "ecs_instance_profile" {
@@ -100,7 +100,7 @@ resource "aws_iam_instance_profile" "ecs_instance_profile" {
   tags = {
     terraform = "true"
   }
-  
+
 }
 resource "aws_ecs_task_definition" "app" {
   family                   = "sokoni-${var.env}-task"

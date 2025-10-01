@@ -1,8 +1,9 @@
-#!/bin/bash
+#!/bin/sh
+set -e
 
 echo "Running entrypoint script..."
 
-if ["$RUN_MIGRATIONS" = "true"]; then
+if [ "$RUN_MIGRATIONS" = "true" ]; then
     echo "Running migrations..."
     python manage.py migrate --noinput
 fi

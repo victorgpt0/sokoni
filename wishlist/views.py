@@ -103,7 +103,9 @@ def toggle_wishlist(request, product_id):
 
         messages.success(request, message)
         next_url = request.META.get("HTTP_REFERER")
-        if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+        if not url_has_allowed_host_and_scheme(
+            next_url, allowed_hosts={request.get_host()}
+        ):
             next_url = reverse("wishlist:wishlist_list")
         return redirect(next_url)
 

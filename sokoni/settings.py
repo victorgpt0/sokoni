@@ -27,12 +27,12 @@ env = environ.Env(
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 DEBUG = env("DEBUG")
-SECRET_KEY = env("SECRET_KEY", default="django-insecure-key-iqR3E19kTnokhZOEBdlqIc4v1JcqnohE9xCzf2tJOes")
+SECRET_KEY = env(
+    "SECRET_KEY",
+    default="django-insecure-key",
+)
 
-ALLOWED_HOSTS = [
-    "127.0.0.1",
-    "localhost"
-]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
 # CSRF settings for ngrok
 CSRF_TRUSTED_ORIGINS = [

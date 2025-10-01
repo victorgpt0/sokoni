@@ -1,7 +1,7 @@
 name: Trivy Docker Image Scan
 run-name: Trivy is scanning Sokoni Docker Image 🐋
 
-on: 
+on:
     schedule:
         - cron: '0 0 * * 0'
 
@@ -19,7 +19,7 @@ jobs:
 
             - name: Setup Docker Buildx
               uses: docker/setup-buildx-action@v3
-      
+
             - name: Build Docker Image
               run: |
                 docker build -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }} .
@@ -31,10 +31,10 @@ jobs:
                 format: 'sarif'
                 output: 'trivy-results.sarif'
                 severity: 'CRITICAL,HIGH'
-            
+
             - name: Upload Results as Artifact
               uses: actions/upload-artifact@v4
               if: always()
-              with: 
+              with:
                 name: trivy-scan-results
                 path: 'trivy-results.sarif'
