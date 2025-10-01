@@ -180,8 +180,8 @@ jobs:
         with:
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
-          variables: |
-            container_image=${{ needs.build.outputs.image_uri }}
+        env: |
+          TF_VAR_container_image=${{ needs.build.outputs.image_uri }}
 
       - name: Apply
         uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
