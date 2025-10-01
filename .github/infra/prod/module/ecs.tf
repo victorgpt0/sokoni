@@ -158,7 +158,8 @@ resource "null_resource" "run_migrations" {
       --cluster ${aws_ecs_cluster.this.id} \
       --task-definition ${aws_ecs_task_definition.migrations.arn} \
       --launch-type FARGATE \
-      --network-configuration "awsvpcConfiguration={subnets=[${join(",", aws_subnet.public[*].id)}],securityGroups=[${aws_security_group.ecs.id}],assignPublicIp=ENABLED}"
+      --network-configuration "awsvpcConfiguration={subnets=[${join(",", aws_subnet.public[*].id)}],securityGroups=[${aws_security_group.ecs.id}],assignPublicIp=ENABLED}" \
+      --region ${var.aws_region}
     EOT
   }
 }
