@@ -68,12 +68,12 @@ variable "db_name" {
   type    = string
   default = "sokoni"
 }
-variable "vault_db_secret_path" {
+variable "aws_secretsmanager_db_secret_name" {
   type    = string
   default = "secret/data/sokoni/db"
 }
 locals {
-   db = data.vault_kv_secret.db.data
+   db = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)
    database_url = "${var.db_engine}://${local.db["username"]}:${local.db["password"]}@${aws_db_instance.this.address}:${var.db_port}/${var.db_name}"
 }
 

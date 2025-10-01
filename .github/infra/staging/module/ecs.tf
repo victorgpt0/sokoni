@@ -157,6 +157,7 @@ resource "aws_ecs_service" "app" {
     launch_type = "EC2"
 }
 
+
 output "ecs_elastic_ip" {
   description = "The Public IP of the ECS service"
   value       = aws_eip.ecs_eip.public_ip
