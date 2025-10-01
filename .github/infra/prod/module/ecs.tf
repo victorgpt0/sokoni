@@ -66,8 +66,8 @@ resource "aws_ecs_task_definition" "app" {
       logConfiguration = {
         logDriver = "awslogs"
         options = {
-          "awslogs-group"         = "/ecs/sokoni-${var.env}"
-          "awslogs-region"        = "us-east-1"
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
+          "awslogs-region"        = var.aws_region
           "awslogs-stream-prefix" = "ecs"
         }
       }
@@ -75,6 +75,16 @@ resource "aws_ecs_task_definition" "app" {
   ])
 
   tags = {
+    terraform = "true"
+  }
+}
+
+resource "aws_cloudwatch_log_group" "ecs" {
+  name             = "/ecs/sokoni-${var.env}"
+  retention_in_days = 7
+
+  tags = {
+    Name      = "sokoni-${var.env}-ecs-log-group"
     terraform = "true"
   }
 }
