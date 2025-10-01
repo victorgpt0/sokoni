@@ -3,7 +3,7 @@ resource "aws_vpc" "sokoni-vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
   tags = {
-    Name      = "sokoni-vpc"
+    Name      = "sokoni-${var.env}-vpc"
     terraform = "true"
   }
 }
