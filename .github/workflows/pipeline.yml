@@ -120,10 +120,10 @@ jobs:
           https://app.terraform.io/api/v2/workspaces/$TF_MAIN_WORKSPACE_ID/vars/$TF_MAIN_IMAGE_VAR_ID <<EOF
           {
             "data": {
-              "id":${ TF_MAIN_IMAGE_VAR_ID },
+              "id":"$TF_MAIN_IMAGE_VAR_ID",
               "attributes": {
                 "key":"container_image",
-                "value":${IMAGE_URI},
+                "value":"$IMAGE_URI",
                 "description":"container image URI for the ECS service",
                 "category":"terraform",
                 "hcl": true,
