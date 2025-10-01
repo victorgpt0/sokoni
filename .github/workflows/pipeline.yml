@@ -104,7 +104,7 @@ jobs:
 
       - name: Set container_image Output
         id: set-image
-        run: echo "image_uri=${{ steps.login-ecr.outputs.registry }}/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-latest" >> "$GITHUB_OUTPUT"
+        run: echo "image_uri=${{ steps.login-ecr.outputs.registry }}/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-{{ github.sha }}" >> "$GITHUB_OUTPUT"
 
   plan-deploy:
 
@@ -141,6 +141,8 @@ jobs:
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
           plan_only: true
+          variables: |
+            container_image=${{ needs.build.outputs.image_uri }}
 
       - name: Get Plan Output
         uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.0.0
@@ -178,6 +180,8 @@ jobs:
         with:
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
+          variables: |
+            container_image=${{ needs.build.outputs.image_uri }}
 
       - name: Apply
         uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.0.0
