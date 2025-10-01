@@ -100,7 +100,7 @@ resource "aws_ecs_task_definition" "migrations" {
       portMappings = [
         {
           containerPort = var.app_port
-          hostPort      = 0
+          hostPort      = var.app_port
           protocol      = "tcp"
         }
       ]
