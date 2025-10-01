@@ -12,15 +12,15 @@ resource "aws_alb" "app_alb" {
 }
 
 resource "aws_alb_target_group" "app_tg" {
-  name     = "sokoni-${var.env}-tg"
-  port     = var.app_port
-  protocol = "HTTP"
+  name        = "sokoni-${var.env}-tg"
+  port        = var.app_port
+  protocol    = "HTTP"
   target_type = "ip"
-  vpc_id   = aws_vpc.sokoni-vpc.id
+  vpc_id      = aws_vpc.sokoni-vpc.id
   health_check {
     path                = "/"
-    protocol = "HTTP"
-    matcher = "200"
+    protocol            = "HTTP"
+    matcher             = "200"
     interval            = 30
     timeout             = 5
     healthy_threshold   = 3
@@ -30,6 +30,7 @@ resource "aws_alb_target_group" "app_tg" {
     Name      = "sokoni-${var.env}-tg"
     terraform = "true"
   }
+  depends_on = [ aws_alb_listener.http ]
 }
 
 resource "aws_alb_listener" "http" {
@@ -39,5 +40,9 @@ resource "aws_alb_listener" "http" {
   default_action {
     type             = "forward"
     target_group_arn = aws_alb_target_group.app_tg.arn
+  }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }

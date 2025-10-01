@@ -25,18 +25,18 @@ resource "aws_iam_role" "ecs_task_execution_role" {
   tags = {
     terraform = "true"
   }
-  
+
 }
 
 resource "aws_iam_policy_attachment" "ecs_task_execution_policy" {
   name       = "sokoni-${var.env}-ecs-task-execution-policy"
   roles      = [aws_iam_role.ecs_task_execution_role.name]
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"  
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 resource "aws_ecs_task_definition" "app" {
   family                   = "sokoni-${var.env}-task"
-  execution_role_arn      = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.task_cpu
@@ -80,20 +80,20 @@ resource "aws_ecs_task_definition" "app" {
 }
 
 resource "aws_ecs_service" "app" {
-  name = "sokoni-${var.env}-ecs-service"
-    cluster = aws_ecs_cluster.this.id
-    task_definition = aws_ecs_task_definition.app.arn
-    desired_count = var.desired_count
-    launch_type = "FARGATE"
-    network_configuration {
-        subnets          = aws_subnet.public[*].id
-        security_groups = [ aws_security_group.ecs.id ]
-        assign_public_ip = true
-    }
-    load_balancer {
-        target_group_arn = aws_alb_target_group.app_tg.arn
-        container_name   = "app"
-        container_port   = var.app_port
-    }
-    depends_on = [ aws_alb_listener.http ]
+  name            = "sokoni-${var.env}-ecs-service"
+  cluster         = aws_ecs_cluster.this.id
+  task_definition = aws_ecs_task_definition.app.arn
+  desired_count   = var.desired_count
+  launch_type     = "FARGATE"
+  network_configuration {
+    subnets          = aws_subnet.public[*].id
+    security_groups  = [aws_security_group.ecs.id]
+    assign_public_ip = true
+  }
+  load_balancer {
+    target_group_arn = aws_alb_target_group.app_tg.arn
+    container_name   = "app"
+    container_port   = var.app_port
+  }
+  depends_on = [aws_alb_listener.http]
 }

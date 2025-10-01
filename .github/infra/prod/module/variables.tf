@@ -28,7 +28,7 @@ variable "task_memory" {
   default = 512
 }
 variable "container_image" {
-  type    = string
+  type = string
 }
 variable "desired_count" {
   type    = number
@@ -45,8 +45,8 @@ variable "db_engine" {
   default = "postgres"
 }
 variable "db_engine_version" {
-    type    = string
-    default = "14.5"
+  type    = string
+  default = "14.5"
 }
 variable "db_instance_class" {
   type    = string
@@ -73,8 +73,8 @@ variable "aws_secretsmanager_db_secret_name" {
   default = "secret/data/sokoni/db"
 }
 locals {
-   db = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)
-   database_url = "${var.db_engine}://${local.db["username"]}:${local.db["password"]}@${aws_db_instance.this.address}:${var.db_port}/${var.db_name}"
+  db           = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)
+  database_url = "${var.db_engine}://${local.db["username"]}:${local.db["password"]}@${aws_db_instance.this.address}:${var.db_port}/${var.db_name}"
 }
 
 #ALB configuration variables
