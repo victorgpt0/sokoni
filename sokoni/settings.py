@@ -27,12 +27,11 @@ env = environ.Env(
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
 DEBUG = env("DEBUG")
-SECRET_KEY = env("SECRET_KEY", default="django-insecure-key")
+SECRET_KEY = env("SECRET_KEY", default="django-insecure-key-iqR3E19kTnokhZOEBdlqIc4v1JcqnohE9xCzf2tJOes")
 
 ALLOWED_HOSTS = [
-    "491bc5dd1d1a.ngrok-free.app",
     "127.0.0.1",
-    "localhost",
+    "localhost"
 ]
 
 # CSRF settings for ngrok
@@ -82,6 +81,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # AuditTimestampModel requires the current user
     "sokoni.middleware.CurrentUserMiddleware",
+    "sokoni.middleware.LogRequestMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]

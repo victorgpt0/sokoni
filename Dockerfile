@@ -52,8 +52,9 @@ USER appuser
 # Expose the port that the application listens on.
 EXPOSE 8000
 
-# Run the application.
-CMD ["gunicorn", "sokoni.wsgi:application", "--bind=0.0.0.0:8000", "--workers=4", "--threads=2", "--timeout=120"]
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl --fail http://localhost:8000/ || exit 1

@@ -50,6 +50,7 @@ resource "aws_ecs_task_definition" "app" {
       portMappings = [
         {
           containerPort = var.app_port
+          hostPort      = 0
           protocol      = "tcp"
         }
       ]
@@ -61,6 +62,60 @@ resource "aws_ecs_task_definition" "app" {
         {
           name  = "DATABASE_URL"
           value = local.database_url
+        },
+        {
+          name  = "RUN_MIGRATIONS"
+          value = "false"
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "ecs"
+        }
+      }
+    }
+  ])
+
+  tags = {
+    terraform = "true"
+  }
+}
+
+resource "aws_ecs_task_definition" "migrations" {
+  family                   = "sokoni-${var.env}-migrate"
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  network_mode             = "awsvpc"
+  requires_compatibilities = ["FARGATE"]
+  cpu                      = var.task_cpu
+  memory                   = var.task_memory
+
+  container_definitions = jsonencode([
+    {
+      name      = "app"
+      image     = var.container_image
+      essential = true
+      portMappings = [
+        {
+          containerPort = var.app_port
+          hostPort      = 0
+          protocol      = "tcp"
+        }
+      ]
+      environment = [
+        {
+          name  = "APP_ENV"
+          value = var.env
+        },
+        {
+          name  = "DATABASE_URL"
+          value = local.database_url
+        },
+        {
+          name  = "RUN_MIGRATIONS"
+          value = "true"
         }
       ]
       logConfiguration = {
