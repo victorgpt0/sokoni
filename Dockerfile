@@ -56,5 +56,7 @@ RUN chmod +x /app/entrypoint.sh
 
 ENTRYPOINT ["/app/entrypoint.sh"]
 
+CMD ["gunicorn", "sokoni.wsgi:application", "--bind=0.0.0.0:8000", "--workers=4", "--threads=2", "--timeout=120", "--access-logfile", "-", "--error-logfile", "-"]
+
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
     CMD curl --fail http://localhost:8000/ || exit 1
