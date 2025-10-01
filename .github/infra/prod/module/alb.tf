@@ -30,7 +30,6 @@ resource "aws_alb_target_group" "app_tg" {
     Name      = "sokoni-${var.env}-tg"
     terraform = "true"
   }
-  depends_on = [ aws_alb_listener.http ]
 }
 
 resource "aws_alb_listener" "http" {
