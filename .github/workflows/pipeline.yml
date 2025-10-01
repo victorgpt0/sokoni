@@ -126,7 +126,7 @@ jobs:
                 "value":"$IMAGE_URI",
                 "description":"container image URI for the ECS service",
                 "category":"terraform",
-                "hcl": true,
+                "hcl": false,
                 "sensitive": false
               },
               "type":"vars"
