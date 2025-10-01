@@ -14,6 +14,8 @@ import os
 from decimal import Decimal
 from pathlib import Path
 
+from socket import gethostbyname, gethostname
+
 import environ
 from django.contrib.messages import constants as messages
 
@@ -32,7 +34,8 @@ SECRET_KEY = env(
     default="django-insecure-key",
 )
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", default="localhost").split(",")
+ALLOWED_HOSTS.append(gethostbyname(gethostname()))
 
 # CSRF settings for ngrok
 CSRF_TRUSTED_ORIGINS = [
