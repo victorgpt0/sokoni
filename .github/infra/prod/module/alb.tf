@@ -62,7 +62,7 @@ resource "aws_acm_certificate" "default" {
 
 resource "null_resource" "dns_validation" {
   triggers = {
-    validation_value = local.txt_value
+    validation_value = local.cname_record.resource_record_value
   }
   
   provisioner "local-exec" {
