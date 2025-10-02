@@ -63,7 +63,7 @@ resource "aws_acm_certificate" "default" {
 resource "null_resource" "dns_validation" {
   provisioner "local-exec" {
     command = <<EOT
-      curl "https://www.duckdns.org/update?domains=${var.duckdns_domain}&token=${var.duckdns_token}&txt=${local.cname_record.resource_record_value}"
+      curl "https://www.duckdns.org/update?domains=${var.duckdns_domain}&token=${var.duckdns_token}&txt=${local.txt_value}&verbose=true"
       EOT 
   }
 
