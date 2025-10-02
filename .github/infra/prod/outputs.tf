@@ -1,13 +1,11 @@
 output "acm_validation_instructions" {
-  value = aws_acm_certificate.default.domain_validation_options
+  value = module.app.acm_validation_instructions
 }
 
 output "alb_dns_name" {
-  description = "The DNS name of the ALB"
-  value       = aws_alb.app_alb.dns_name
+  value = module.app.alb_dns_name
 }
 
 output "db_endpoint" {
-  description = "The endpoint of the RDS instance"
-  value       = aws_db_instance.this.endpoint
+    value = module.app.db_endpoint
 }
