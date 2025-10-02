@@ -24,3 +24,4 @@ module "app" {
   db_storage_type                   = "gp2"
   aws_secretsmanager_db_secret_name = "sokoni/production/db"
 }
+

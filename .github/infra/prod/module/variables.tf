@@ -87,3 +87,17 @@ variable "alb_sg_cidr_blocks" {
   type    = list(string)
   default = ["0.0.0.0/0"]
 }
+
+variable "duckdns_token" {
+  type    = string
+  default = "value"
+}
+
+variable "duckdns_domain" {
+  type    = string
+  default = "sokoni"
+}
+
+locals {
+  cname_record = tolist(aws_acm_certificate.default.domain_validation_options)[0]
+}
