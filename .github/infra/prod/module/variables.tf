@@ -90,7 +90,6 @@ variable "alb_sg_cidr_blocks" {
 
 variable "duckdns_token" {
   type    = string
-  default = "value"
 }
 
 variable "duckdns_domain" {

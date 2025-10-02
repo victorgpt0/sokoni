@@ -4,5 +4,4 @@ variable "container_image" {
 
 variable "duckdns_token" {
   type    = string
-  default = "value"
 }
