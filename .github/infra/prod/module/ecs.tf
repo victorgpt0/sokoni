@@ -62,6 +62,10 @@ resource "aws_ecs_task_definition" "app" {
         {
           name  = "DATABASE_URL"
           value = local.database_url
+        },
+        {
+          name = "ALLOWED_HOSTS"
+          value = "localhost,127.0.0.1,${aws_alb.app_alb.dns_name},.${var.aws_region}.elb.amazonaws.com"
         }
       ]
       logConfiguration = {
