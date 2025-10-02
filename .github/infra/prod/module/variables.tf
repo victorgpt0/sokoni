@@ -100,5 +100,5 @@ variable "duckdns_domain" {
 
 locals {
   cname_record = tolist(aws_acm_certificate.default.domain_validation_options)[0]
-  txt_value = regexreplace(local.cname_record.resource_record_value, "\\.$", "")
+  txt_value = trimsuffix(local.cname_record.resource_record_value, ".")
 }
