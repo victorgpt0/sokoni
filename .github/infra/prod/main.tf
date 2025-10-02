@@ -23,5 +23,7 @@ module "app" {
   db_multi_az                       = false
   db_storage_type                   = "gp2"
   aws_secretsmanager_db_secret_name = "sokoni/production/db"
+
+  duckdns_token = var.duckdns_token
 }
 
