@@ -64,8 +64,12 @@ resource "aws_ecs_task_definition" "app" {
           value = local.database_url
         },
         {
+          name = "DEBUG"
+          value = "False"
+        },
+        {
           name = "ALLOWED_HOSTS"
-          value = "localhost,127.0.0.1,${aws_alb.app_alb.dns_name},.${var.aws_region}.elb.amazonaws.com"
+          value = "localhost,127.0.0.1,${aws_alb.app_alb.dns_name},.${var.aws_region}.elb.amazonaws.com,${var.domain_name}"
         }
       ]
       logConfiguration = {
@@ -144,7 +148,7 @@ resource "aws_ecs_task_definition" "migrations" {
           name = "DEBUG"
           value = "False"
         },
-        
+
       ]
       logConfiguration = {
         logDriver = "awslogs"
