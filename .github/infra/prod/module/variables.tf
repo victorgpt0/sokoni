@@ -88,15 +88,6 @@ variable "alb_sg_cidr_blocks" {
   default = ["0.0.0.0/0"]
 }
 
-variable "duckdns_token" {
-  type    = string
-}
-
-variable "duckdns_domain" {
-  type    = string
-  default = "sokoni"
-}
-
 locals {
   cname_record = tolist(aws_acm_certificate.default.domain_validation_options)[0]
   txt_value = trimsuffix(local.cname_record.resource_record_value, ".")
