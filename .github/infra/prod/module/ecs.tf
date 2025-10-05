@@ -70,6 +70,10 @@ resource "aws_ecs_task_definition" "app" {
         {
           name = "ALLOWED_HOSTS"
           value = "localhost,127.0.0.1,${aws_alb.app_alb.dns_name},.${var.aws_region}.elb.amazonaws.com,${var.domain_name}"
+        },
+        {
+          name = "CSRF_TRUSTED_ORIGINS"
+          value = "http://${aws_alb.app_alb.dns_name},https://${var.domain_name}"
         }
       ]
       logConfiguration = {

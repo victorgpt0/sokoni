@@ -40,13 +40,7 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS", default="localhost").split(",")
 ALLOWED_HOSTS.append(gethostbyname(gethostname()))
 
 # CSRF settings for ngrok
-CSRF_TRUSTED_ORIGINS = [
-    "https://491bc5dd1d1a.ngrok-free.app",
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
-]
-
-CSRF_TRUSTED_ORIGINS.append(gethostbyname(gethostname()))
+CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS", default="http://localhost:8000").split(",")
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https") if IS_PRODUCTION else None
 # Additional security settings for ngrok development
