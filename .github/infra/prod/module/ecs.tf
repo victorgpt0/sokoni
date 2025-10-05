@@ -110,7 +110,7 @@ resource "aws_ecs_service" "app" {
     container_name   = "app"
     container_port   = var.app_port
   }
-  depends_on = [null_resource.run_migrations]
+  depends_on = [aws_alb_listener.https, null_resource.run_migrations]
 }
 
 resource "aws_ecs_task_definition" "migrations" {
@@ -133,9 +133,18 @@ resource "aws_ecs_task_definition" "migrations" {
           value = var.env
         },
         {
+          name = "ALLOWED_HOSTS"
+          value = "${var.domain_name}"
+        },
+        {
           name  = "DATABASE_URL"
           value = local.database_url
-        }
+        },
+        {
+          name = "DEBUG"
+          value = "False"
+        },
+        
       ]
       logConfiguration = {
         logDriver = "awslogs"
