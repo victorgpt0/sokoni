@@ -12,7 +12,7 @@ module "app" {
   app_port        = 8000
   task_cpu        = 256
   task_memory     = 512
-  desired_count   = 2
+  desired_count   = 1
   container_image = var.container_image
 
   db_port                           = 5432
