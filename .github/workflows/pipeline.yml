@@ -194,7 +194,7 @@ jobs:
   deploy:
     name: Terraform Apply
     runs-on: ubuntu-latest
-    needs: plan-deploy
+    needs: [build,plan-deploy]
     permissions:
       id-token: write
       contents: read
