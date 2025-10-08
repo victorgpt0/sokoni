@@ -124,6 +124,7 @@ resource "aws_instance" "sokoni" {
             su - ec2-user -c "docker-compose up -d"
             EOF
 
+    user_data_replace_on_change = true
 
   tags = {
     terraform = true
