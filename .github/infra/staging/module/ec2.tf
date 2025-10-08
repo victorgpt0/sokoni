@@ -88,15 +88,16 @@ resource "aws_instance" "sokoni" {
             curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             chmod +x /usr/local/bin/docker-compose
 
-            PUBLIC_IP=$(curl -s --fail http://169.254.169.254/latest/meta-data/public-ipv4 || true)
-            if [ -z "$$PUBLIC_IP" ]; then
-              PUBLIC_IP=$(curl -s --fail http://169.254.169.254/latest/meta-data/local-ipv4 || true)
-            fi
+            TOKEN=$(curl -X PUT "http://169.254.169.254/latest/api/token" \
+            -H "X-aws-ec2-metadata-token-ttl-seconds: 21600" -s)
+
+            PUBLIC_IP=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+            http://169.254.169.254/latest/meta-data/public-ipv4 || true)
 
             if [ -z "$$PUBLIC_IP" ]; then
               ALLOWED_HOSTS="*"
             else
-              ALLOWED_HOSTS="$$PUBLIC_IP,localhost,127.0.0.1"
+              ALLOWED_HOSTS="$PUBLIC_IP,localhost,127.0.0.1"
             fi
             
             # Install AWS CLI v2 (already included in AL2023)
@@ -104,7 +105,7 @@ resource "aws_instance" "sokoni" {
             cat > /home/ec2-user/.env <<ENVFILE
             CONTAINER_IMAGE=${var.container_image}
             DATABASE_URL=${local.database_url}
-            ALLOWED_HOSTS=$$ALLOWED_HOSTS
+            ALLOWED_HOSTS=$${ALLOWED_HOSTS}
             DEBUG=True
             ENVFILE
             
