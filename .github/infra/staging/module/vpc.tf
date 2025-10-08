@@ -99,13 +99,13 @@ resource "aws_security_group" "ec2" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = [var.my_ip]
+    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
   }
   ingress {
     from_port   = var.app_port
     to_port     = var.app_port
     protocol    = "tcp"
-    cidr_blocks = [var.my_ip]
+    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
   }
   egress {
     from_port   = 0
@@ -131,4 +131,8 @@ resource "aws_security_group" "rds" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+data "http" "my_ip" {
+  url = "https://checkip.amazonaws.com"
 }

@@ -5,9 +5,6 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
-variable "my_ip" {
-  type = string
-}
 variable "ssh_key_name" {
   type    = string
   default = "sokoni-staging-key"
