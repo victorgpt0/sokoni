@@ -93,7 +93,7 @@ resource "aws_instance" "sokoni" {
             cat > /home/ec2-user/.env <<ENVFILE
             CONTAINER_IMAGE=${var.container_image}
             DATABASE_URL=${local.database_url}
-            ALLOWED_HOSTS="*"
+            ALLOWED_HOSTS="*,localhost"
             DEBUG=True
             ENVFILE
             
@@ -107,7 +107,7 @@ resource "aws_instance" "sokoni" {
                   - "8000:8000"
                 environment:
                   - DATABASE_URL=${local.database_url}
-                  - ALLOWED_HOSTS="*"
+                  - ALLOWED_HOSTS="*,localhost"
                   - DEBUG=True
                 restart: unless-stopped
             COMPOSE
