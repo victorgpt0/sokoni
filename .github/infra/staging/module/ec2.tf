@@ -71,12 +71,6 @@ resource "aws_instance" "sokoni" {
   vpc_security_group_ids = [aws_security_group.ec2.id]
   iam_instance_profile   = aws_iam_instance_profile.ec2_ecr.name
 
-  root_block_device {
-    volume_size = 20
-    volume_type = "gp3"
-    encrypted   = true
-  }
-
   user_data = <<-EOF
             #!/bin/bash
             set -e
