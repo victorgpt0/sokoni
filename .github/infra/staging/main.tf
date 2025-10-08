@@ -2,16 +2,12 @@ module "app" {
   source = "./module"
   env    = "staging"
 
+  my_ip = "41.90.172.205/32"
+
   availability_zones = ["us-east-1c", "us-east-1d"]
   public_subnets     = ["10.0.1.0/24", "10.0.2.0/24"]
   private_subnets    = ["10.0.101.0/24", "10.0.102.0/24"]
-
-  alb_sg_cidr_blocks = ["41.90.172.241/32"]
-
-  app_port        = 8000
-  task_cpu        = 256
-  task_memory     = 512
-  desired_count   = 1
+  
   container_image = var.container_image
 
   db_port                           = 5432
@@ -23,3 +19,5 @@ module "app" {
   aws_secretsmanager_db_secret_name = "sokoni/staging/db"
 
 }
+
+

@@ -11,13 +11,9 @@ jobs:
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v5
       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
 
       - name: Setup Python Environment
         uses: actions/setup-python@v4
@@ -53,10 +49,30 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       image_uri: ${{ steps.set-image.outputs.image_uri }}
+      environment: ${{ steps.set-env.outputs.environment }}
+      tf_workspace: ${{ steps.set-env.outputs.tf_workspace }}
+      config_directory: ${{ steps.set-env.outputs.config_directory }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+
+      - name: Set Environment Vars
+        id: set-env
+        run: |
+          if [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "environment=production" >> $GITHUB_OUTPUT
+            echo "tf_workspace=sokoni-production" >> $GITHUB_OUTPUT
+            echo "config_directory=./.github/infra/prod" >> $GITHUB_OUTPUT
+          elif [[ "${{ github.ref_name }}" == "staging" ]]; then
+            echo "environment=staging" >> $GITHUB_OUTPUT
+            echo "tf_workspace=sokoni-staging" >> $GITHUB_OUTPUT
+            echo "config_directory=./.github/infra/staging" >> $GITHUB_OUTPUT
+          else
+            echo "environment=development" >> $GITHUB_OUTPUT
+            echo "tf_workspace=sokoni-staging" >> $GITHUB_OUTPUT
+            echo "config_directory=./.github/infra/staging" >> $GITHUB_OUTPUT
+          fi
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -106,21 +122,21 @@ jobs:
       - name: Set container_image variable in Terraform Cloud
         env:
           TF_CLOUD_ORGANIZATION: victorgpt0
-          TF_WORKSPACE: sokoni-production
+          TF_WORKSPACE: ${{ steps.set-env.outputs.tf_workspace }}
           TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
           IMAGE_URI: ${{ steps.login-ecr.outputs.registry }}/${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }}
-          TF_MAIN_IMAGE_VAR_ID: ${{ secrets.TF_MAIN_IMAGE_VAR_ID }}
-          TF_MAIN_WORKSPACE_ID: ${{ secrets.TF_MAIN_WORKSPACE_ID }}
+          TF_IMAGE_VAR_ID: ${{ github.ref_name == 'main' && secrets.TF_MAIN_IMAGE_VAR_ID || secrets.TF_STAGING_IMAGE_VAR_ID }}
+          TF_WORKSPACE_ID: ${{ github.ref_name == 'main' && secrets.TF_MAIN_WORKSPACE_ID || secrets.TF_STAGING_WORKSPACE_ID }}
         run: |
           curl \
           --header "Authorization: Bearer $TF_API_TOKEN" \
           --header "Content-Type: application/vnd.api+json" \
           --request PATCH \
           --data @- \
-          https://app.terraform.io/api/v2/workspaces/$TF_MAIN_WORKSPACE_ID/vars/$TF_MAIN_IMAGE_VAR_ID <<EOF
+          https://app.terraform.io/api/v2/workspaces/$TF_WORKSPACE_ID/vars/$TF_IMAGE_VAR_ID <<EOF
           {
             "data": {
-              "id":"$TF_MAIN_IMAGE_VAR_ID",
+              "id":"$TF_IMAGE_VAR_ID",
               "attributes": {
                 "key":"container_image",
                 "value":"$IMAGE_URI",
@@ -145,10 +161,9 @@ jobs:
       contents: read
     env:
       TF_CLOUD_ORGANIZATION: victorgpt0
-      # TF_WORKSPACE: sokoni-staging
-      TF_WORKSPACE: sokoni-production
+      TF_WORKSPACE: ${{ needs.build.outputs.tf_workspace }}
       TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-      CONFIG_DIRECTORY: ./.github/infra/prod
+      CONFIG_DIRECTORY: ${{ needs.build.outputs.config_directory }}
 
     steps:
 
@@ -185,9 +200,9 @@ jobs:
       contents: read
     env:
       TF_CLOUD_ORGANIZATION: victorgpt0
-      TF_WORKSPACE: sokoni-production
+      TF_WORKSPACE: ${{ needs.build.outputs.tf_workspace }}
       TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-      CONFIG_DIRECTORY: ./.github/infra/prod
+      CONFIG_DIRECTORY: ${{ needs.build.outputs.config_directory }}
 
     steps:
 

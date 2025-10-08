@@ -73,15 +73,21 @@ resource "aws_route_table_association" "private" {
   route_table_id = aws_route_table.private.id
 }
 
-resource "aws_security_group" "ecs" {
-  name        = "sokoni-${var.env}-ecs-sg"
-  description = "Security group for ECS tasks"
+resource "aws_security_group" "ec2" {
+  name        = "sokoni-${var.env}-ec2-sg"
+  description = "Security group for EC2 instance"
   vpc_id      = aws_vpc.sokoni-vpc.id
   ingress {
-    from_port       = var.app_port
-    to_port         = var.app_port
-    protocol        = "tcp"
-    cidr_blocks = ["41.90.172.2/32"]
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.my_ip]
+  }
+  ingress {
+    from_port   = var.app_port
+    to_port     = var.app_port
+    protocol    = "tcp"
+    cidr_blocks = [var.my_ip]
   }
   egress {
     from_port   = 0
@@ -99,7 +105,7 @@ resource "aws_security_group" "rds" {
     from_port       = var.db_port
     to_port         = var.db_port
     protocol        = "tcp"
-    security_groups = [aws_security_group.ecs.id]
+    security_groups = [aws_security_group.ec2.id]
   }
   egress {
     from_port   = 0

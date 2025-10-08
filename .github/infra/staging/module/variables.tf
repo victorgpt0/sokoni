@@ -5,6 +5,14 @@ variable "aws_region" {
   default = "us-east-1"
 }
 
+variable "my_ip" {
+  type = string
+}
+variable "ssh_key_name" {
+  type    = string
+  default = "sokoni-staging-key"
+}
+
 #VPC configuration variables
 variable "availability_zones" {
   type    = list(string)
@@ -19,25 +27,13 @@ variable "private_subnets" {
   default = []
 }
 
-#ECS configuration variables
 variable "app_port" {
-  type    = number
-  default = 80
+  type = number
+  default = 8000
 }
-variable "task_cpu" {
-  type    = number
-  default = 256
-}
-variable "task_memory" {
-  type    = number
-  default = 512
-}
+
 variable "container_image" {
-  type    = string
-}
-variable "desired_count" {
-  type    = number
-  default = 1
+  type = string
 }
 
 #RDS configuration variables
@@ -50,8 +46,8 @@ variable "db_engine" {
   default = "postgres"
 }
 variable "db_engine_version" {
-    type    = string
-    default = "14.5"
+  type    = string
+  default = "14.5"
 }
 variable "db_instance_class" {
   type    = string
@@ -78,12 +74,6 @@ variable "aws_secretsmanager_db_secret_name" {
   default = "secret/data/sokoni/db"
 }
 locals {
-   db = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)
-   database_url = "${var.db_engine}://${local.db["username"]}:${local.db["password"]}@${aws_db_instance.this.address}:${var.db_port}/${var.db_name}"
-}
-
-#ALB configuration variables
-variable "alb_sg_cidr_blocks" {
-  type    = list(string)
-  default = ["0.0.0.0/0"]
+  db           = jsondecode(data.aws_secretsmanager_secret_version.db.secret_string)
+  database_url = "${var.db_engine}://${local.db["username"]}:${local.db["password"]}@${aws_db_instance.this.address}:${var.db_port}/${var.db_name}"
 }
