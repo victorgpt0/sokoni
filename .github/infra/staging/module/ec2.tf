@@ -110,16 +110,13 @@ resource "aws_instance" "sokoni" {
             
             # Create docker-compose file
             cat > /home/ec2-user/docker-compose.yml <<COMPOSE
-            version: '3.8'
             services:
               web:
                 image: ${var.container_image}
                 ports:
                   - "8000:8000"
-                environment:
-                  - DATABASE_URL=${local.database_url}
-                  - ALLOWED_HOSTS=${ALLOWED_HOSTS}
-                  - DEBUG=True
+                env_file:
+                  - .env
                 restart: unless-stopped
             COMPOSE
             
