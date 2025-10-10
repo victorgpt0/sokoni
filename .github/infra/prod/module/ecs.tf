@@ -34,6 +34,49 @@ resource "aws_iam_policy_attachment" "ecs_task_execution_policy" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_iam_policy" "ecs_secrets_policy" {
+  name = "sokoni-${var.env}-ecs-secrets-policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = [
+          "ssm:GetParameters",
+          "ssm:GetParameter",
+          "secretsmanager:GetSecretValue",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+      },
+      {
+        Action = [
+          "kms:Decrypt",
+        ]
+        Effect   = "Allow"
+        Resource = "*"
+        Condition = {
+          StringEquals = {
+            "kms:ViaService" = "secretsmanager.${var.aws_region}.amazonaws.com"
+          }
+        }
+      }
+    ]
+  })
+
+  tags = {
+    terraform = "true"
+  }
+  
+}
+
+resource "aws_iam_policy_attachment" "ecs_secrets_policy_attachment" {
+  name       = "sokoni-${var.env}-ecs-secrets-policy-attachment"
+  roles      = [aws_iam_role.ecs_task_execution_role.name]
+  policy_arn = aws_iam_policy.ecs_secrets_policy.arn
+  
+}
+
 resource "aws_ecs_task_definition" "app" {
   family                   = "sokoni-${var.env}-task"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
@@ -104,12 +147,6 @@ resource "aws_ecs_task_definition" "app" {
           name  = "AWS_PROMETHEUS_ENDPOINT"
           value = "https://aps-workspaces.${var.aws_region}.amazonaws.com/workspaces/${aws_prometheus_workspace.prometheus.id}/api/v1/remote_write"
         },
-      ]
-      secrets = [
-        {
-          name      = "AMP_REMOTE_WRITE_URL"
-          valueFrom = aws_vpc_endpoint.amp_workspace_endpoint.dns_entry[0].dns_name
-        }
       ]
       logConfiguration = {
         logDriver = "awslogs"
