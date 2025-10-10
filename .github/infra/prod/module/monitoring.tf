@@ -74,6 +74,11 @@ resource "aws_grafana_workspace" "grafana" {
     terraform = true
   }
 
+  lifecycle {
+    prevent_destroy = false
+    ignore_changes = ["tags"]
+  }
+
 }
 
 resource "aws_security_group" "monitoring" {
