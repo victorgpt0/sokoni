@@ -90,11 +90,11 @@ variable "alb_sg_cidr_blocks" {
 
 locals {
   cname_record = tolist(aws_acm_certificate.default.domain_validation_options)[0]
-  txt_value = trimsuffix(local.cname_record.resource_record_value, ".")
+  txt_value    = trimsuffix(local.cname_record.resource_record_value, ".")
 }
 
 variable "domain_name" {
   type    = string
   default = "sokoni.dev"
-  
+
 }

@@ -60,15 +60,15 @@ resource "aws_ecs_task_definition" "app" {
           value = var.env
         },
         {
-          name = "DEBUG"
+          name  = "DEBUG"
           value = "False"
         },
         {
-          name = "ALLOWED_HOSTS"
+          name  = "ALLOWED_HOSTS"
           value = "localhost,127.0.0.1,${aws_alb.app_alb.dns_name},.${var.aws_region}.elb.amazonaws.com,${var.domain_name}"
         },
         {
-          name = "CSRF_TRUSTED_ORIGINS"
+          name  = "CSRF_TRUSTED_ORIGINS"
           value = "http://${aws_alb.app_alb.dns_name},https://${var.domain_name}"
         }
       ]
@@ -86,6 +86,38 @@ resource "aws_ecs_task_definition" "app" {
           "awslogs-stream-prefix" = "ecs"
         }
       }
+    },
+    {
+      name      = "adot-collector"
+      image     = "public.ecr.aws/aws-observability/aws-otel-collector:latest"
+      essential = true
+      command = [
+        "--config=/etc/ecs/ecs-amp.yaml"
+      ]
+      environment = [
+        {
+          name  = "AWS_REGION"
+          value = var.aws_region
+        },
+        {
+          name  = "AWS_PROMETHEUS_ENDPOINT"
+          value = "https://aps-workspaces.${var.aws_region}.amazonaws.com/workspaces/${aws_prometheus_workspace.prometheus.id}/api/v1/remote_write"
+        },
+      ]
+      secrets = [
+        {
+          name      = "AMP_REMOTE_WRITE_URL"
+          valueFrom = aws_vpc_endpoint.amp_workspace_endpoint.dns_entry[0].dns_name
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = "/ecs/sokoni-${var.env}"
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "adot"
+        }
+      }
     }
   ])
 
@@ -95,7 +127,7 @@ resource "aws_ecs_task_definition" "app" {
 }
 
 resource "aws_cloudwatch_log_group" "ecs" {
-  name             = "/ecs/sokoni-${var.env}"
+  name              = "/ecs/sokoni-${var.env}"
   retention_in_days = 7
 
   tags = {
@@ -136,18 +168,18 @@ resource "aws_ecs_task_definition" "migrations" {
       name      = "app"
       image     = var.container_image
       essential = true
-      command = ["sh", "-c", "python manage.py migrate --no-input"]
+      command   = ["sh", "-c", "python manage.py migrate --no-input"]
       environment = [
         {
           name  = "APP_ENV"
           value = var.env
         },
         {
-          name = "ALLOWED_HOSTS"
+          name  = "ALLOWED_HOSTS"
           value = "${var.domain_name}"
         },
         {
-          name = "DEBUG"
+          name  = "DEBUG"
           value = "False"
         },
 
@@ -175,7 +207,7 @@ resource "aws_ecs_task_definition" "migrations" {
 }
 
 resource "null_resource" "run_migrations" {
-  depends_on = [ aws_ecs_task_definition.migrations ]
+  depends_on = [aws_ecs_task_definition.migrations]
 
   provisioner "local-exec" {
     command = <<EOT

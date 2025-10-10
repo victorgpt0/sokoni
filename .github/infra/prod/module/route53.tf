@@ -1,9 +1,9 @@
 resource "aws_route53_zone" "main" {
-    name = var.domain_name
+  name = var.domain_name
 }
 
 resource "aws_acm_certificate" "default" {
-  domain_name = var.domain_name
+  domain_name       = var.domain_name
   validation_method = "DNS"
 
   subject_alternative_names = [
@@ -37,14 +37,14 @@ resource "aws_acm_certificate_validation" "cert_validation" {
 }
 
 resource "aws_route53_record" "app_alias" {
-    zone_id = aws_route53_zone.main.zone_id
-    name    = var.domain_name
-    type    = "A"
-    
-    alias {
-        name                   = aws_alb.app_alb.dns_name
-        zone_id                = aws_alb.app_alb.zone_id
-        evaluate_target_health = true
-    }
-  
+  zone_id = aws_route53_zone.main.zone_id
+  name    = var.domain_name
+  type    = "A"
+
+  alias {
+    name                   = aws_alb.app_alb.dns_name
+    zone_id                = aws_alb.app_alb.zone_id
+    evaluate_target_health = true
+  }
+
 }
