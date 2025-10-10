@@ -63,11 +63,13 @@ resource "aws_iam_policy_attachment" "grafana_amp_policy" {
 
 resource "aws_grafana_workspace" "grafana" {
   name                     = "sokoni-grafana-${var.env}-workspace"
+  description = "${timestamp()} - Managed by Terraform"
   authentication_providers = ["AWS_SSO"]
+  notification_destinations = [ "SNS" ]
   account_access_type      = "CURRENT_ACCOUNT"
   permission_type          = "SERVICE_MANAGED"
   role_arn                 = aws_iam_role.grafana_assume.arn
-  data_sources             = ["PROMETHEUS"]
+  data_sources             = ["PROMETHEUS", "CLOUDWATCH"]
 
   tags = {
     Name      = "sokoni-grafana-${var.env}-workspace"
@@ -79,6 +81,12 @@ resource "aws_grafana_workspace" "grafana" {
     ignore_changes = [tags]
   }
 
+}
+
+resource "aws_grafana_role_association" "aws_grafana_role_association" {
+  workspace_id = aws_grafana_workspace.grafana.id
+  role         = "ADMIN"
+  group_ids = ["Admins"]  
 }
 
 resource "aws_security_group" "monitoring" {
