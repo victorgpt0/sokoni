@@ -76,7 +76,7 @@ resource "aws_grafana_workspace" "grafana" {
 
   lifecycle {
     prevent_destroy = false
-    ignore_changes = ["tags"]
+    ignore_changes = [tags]
   }
 
 }
