@@ -60,10 +60,6 @@ resource "aws_ecs_task_definition" "app" {
           value = var.env
         },
         {
-          name  = "DATABASE_URL"
-          value = local.database_url
-        },
-        {
           name = "DEBUG"
           value = "False"
         },
@@ -74,6 +70,12 @@ resource "aws_ecs_task_definition" "app" {
         {
           name = "CSRF_TRUSTED_ORIGINS"
           value = "http://${aws_alb.app_alb.dns_name},https://${var.domain_name}"
+        }
+      ]
+      secrets = [
+        {
+          name      = "DATABASE_URL"
+          valueFrom = local.database_url
         }
       ]
       logConfiguration = {
@@ -145,14 +147,16 @@ resource "aws_ecs_task_definition" "migrations" {
           value = "${var.domain_name}"
         },
         {
-          name  = "DATABASE_URL"
-          value = local.database_url
-        },
-        {
           name = "DEBUG"
           value = "False"
         },
 
+      ]
+      secrets = [
+        {
+          name      = "DATABASE_URL"
+          valueFrom = local.database_url
+        }
       ]
       logConfiguration = {
         logDriver = "awslogs"

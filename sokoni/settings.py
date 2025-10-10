@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third party apps
     "widget_tweaks",
+    "django_prometheus",
     # Local apps
     "accounts",
     "products",
@@ -75,6 +76,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -86,6 +88,7 @@ MIDDLEWARE = [
     "sokoni.middleware.LogRequestMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "sokoni.urls"

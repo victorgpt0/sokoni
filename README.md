@@ -1,10 +1,23 @@
-# 🛍️ Sokoni - Kenyan E-commerce Platform
+# 🛍️ Sokoni - E-commerce Platform
 
-A modern e-commerce web application built with Django, designed specifically for the Kenyan market. Sokoni (Swahili for "marketplace") provides a complete online shopping experience with user authentication, product management, shopping cart, order processing, and payment integration.
+A modern e-commerce web application built with Django. Sokoni (Swahili for "marketplace") provides a complete online shopping experience with user authentication, product management, shopping cart, order processing, and payment integration.
 
-This is a project built purposefully for demonstration of DevOps knowledge and know how
+This project serves as the practical capstone for my 12-week Starter DevOps Program at the Nairobi DevOps Community, demonstrating my transition from learning to hands-on application of core DevOps tools and practices.
 
-## 🚀 Developer Quick Start
+## 📚 Table of Contents
+
+- [Project Overview](#project-overview)
+- [Architecture Diagram](#architecture-diagram)
+- [Infrastructure & Deployment](#infrastructure--deployment)
+- [CI/CD Pipeline Configuration](#cicd-pipeline-configuration)
+- [Monitoring & Observability](#monitoring--observability)
+- [Live Demo](#live-demo)
+- [Repository Structure](#repository-structure)
+- [Setup & Usage Instructions](#setup--usage-instructions)
+- [Lessons Learned / Reflection](#lessons-learned--reflection)
+- [Acknowledgements / Program Credit](#acknowledgements--program-credit)
+
+## 🚀 Python App Quick Start
 
 ### Prerequisites
 - Python 3.8+
@@ -22,7 +35,7 @@ This is a project built purposefully for demonstration of DevOps knowledge and k
 2. **Create virtual environment**
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   source venv/bin/activate
    ```
 
 3. **Install dependencies**
@@ -51,12 +64,17 @@ This is a project built purposefully for demonstration of DevOps knowledge and k
    python manage.py seed_dev --small
    ```
 
-7. **Run the development server**
+7. **Run the tests**
+   ```bash
+   python manage.py test
+   ```
+
+8. **Run the development server**
    ```bash
    python manage.py runserver
    ```
 
-8. **Visit the application**
+9. **Visit the application**
    - Main site: http://localhost:8000
    - Admin panel: http://localhost:8000/admin
 
