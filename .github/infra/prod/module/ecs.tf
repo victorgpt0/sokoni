@@ -37,6 +37,7 @@ resource "aws_iam_policy_attachment" "ecs_task_execution_policy" {
 resource "aws_ecs_task_definition" "app" {
   family                   = "sokoni-${var.env}-task"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn = aws_iam_role.amp_remote_write_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.task_cpu
@@ -75,7 +76,7 @@ resource "aws_ecs_task_definition" "app" {
       secrets = [
         {
           name      = "DATABASE_URL"
-          valueFrom = local.database_url
+          valueFrom = aws_ssm_parameter.database_url.arn
         }
       ]
       logConfiguration = {
@@ -123,6 +124,16 @@ resource "aws_ecs_task_definition" "app" {
 
   tags = {
     terraform = "true"
+  }
+}
+
+resource "aws_ssm_parameter" "database_url" {
+  name  = "/sokoni/${var.env}/database_url"
+  type  = "SecureString"
+  value = local.database_url
+  tags = {
+    Name      = "sokoni-${var.env}-database-url"
+    terraform = true
   }
 }
 
@@ -187,7 +198,7 @@ resource "aws_ecs_task_definition" "migrations" {
       secrets = [
         {
           name      = "DATABASE_URL"
-          valueFrom = local.database_url
+          valueFrom = aws_ssm_parameter.database_url.arn
         }
       ]
       logConfiguration = {
