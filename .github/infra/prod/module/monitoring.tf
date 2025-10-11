@@ -194,8 +194,8 @@ resource "aws_security_group" "monitoring" {
   vpc_id      = aws_vpc.sokoni-vpc.id
 
   ingress {
-    from_port   = 443
-    to_port     = 443
+    from_port   = 3000
+    to_port     = 3000
     protocol    = "tcp"
     cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
   }
