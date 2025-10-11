@@ -85,13 +85,12 @@ resource "aws_ecs_task_definition" "grafana" {
   task_role_arn            = aws_iam_role.amp_remote_write_role.arn
   container_definitions = jsonencode([{
     name      = "grafana"
-    image     = "grafana/grafana:10.2.3-ubuntu"  # Use ubuntu variant (no pebble)
+    image     = "grafana/grafana:10.2.3-ubuntu"
     essential = true
     user      = "472"  # Grafana user ID
 
     portMappings = [{
       containerPort = 3000
-      hostPort      = 3000
       protocol      = "tcp"
     }]
 
@@ -146,7 +145,7 @@ resource "aws_ecs_task_definition" "grafana" {
     logConfiguration = {
       logDriver = "awslogs"
       options = {
-        "awslogs-group"         = aws_cloudwatch_log_group.grafana.name
+        "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
         "awslogs-region"        = var.aws_region
         "awslogs-stream-prefix" = "grafana"
       }
