@@ -21,3 +21,7 @@ output "amp_remote_write_url" {
 output "amp_task_role_arn" {
   value = module.app.amp_task_role_arn
 }
+
+output "grafana_ecs_task_role_arn" {
+  value = module.app.grafana_task_role_arn
+}
