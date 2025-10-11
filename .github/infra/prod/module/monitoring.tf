@@ -6,26 +6,6 @@ resource "aws_prometheus_workspace" "prometheus" {
   }
 }
 
-resource "aws_iam_role" "grafana_assume" {
-  name = "sokoni-${var.env}-amg-grafana-assume-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "grafana.amazonaws.com"
-        }
-      }
-    ]
-  })
-
-  tags = {
-    terraform = true
-  }
-}
 
 resource "aws_iam_policy" "grafana_amp_policy" {
   name = "sokoni-${var.env}-amg-grafana-policy"
@@ -45,6 +25,16 @@ resource "aws_iam_policy" "grafana_amp_policy" {
         ]
         Effect   = "Allow"
         Resource = aws_prometheus_workspace.prometheus.arn
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "cloudwatch:DescribeAlarmsForMetric",
+          "cloudwatch:GetMetricData",
+          "cloudwatch:ListMetrics",
+          "cloudwatch:GetMetricStatistics",
+        ]
+        Resource = "*"
       }
     ]
   })
@@ -57,36 +47,143 @@ resource "aws_iam_policy" "grafana_amp_policy" {
 
 resource "aws_iam_policy_attachment" "grafana_amp_policy" {
   name       = "sokoni-${var.env}-amg-grafana-policy-attachment"
-  roles      = [aws_iam_role.grafana_assume.name]
+  roles      = [aws_iam_role.ecs_task_execution_role.name]
   policy_arn = aws_iam_policy.grafana_amp_policy.arn
 }
 
-resource "aws_grafana_workspace" "grafana" {
-  name                     = "sokoni-grafana-${var.env}-workspace"
-  description = "${timestamp()} - Managed by Terraform"
-  authentication_providers = ["AWS_SSO"]
-  notification_destinations = [ "SNS" ]
-  account_access_type      = "CURRENT_ACCOUNT"
-  permission_type          = "SERVICE_MANAGED"
-  role_arn                 = aws_iam_role.grafana_assume.arn
-  data_sources             = ["PROMETHEUS", "CLOUDWATCH"]
+resource "random_password" "grafana_amp_password" {
+  length  = 16
+  special = true
+  upper   = true
+  lower   = true
+}
+
+resource "aws_secretsmanager_secret" "grafana_admin_password" {
+  name                    = "sokoni-${var.env}-grafana-amp-password"
+  description             = "Password for Grafana ECS workspace"
+  recovery_window_in_days = 0
 
   tags = {
-    Name      = "sokoni-grafana-${var.env}-workspace"
+    Name      = "sokoni-${var.env}-grafana-amp-password"
     terraform = true
   }
+}
 
-  lifecycle {
-    prevent_destroy = false
-    ignore_changes = [tags]
-  }
+resource "aws_secretsmanager_secret_version" "grafana_admin_password" {
+  secret_id     = aws_secretsmanager_secret.grafana_admin_password.id
+  secret_string = random_password.grafana_amp_password.result
 
 }
 
-resource "aws_grafana_role_association" "aws_grafana_role_association" {
-  workspace_id = aws_grafana_workspace.grafana.id
-  role         = "ADMIN"
-  group_ids = ["Admins"]  
+resource "aws_ecs_task_definition" "grafana" {
+  family                   = "sokoni-${var.env}-grafana"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = var.task_cpu
+  memory                   = var.task_memory
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.amp_remote_write_role.arn
+  container_definitions = jsonencode([
+    {
+      name      = "grafana"
+      image     = "public.ecr.aws/ubuntu/grafana:9.5-24.04_stable"
+      essential = true
+      portMappings = [
+        {
+          containerPort = 3000
+          protocol      = "tcp"
+        }
+      ]
+      environment = [
+        {
+          name  = "GF_AUTH_ANONYMOUS_ENABLED"
+          value = "false"
+        },
+        {
+          name  = "GF_AUTH_ANONYMOUS_ORG_ROLE"
+          value = "Admin"
+        },
+        {
+          name  = "GF_AUTH_ANONYMOUS_ORG_NAME"
+          value = "sokoni-${var.env}-org"
+        },
+        {
+          name  = "GF_AUTH_BASIC_ENABLED"
+          value = "true"
+        },
+        {
+          name  = "GF_AUTH_BASIC_ALLOW_SIGN_UP"
+          value = "false"
+        },
+        {
+          name  = "GF_AUTH_GRAFANA_COM_ENABLED"
+          value = "false"
+        },
+        {
+          name  = "GF_SERVER_ROOT_URL"
+          value = "http://localhost:3000"
+        },
+        {
+          name  = "GF_INSTALL_PLUGINS"
+          value = "grafana-clock-panel"
+        },
+        {
+          name  = "GF_SECURITY_ADMIN_USER"
+          value = "admin"
+        },
+        {
+          name  = "AWS_SDK_LOAD_CONFIG"
+          value = "true"
+        },
+        {
+          name  = "AWS_REGION"
+          value = var.aws_region
+        }
+      ]
+      secrets = [
+        {
+          name      = "GF_SECURITY_ADMIN_PASSWORD"
+          valueFrom = aws_secretsmanager_secret.grafana_admin_password.arn
+        }
+      ]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
+          "awslogs-region"        = var.aws_region
+          "awslogs-stream-prefix" = "grafana"
+        }
+      }
+
+      healthcheck = {
+        command     = ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1"]
+        interval    = 30
+        timeout     = 5
+        retries     = 3
+        startPeriod = 60
+      }
+    }
+  ])
+
+}
+
+resource "aws_ecs_service" "grafana" {
+  name            = "sokoni-${var.env}-grafana"
+  cluster         = aws_ecs_cluster.this.id
+  task_definition = aws_ecs_task_definition.grafana.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets          = aws_subnet.public[*].id
+    security_groups  = [aws_security_group.monitoring.id]
+    assign_public_ip = true
+  }
+
+  tags = {
+    terraform = true
+  }
+
 }
 
 resource "aws_security_group" "monitoring" {
@@ -114,20 +211,6 @@ data "http" "my_ip" {
   url = "https://checkip.amazonaws.com/"
 }
 
-resource "aws_vpc_endpoint" "amp_workspace_endpoint" {
-  vpc_id              = aws_vpc.sokoni-vpc.id
-  service_name        = "com.amazonaws.${var.aws_region}.aps-workspaces"
-  security_group_ids  = [aws_security_group.monitoring.id]
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = aws_subnet.private[*].id
-  private_dns_enabled = true
-
-  tags = {
-    Name      = "sokoni-${var.env}-amp-endpoint"
-    terraform = true
-  }
-
-}
 
 resource "aws_iam_role" "amp_remote_write_role" {
   name = "sokoni-${var.env}-amp-remote-write-role"
@@ -172,12 +255,11 @@ output "amp_workspace_id" {
 output "amp_remote_write_url" {
   value = "https://aps-workspaces.${var.aws_region}.amazonaws.com/workspaces/${aws_prometheus_workspace.prometheus.id}/api/v1/remote_write"
 }
-output "grafana_endpoint" {
-  value = aws_grafana_workspace.grafana.endpoint
+output "amp_query_url" {
+  value       = "https://aps-workspaces.${var.aws_region}.amazonaws.com/workspaces/${aws_prometheus_workspace.prometheus.id}"
+  description = "AMP Query Endpoint for Grafana"
 }
-output "amp_vpc_endpoint_dns" {
-  value = aws_vpc_endpoint.amp_workspace_endpoint.dns_entry
-}
+
 output "amp_task_role_arn" {
   value = aws_iam_role.amp_remote_write_role.arn
 }

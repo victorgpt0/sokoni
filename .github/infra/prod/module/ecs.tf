@@ -67,20 +67,20 @@ resource "aws_iam_policy" "ecs_secrets_policy" {
   tags = {
     terraform = "true"
   }
-  
+
 }
 
 resource "aws_iam_policy_attachment" "ecs_secrets_policy_attachment" {
   name       = "sokoni-${var.env}-ecs-secrets-policy-attachment"
   roles      = [aws_iam_role.ecs_task_execution_role.name]
   policy_arn = aws_iam_policy.ecs_secrets_policy.arn
-  
+
 }
 
 resource "aws_ecs_task_definition" "app" {
   family                   = "sokoni-${var.env}-task"
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
-  task_role_arn = aws_iam_role.amp_remote_write_role.arn
+  task_role_arn            = aws_iam_role.amp_remote_write_role.arn
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.task_cpu
