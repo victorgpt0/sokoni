@@ -291,3 +291,7 @@ output "amp_query_url" {
 output "amp_task_role_arn" {
   value = aws_iam_role.amp_remote_write_role.arn
 }
+
+output "grafana_task_role_arn" {
+  value = aws_iam_role.grafana_ecs_task_role.arn
+}
