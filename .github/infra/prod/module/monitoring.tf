@@ -197,7 +197,7 @@ resource "aws_security_group" "monitoring" {
     from_port   = 3000
     to_port     = 3000
     protocol    = "tcp"
-    cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
+    cidr_blocks = ["41.90.172.205/32"]
   }
 
   egress {
@@ -209,9 +209,9 @@ resource "aws_security_group" "monitoring" {
 
 }
 
-data "http" "my_ip" {
-  url = "https://checkip.amazonaws.com/"
-}
+# data "http" "my_ip" {
+#   url = "https://checkip.amazonaws.com/"
+# }
 
 
 resource "aws_iam_role" "amp_remote_write_role" {
