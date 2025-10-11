@@ -83,79 +83,90 @@ resource "aws_ecs_task_definition" "grafana" {
   memory                   = var.task_memory
   execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn            = aws_iam_role.amp_remote_write_role.arn
-  container_definitions = jsonencode([
-    {
-      name      = "grafana"
-      image     = "public.ecr.aws/ubuntu/grafana:9.5-24.04_stable"
-      essential = true
-      portMappings = [
-        {
-          containerPort = 3000
-          protocol      = "tcp"
-        }
-      ]
-      environment = [
-        {
-          name  = "GF_AUTH_ANONYMOUS_ENABLED"
-          value = "false"
-        },
-        {
-          name  = "GF_AUTH_ANONYMOUS_ORG_ROLE"
-          value = "Admin"
-        },
-        {
-          name  = "GF_AUTH_ANONYMOUS_ORG_NAME"
-          value = "sokoni-${var.env}-org"
-        },
-        {
-          name  = "GF_AUTH_BASIC_ENABLED"
-          value = "true"
-        },
-        {
-          name  = "GF_AUTH_BASIC_ALLOW_SIGN_UP"
-          value = "false"
-        },
-        {
-          name  = "GF_AUTH_GRAFANA_COM_ENABLED"
-          value = "false"
-        },
-        {
-          name  = "GF_SERVER_ROOT_URL"
-          value = "http://localhost:3000"
-        },
-        {
-          name  = "GF_INSTALL_PLUGINS"
-          value = "grafana-clock-panel"
-        },
-        {
-          name  = "GF_SECURITY_ADMIN_USER"
-          value = "admin"
-        },
-        {
-          name  = "AWS_SDK_LOAD_CONFIG"
-          value = "true"
-        },
-        {
-          name  = "AWS_REGION"
-          value = var.aws_region
-        }
-      ]
-      secrets = [
-        {
-          name      = "GF_SECURITY_ADMIN_PASSWORD"
-          valueFrom = aws_secretsmanager_secret.grafana_admin_password.arn
-        }
-      ]
-      logConfiguration = {
-        logDriver = "awslogs"
-        options = {
-          "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
-          "awslogs-region"        = var.aws_region
-          "awslogs-stream-prefix" = "grafana"
-        }
+  container_definitions = jsonencode([{
+    name      = "grafana"
+    image     = "grafana/grafana:10.2.3-ubuntu"  # Use ubuntu variant (no pebble)
+    essential = true
+    user      = "472"  # Grafana user ID
+
+    portMappings = [{
+      containerPort = 3000
+      hostPort      = 3000
+      protocol      = "tcp"
+    }]
+
+    environment = [
+      {
+        name  = "GF_AUTH_ANONYMOUS_ENABLED"
+        value = "false"
+      },
+      {
+        name  = "GF_AUTH_BASIC_ENABLED"
+        value = "true"
+      },
+      {
+        name  = "GF_SECURITY_ADMIN_USER"
+        value = "admin"
+      },
+      {
+        name  = "GF_SERVER_ROOT_URL"
+        value = "http://localhost:3000"
+      },
+      {
+        name  = "GF_SERVER_HTTP_PORT"
+        value = "3000"
+      },
+      {
+        name  = "AWS_SDK_LOAD_CONFIG"
+        value = "true"
+      },
+      {
+        name  = "AWS_REGION"
+        value = var.aws_region
+      },
+      {
+        name  = "GF_INSTALL_PLUGINS"
+        value = ""
+      },
+      {
+        name  = "GF_LOG_LEVEL"
+        value = "info"
+      },
+      {
+        name  = "GF_PATHS_PROVISIONING"
+        value = "/etc/grafana/provisioning"
+      }
+    ]
+
+    secrets = [{
+      name      = "GF_SECURITY_ADMIN_PASSWORD"
+      valueFrom = aws_secretsmanager_secret.grafana_admin_password.arn
+    }]
+
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = aws_cloudwatch_log_group.grafana.name
+        "awslogs-region"        = var.aws_region
+        "awslogs-stream-prefix" = "grafana"
       }
     }
-  ])
+
+    healthCheck = {
+      command = [
+        "CMD-SHELL",
+        "curl -f http://localhost:3000/api/health || exit 1"
+      ]
+      interval    = 30
+      timeout     = 10
+      retries     = 5
+      startPeriod = 120  # Give it 2 minutes to start
+    }
+  }])
+
+  tags = {
+    terraform = true
+  }
 
 }
 
