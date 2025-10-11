@@ -6,6 +6,24 @@ resource "aws_prometheus_workspace" "prometheus" {
   }
 }
 
+resource "aws_iam_role" "grafana_ecs_task_role" {
+  name = "sokoni-${var.env}-grafana-task-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = "ecs-tasks.amazonaws.com"
+      }
+    }]
+  })
+
+  tags = {
+    terraform = true
+  }
+}
 
 resource "aws_iam_policy" "grafana_amp_policy" {
   name = "sokoni-${var.env}-amg-grafana-policy"
@@ -47,7 +65,7 @@ resource "aws_iam_policy" "grafana_amp_policy" {
 
 resource "aws_iam_policy_attachment" "grafana_amp_policy" {
   name       = "sokoni-${var.env}-amg-grafana-policy-attachment"
-  roles      = [aws_iam_role.ecs_task_execution_role.name]
+  roles      = [aws_iam_role.grafana_ecs_task_role.name]
   policy_arn = aws_iam_policy.grafana_amp_policy.arn
 }
 
@@ -81,7 +99,7 @@ resource "aws_ecs_task_definition" "grafana" {
   network_mode             = "awsvpc"
   cpu                      = var.task_cpu
   memory                   = var.task_memory
-  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  execution_role_arn       = aws_iam_role.grafana_ecs_task_role.arn
   task_role_arn            = aws_iam_role.amp_remote_write_role.arn
   container_definitions = jsonencode([{
     name      = "grafana"
@@ -197,6 +215,7 @@ resource "aws_security_group" "monitoring" {
     from_port   = 3000
     to_port     = 3000
     protocol    = "tcp"
+    # cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
     cidr_blocks = ["41.90.172.205/32"]
   }
 
