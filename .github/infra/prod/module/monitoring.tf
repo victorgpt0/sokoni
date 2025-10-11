@@ -47,6 +47,13 @@ resource "aws_iam_policy" "grafana_amp_policy" {
       {
         Effect = "Allow"
         Action = [
+          "aps:ListWorkspaces"
+        ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
           "cloudwatch:DescribeAlarmsForMetric",
           "cloudwatch:GetMetricData",
           "cloudwatch:ListMetrics",
