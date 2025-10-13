@@ -20,25 +20,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Make SAFE_REF
+        run: |
+          echo "SAFE_REF=$(echo "${{ github.ref_name }}" | tr '/' '-' | tr '.' '-')" >> $GITHUB_ENV
+
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Build Docker Image
         run: |
-          SAFE_REF = $(echo "${{ github.ref_name }}" | tr '/' '-' | tr '.' '-')
-          docker build -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${SAFE_REF}-${{ github.sha }} -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${SAFE_REF}-latest .
+          docker build -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.SAFE_REF }}-${{ github.sha }} -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.SAFE_REF }}-latest .
 
       - name: Run Container
         env:
           TEST_DB_URL: ${{ secrets.TEST_DB_URL }}
         run: |
-          SAFE_REF = $(echo "${{ github.ref_name }}" | tr '/' '-' | tr '.' '-')
           docker run -d \
             --name sokoni-app \
             -e DATABASE_URL="$TEST_DB_URL" \
             -p 8000:8000 \
             --name sokoni-app \
-            ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${SAFE_REF}-${{ github.sha }}
+            ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.SAFE_REF }}-${{ github.sha }}
 
           docker exec sokoni-app python manage.py migrate --noinput
 
