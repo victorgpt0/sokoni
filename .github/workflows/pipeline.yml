@@ -36,6 +36,7 @@ jobs:
       - name: Run Tests
         env:
           DATABASE_URL: ${{ secrets.TEST_DB_URL }}
+          SECRET_KEY: 'testing-insecure-key'
         run: |
           python manage.py test
 
