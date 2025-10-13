@@ -7,7 +7,7 @@ resource "random_password" "django_secret_key" {
   lifecycle {
     create_before_destroy = true
   }
-  
+
 }
 
 resource "aws_secretsmanager_secret" "django_secret_key" {
@@ -16,5 +16,5 @@ resource "aws_secretsmanager_secret" "django_secret_key" {
 
 resource "aws_secretsmanager_secret_version" "django_secret_key" {
   secret_id     = aws_secretsmanager_secret.django_secret_key.id
-  secret_string = random_password.django_secret_key.result  
+  secret_string = random_password.django_secret_key.result
 }
