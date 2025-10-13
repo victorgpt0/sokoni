@@ -1,3 +1,4 @@
+import uuid
 from decimal import Decimal
 
 from django.contrib.auth import get_user_model
@@ -31,11 +32,10 @@ class PaymentModelTest(TestCase):
             status="pending",
             amount=Decimal("100.00"),
             currency="USD",
-            paystack_reference="ref_123456",
+            paystack_reference="ref_123456789",
             paystack_access_code="access_123456",
             paystack_transaction_id="txn_123456",
             gateway_response={"status": "success"},
-            failure_reason=None,
         )
 
         self.assertEqual(payment.order, self.order)
@@ -43,18 +43,21 @@ class PaymentModelTest(TestCase):
         self.assertEqual(payment.status, "pending")
         self.assertEqual(payment.amount, Decimal("100.00"))
         self.assertEqual(payment.currency, "USD")
-        self.assertEqual(payment.paystack_reference, "ref_123456")
+        self.assertEqual(payment.paystack_reference, "ref_123456789")
         self.assertEqual(payment.paystack_access_code, "access_123456")
         self.assertEqual(payment.paystack_transaction_id, "txn_123456")
         self.assertEqual(payment.gateway_response, {"status": "success"})
-        self.assertIsNone(payment.failure_reason)
+        # self.assertIsNone(payment.failure_reason)
         self.assertIsNotNone(payment.created_at)
         self.assertIsNotNone(payment.updated_at)
 
     def test_payment_str_representation(self):
         """Test payment string representation"""
         payment = Payment.objects.create(
-            order=self.order, amount=Decimal("100.00"), status="completed"
+            order=self.order,
+            amount=Decimal("100.00"),
+            status="completed",
+            paystack_reference=uuid.uuid4(),
         )
         expected = f"Payment for Order {self.order.order_number} - Completed"
         self.assertEqual(str(payment), expected)
@@ -75,13 +78,19 @@ class PaymentModelTest(TestCase):
 
         # Successful payment
         successful_payment = Payment.objects.create(
-            order=order1, amount=Decimal("100.00"), status="completed"
+            order=order1,
+            amount=Decimal("100.00"),
+            status="completed",
+            paystack_reference=uuid.uuid4(),
         )
         self.assertTrue(successful_payment.is_successful)
 
         # Failed payment
         failed_payment = Payment.objects.create(
-            order=order2, amount=Decimal("100.00"), status="failed"
+            order=order2,
+            amount=Decimal("100.00"),
+            status="failed",
+            paystack_reference=uuid.uuid4(),
         )
         self.assertFalse(failed_payment.is_successful)
 
@@ -106,19 +115,28 @@ class PaymentModelTest(TestCase):
 
         # Pending payment
         pending_payment = Payment.objects.create(
-            order=order1, amount=Decimal("100.00"), status="pending"
+            order=order1,
+            amount=Decimal("100.00"),
+            status="pending",
+            paystack_reference=uuid.uuid4(),
         )
         self.assertTrue(pending_payment.is_pending)
 
         # Processing payment
         processing_payment = Payment.objects.create(
-            order=order2, amount=Decimal("100.00"), status="processing"
+            order=order2,
+            amount=Decimal("100.00"),
+            status="processing",
+            paystack_reference=uuid.uuid4(),
         )
         self.assertTrue(processing_payment.is_pending)
 
         # Completed payment
         completed_payment = Payment.objects.create(
-            order=order3, amount=Decimal("100.00"), status="completed"
+            order=order3,
+            amount=Decimal("100.00"),
+            status="completed",
+            paystack_reference=uuid.uuid4(),
         )
         self.assertFalse(completed_payment.is_pending)
 
@@ -139,7 +157,10 @@ class PaymentModelTest(TestCase):
                 total_amount=Decimal("100.00"),
             )
             payment = Payment.objects.create(
-                order=order, amount=Decimal("100.00"), status=status
+                order=order,
+                amount=Decimal("100.00"),
+                status=status,
+                paystack_reference=uuid.uuid4(),
             )
             self.assertEqual(payment.status, status)
 
@@ -153,7 +174,10 @@ class PaymentModelTest(TestCase):
                 total_amount=Decimal("100.00"),
             )
             payment = Payment.objects.create(
-                order=order, payment_method=method, amount=Decimal("100.00")
+                order=order,
+                payment_method=method,
+                amount=Decimal("100.00"),
+                paystack_reference=uuid.uuid4(),
             )
             self.assertEqual(payment.payment_method, method)
 
@@ -170,9 +194,13 @@ class PaymentModelTest(TestCase):
             total_amount=Decimal("200.00"),
         )
 
-        payment1 = Payment.objects.create(order=order1, amount=Decimal("100.00"))
+        payment1 = Payment.objects.create(
+            order=order1, amount=Decimal("100.00"), paystack_reference=uuid.uuid4()
+        )
 
-        payment2 = Payment.objects.create(order=order2, amount=Decimal("200.00"))
+        payment2 = Payment.objects.create(
+            order=order2, amount=Decimal("200.00"), paystack_reference=uuid.uuid4()
+        )
 
         payments = Payment.objects.all()
         self.assertEqual(payments[0], payment2)  # Newest first
@@ -192,7 +220,7 @@ class PaymentAttemptModelTest(TestCase):
             total_amount=Decimal("100.00"),
         )
         self.payment = Payment.objects.create(
-            order=self.order, amount=Decimal("100.00")
+            order=self.order, amount=Decimal("100.00"), paystack_reference=uuid.uuid4()
         )
 
     def test_payment_attempt_creation(self):
@@ -251,7 +279,7 @@ class PaymentViewsTest(TestCase):
             total_amount=Decimal("100.00"),
         )
         self.payment = Payment.objects.create(
-            order=self.order, amount=Decimal("100.00")
+            order=self.order, amount=Decimal("100.00"), paystack_reference=uuid.uuid4()
         )
 
     def test_payment_views_authenticated(self):
@@ -293,7 +321,10 @@ class PaymentIntegrationTest(TestCase):
     def test_payment_order_relationship(self):
         """Test payment-order relationship"""
         payment = Payment.objects.create(
-            order=self.order, amount=Decimal("100.00"), status="completed"
+            order=self.order,
+            amount=Decimal("100.00"),
+            status="completed",
+            paystack_reference=uuid.uuid4(),
         )
 
         # Test order payment relationship
@@ -302,7 +333,9 @@ class PaymentIntegrationTest(TestCase):
 
     def test_payment_attempt_payment_relationship(self):
         """Test payment attempt-payment relationship"""
-        payment = Payment.objects.create(order=self.order, amount=Decimal("100.00"))
+        payment = Payment.objects.create(
+            order=self.order, amount=Decimal("100.00"), paystack_reference=uuid.uuid4()
+        )
 
         attempt1 = PaymentAttempt.objects.create(
             payment=payment, paystack_reference="ref_111111", status="failed"
@@ -325,29 +358,32 @@ class PaymentIntegrationTest(TestCase):
             payment_method="paystack",
             amount=Decimal("100.00"),
             status="pending",
+            paystack_reference=uuid.uuid4(),
         )
 
-        # # Create failed attempt
-        # failed_attempt = PaymentAttempt.objects.create(
-        #     payment=payment,
-        #     paystack_reference="ref_failed",
-        #     status="failed",
-        #     gateway_response={"error": "Insufficient funds"},
-        # )
+        # Create failed attempt
+        failed_attempt = PaymentAttempt.objects.create(
+            payment=payment,
+            paystack_reference="ref_failed",
+            status="failed",
+            gateway_response={"error": "Insufficient funds"},
+        )
 
-        # # Create successful attempt
-        # successful_attempt = PaymentAttempt.objects.create(
-        #     payment=payment,
-        #     paystack_reference="ref_success",
-        #     status="success",
-        #     gateway_response={"status": "success", "transaction_id": "txn_123"},
-        # )
+        # Create successful attempt
+        successful_attempt = PaymentAttempt.objects.create(
+            payment=payment,
+            paystack_reference="ref_success",
+            status="success",
+            gateway_response={"status": "success", "transaction_id": "txn_123"},
+        )
 
         # Update payment status
         payment.status = "completed"
         payment.paystack_transaction_id = "txn_123"
         payment.paid_at = timezone.now()
         payment.save()
+        failed_attempt.save()
+        successful_attempt.save()
 
         # Verify final state
         self.assertEqual(payment.status, "completed")

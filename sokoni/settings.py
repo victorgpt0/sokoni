@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from decimal import Decimal
 from pathlib import Path
+from socket import gethostbyname, gethostname
 
 import environ
 from django.contrib.messages import constants as messages
@@ -26,26 +27,24 @@ env = environ.Env(
 
 environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 
-DEBUG = env("DEBUG")
-SECRET_KEY = env("SECRET_KEY", default="django-insecure-key")
+IS_PRODUCTION = env("APP_ENV", default="development").lower().strip() == "production"
 
-ALLOWED_HOSTS = [
-    "491bc5dd1d1a.ngrok-free.app",
-    "127.0.0.1",
-    "localhost",
-]
+DEBUG = env("DEBUG")
+SECRET_KEY = env("SECRET_KEY")
+
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", default="localhost").split(",")
+ALLOWED_HOSTS.append(gethostbyname(gethostname()))
 
 # CSRF settings for ngrok
-CSRF_TRUSTED_ORIGINS = [
-    "https://491bc5dd1d1a.ngrok-free.app",
-    "http://127.0.0.1:8000",
-    "http://localhost:8000",
-]
+CSRF_TRUSTED_ORIGINS = env(
+    "CSRF_TRUSTED_ORIGINS", default="http://localhost:8000"
+).split(",")
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https") if IS_PRODUCTION else None
 # Additional security settings for ngrok development
-CSRF_COOKIE_SECURE = False  # Set to True in production
-SESSION_COOKIE_SECURE = False  # Set to True in production
-SECURE_SSL_REDIRECT = False  # Set to True in production
+CSRF_COOKIE_SECURE = IS_PRODUCTION  # Set to True in production
+SESSION_COOKIE_SECURE = IS_PRODUCTION  # Set to True in production
+SECURE_SSL_REDIRECT = IS_PRODUCTION  # Set to True in production
 
 # For ngrok development - allow insecure cookies
 CSRF_COOKIE_SAMESITE = "Lax"
@@ -63,6 +62,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Third party apps
     "widget_tweaks",
+    "django_prometheus",
     # Local apps
     "accounts",
     "products",
@@ -74,6 +74,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "django_prometheus.middleware.PrometheusBeforeMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -82,8 +83,10 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     # AuditTimestampModel requires the current user
     "sokoni.middleware.CurrentUserMiddleware",
+    "sokoni.middleware.LogRequestMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_prometheus.middleware.PrometheusAfterMiddleware",
 ]
 
 ROOT_URLCONF = "sokoni.urls"
@@ -218,9 +221,9 @@ PAYSTACK_SECRET_KEY = env("PAYSTACK_SECRET_KEY", default="")
 # Set this in your Paystack dashboard: https://491bc5dd1d1a.ngrok-free.app/payments/webhook/paystack/
 
 # Security settings (for production)
-# SECURE_BROWSER_XSS_FILTER = True
-# SECURE_CONTENT_TYPE_NOSNIFF = True
-# X_FRAME_OPTIONS = 'DENY'
-# SECURE_HSTS_SECONDS = 31536000
-# SECURE_HSTS_INCLUDE_SUBDOMAINS = True
-# SECURE_HSTS_PRELOAD = True
+SECURE_BROWSER_XSS_FILTER = IS_PRODUCTION
+SECURE_CONTENT_TYPE_NOSNIFF = IS_PRODUCTION
+X_FRAME_OPTIONS = "DENY" if IS_PRODUCTION else "SAMEORIGIN"
+SECURE_HSTS_SECONDS = 31536000 if IS_PRODUCTION else 0
+SECURE_HSTS_INCLUDE_SUBDOMAINS = IS_PRODUCTION
+SECURE_HSTS_PRELOAD = IS_PRODUCTION

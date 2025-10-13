@@ -78,7 +78,7 @@ def process_payment_view(request, order_number):
     }
 
     try:
-        print(f"Paystack Data: {paystack_data}")  # Debug
+        # print(f"Paystack Data: {paystack_data}")  # Debug
         response = requests.post(
             "https://api.paystack.co/transaction/initialize",
             headers=get_paystack_headers(),
@@ -534,5 +534,5 @@ def test_paystack_view(request):
                 }
             )
 
-    except Exception as e:
-        return JsonResponse({"success": False, "error": f"Connection error: {str(e)}"})
+    except Exception:
+        return JsonResponse({"success": False, "error": "Connection error"})

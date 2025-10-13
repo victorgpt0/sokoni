@@ -35,7 +35,10 @@ class Payment(AuditTimestampModel):
 
     # Paystack specific fields
     paystack_reference = models.CharField(
-        max_length=100, unique=True, blank=True, default=""
+        max_length=100,
+        unique=True,
+        blank=True,
+        default=None,
     )
     paystack_access_code = models.CharField(max_length=100, blank=True, default="")
     paystack_transaction_id = models.CharField(max_length=100, blank=True, default="")

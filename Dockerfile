@@ -1,4 +1,4 @@
-ARG PYTHON_VERSION=3.12.3
+ARG PYTHON_VERSION=3.12
 FROM python:${PYTHON_VERSION}-slim AS base
 
 # Prevents Python from writing pyc files.
@@ -19,6 +19,7 @@ FROM base AS builder
 # into this layer.
 RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
+    python -m pip install --upgrade pip && \
     python -m pip install --user -r requirements.txt
 
 # Production stage
@@ -51,17 +52,11 @@ USER appuser
 # Expose the port that the application listens on.
 EXPOSE 8000
 
-# Run the application.
-CMD ["/bin/sh", "-c", "\
-    if [ \"$DJANGO_ENV\" = 'development' ]; then \
-        echo '🚀 Starting in development mode...'; \
-        python manage.py runserver 0.0.0.0:8000; \
-    else \
-        echo '🧿 Collecting static files...'; \
-        python manage.py collectstatic --noinput; \
-        echo '🔄 Running migrations...'; \
-        python manage.py migrate --noinput; \
-        echo '🚀 Starting in production mode..'; \
-        gunicorn 'sokoni.wsgi' --bind=0.0.0.0:8000; \
-    fi \
-    "]
+RUN chmod +x /app/entrypoint.sh
+
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+CMD ["gunicorn", "sokoni.wsgi:application", "--bind=0.0.0.0:8000", "--workers=4", "--threads=2", "--timeout=120", "--access-logfile", "-", "--error-logfile", "-"]
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+    CMD curl --fail http://localhost:8000/ || exit 1
