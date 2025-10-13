@@ -36,7 +36,7 @@ jobs:
       - name: Run Tests
         env:
           DATABASE_URL: ${{ secrets.TEST_DB_URL }}
-          SECRET_KEY: 'testing-insecure-key'
+          SECRET_KEY: 'testing-insecure-key' # pragma: allowlist secret
         run: |
           python manage.py test
 
@@ -110,7 +110,7 @@ jobs:
       - name: Run Django Check
         env:
           DATABASE_URL: ${{ secrets.TEST_DB_URL }}
-          SECRET_KEY: 'testing-insecure-key'
+          SECRET_KEY: 'testing-insecure-key' # pragma: allowlist secret
         run: |
           docker run \
           -e DATABASE_URL="$DATABASE_URL" \

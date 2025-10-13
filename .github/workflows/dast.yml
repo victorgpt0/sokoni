@@ -34,10 +34,12 @@ jobs:
       - name: Run Container
         env:
           TEST_DB_URL: ${{ secrets.TEST_DB_URL }}
+          SECRET_KEY: 'testing-insecure-key' # pragma: allowlist secret
         run: |
           docker run -d \
             --name sokoni-app \
             -e DATABASE_URL="$TEST_DB_URL" \
+            -e SECRET_KEY="$SECRET_KEY" \
             -p 8000:8000 \
             --name sokoni-app \
             ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ env.SAFE_REF }}-${{ github.sha }}
