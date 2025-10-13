@@ -74,16 +74,16 @@ resource "aws_instance" "sokoni" {
   user_data = <<-EOF
             #!/bin/bash
             set -e
-            
+
             # Update system
             yum update -y
-            
+
             # Install Docker
             yum install -y docker
             systemctl start docker
             systemctl enable docker
             usermod -a -G docker ec2-user
-            
+
             # Install Docker Compose
             curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
             chmod +x /usr/local/bin/docker-compose
@@ -99,7 +99,7 @@ resource "aws_instance" "sokoni" {
             else
               ALLOWED_HOSTS="$PUBLIC_IP,localhost,127.0.0.1"
             fi
-            
+
             # Install AWS CLI v2 (already included in AL2023)
             # Configure environment variables
             cat > /home/ec2-user/.env <<ENVFILE
@@ -107,8 +107,9 @@ resource "aws_instance" "sokoni" {
             DATABASE_URL=${local.database_url}
             ALLOWED_HOSTS=$${ALLOWED_HOSTS}
             DEBUG=True
+            SECRET_KEY=django-insecure-key
             ENVFILE
-            
+
             # Create docker-compose file
             cat > /home/ec2-user/docker-compose.yml <<COMPOSE
             services:
@@ -120,14 +121,14 @@ resource "aws_instance" "sokoni" {
                   - .env
                 restart: unless-stopped
             COMPOSE
-            
+
             # Set ownership
             chown -R ec2-user:ec2-user /home/ec2-user/
-            
+
             # Login to ECR and pull image
             su - ec2-user -c "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin ${split("/", var.container_image)[0]}"
             su - ec2-user -c "docker pull ${var.container_image}"
-            
+
             # Start the application
             cd /home/ec2-user
             su - ec2-user -c "docker-compose up -d"

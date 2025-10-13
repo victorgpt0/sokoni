@@ -213,7 +213,7 @@ Create a `.env` file based on `.env.example`:
 
 ```bash
 # Database
-DATABASE_URL=postgresql://user:password@localhost:5432/sokoni
+DATABASE_URL=postgresql://user:password@localhost:5432/sokoni # pragma: allowlist secret
 
 # Django Security
 SECRET_KEY=your-secret-key-here
@@ -465,15 +465,15 @@ terraform apply -var="container_image=<your-image-uri>"
 
 ### Security Best Practices
 
-✅ Non-root container user  
-✅ Multi-stage Docker builds  
-✅ Minimal base images (`python:3.12-slim`)  
-✅ Security group rules with least privilege  
-✅ HTTPS enforcement via ALB  
-✅ Database encryption at rest (RDS)  
-✅ IAM roles with scoped policies  
-✅ Regular dependency updates  
-✅ Automated security scanning in CI/CD  
+✅ Non-root container user
+✅ Multi-stage Docker builds
+✅ Minimal base images (`python:3.12-slim`)
+✅ Security group rules with least privilege
+✅ HTTPS enforcement via ALB
+✅ Database encryption at rest (RDS)
+✅ IAM roles with scoped policies
+✅ Regular dependency updates
+✅ Automated security scanning in CI/CD
 
 ---
 

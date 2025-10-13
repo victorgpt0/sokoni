@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 import os
 from decimal import Decimal
 from pathlib import Path
-
 from socket import gethostbyname, gethostname
 
 import environ
@@ -31,16 +30,15 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 IS_PRODUCTION = env("APP_ENV", default="development").lower().strip() == "production"
 
 DEBUG = env("DEBUG")
-SECRET_KEY = env(
-    "SECRET_KEY",
-    default="django-insecure-key",
-)
+SECRET_KEY = env("SECRET_KEY")
 
 ALLOWED_HOSTS = env("ALLOWED_HOSTS", default="localhost").split(",")
 ALLOWED_HOSTS.append(gethostbyname(gethostname()))
 
 # CSRF settings for ngrok
-CSRF_TRUSTED_ORIGINS = env("CSRF_TRUSTED_ORIGINS", default="http://localhost:8000").split(",")
+CSRF_TRUSTED_ORIGINS = env(
+    "CSRF_TRUSTED_ORIGINS", default="http://localhost:8000"
+).split(",")
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https") if IS_PRODUCTION else None
 # Additional security settings for ngrok development
@@ -225,7 +223,7 @@ PAYSTACK_SECRET_KEY = env("PAYSTACK_SECRET_KEY", default="")
 # Security settings (for production)
 SECURE_BROWSER_XSS_FILTER = IS_PRODUCTION
 SECURE_CONTENT_TYPE_NOSNIFF = IS_PRODUCTION
-X_FRAME_OPTIONS = 'DENY' if IS_PRODUCTION else 'SAMEORIGIN'
-SECURE_HSTS_SECONDS = 31536000 if IS_PRODUCTION  else 0
+X_FRAME_OPTIONS = "DENY" if IS_PRODUCTION else "SAMEORIGIN"
+SECURE_HSTS_SECONDS = 31536000 if IS_PRODUCTION else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = IS_PRODUCTION
 SECURE_HSTS_PRELOAD = IS_PRODUCTION

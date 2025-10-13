@@ -120,6 +120,10 @@ resource "aws_ecs_task_definition" "app" {
         {
           name      = "DATABASE_URL"
           valueFrom = aws_ssm_parameter.database_url.arn
+        },
+        {
+          name = "SECRET_KEY"
+          valueFrom = aws_secretsmanager_secret.django_secret_key.arn
         }
       ]
       logConfiguration = {
@@ -236,6 +240,10 @@ resource "aws_ecs_task_definition" "migrations" {
         {
           name      = "DATABASE_URL"
           valueFrom = aws_ssm_parameter.database_url.arn
+        },
+        {
+          name = "SECRET_KEY"
+          valueFrom = aws_secretsmanager_secret.django_secret_key.arn
         }
       ]
       logConfiguration = {
