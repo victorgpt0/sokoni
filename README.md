@@ -50,6 +50,8 @@ This project serves as the practical capstone for my 12-week Starter DevOps Prog
 ---
 
 ## 🏗️ Architecture Diagram
+`Disclaimer: This setup is designed to be as budget-friendly as possible without compromising on security.`
+
 #### Production Environment Architecture
 ![Production Architecture](./docs/prod.png)
 
