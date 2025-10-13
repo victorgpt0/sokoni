@@ -1,0 +1,40 @@
+name: Trivy Docker Image Scan
+run-name: Trivy is scanning Sokoni Docker Image 🐋
+
+on:
+    schedule:
+        - cron: '0 0 * * 0'
+
+permissions:
+    security-events: write
+    actions: read
+    contents: read
+
+jobs:
+    trivy-scan:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v5
+
+            - name: Setup Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Build Docker Image
+              run: |
+                docker build -t ${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }} .
+
+            - name: Run Trivy Vulnerability Scanner
+              uses: aquasecurity/trivy-action@0.28.0
+              with:
+                image-ref: '${{ vars.DOCKERHUB_USERNAME }}/${{ vars.DOCKER_IMAGE_NAME }}:${{ github.ref_name }}-${{ github.sha }}'
+                format: 'sarif'
+                output: 'trivy-results.sarif'
+                severity: 'CRITICAL,HIGH'
+
+            - name: Upload Results as Artifact
+              uses: actions/upload-artifact@v4
+              if: always()
+              with:
+                name: trivy-scan-results
+                path: 'trivy-results.sarif'

@@ -1,0 +1,76 @@
+name: SAST Scan
+run-name: Static App Security Testing on Sokoni 🧿
+on:
+  push:
+    branches: [ main, staging ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+  codeql:
+    name: CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Init CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+
+      - name: Build Pip Deps
+        run: |
+          pip install -r requirements.txt
+
+      - name: Perform Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          output: 'codeql_results'
+          upload: false
+
+      - name: Show SARIF results
+        run: cat ./codeql_results/*.sarif
+
+      - name: Upload Results as Artifact
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: codeql-results
+          path: 'codeql_results'
+
+
+  sonarqube:
+    name: SonarQube
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v6
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  gitleaks:
+    name: GitLeaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

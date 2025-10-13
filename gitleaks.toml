@@ -1,0 +1,6 @@
+[allowlist]
+description = "SonarQube Identifiers"
+regexes = [
+    '''sonar.projectKey=.*'''
+    '''sonar.organization=.*'''
+]

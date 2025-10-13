@@ -1,3 +1,4 @@
+import logging
 import threading
 
 _user = threading.local()
@@ -22,4 +23,26 @@ class CurrentUserMiddleware:
         _user.value = request.user if request.user.is_authenticated else None
         response = self.get_response(request)
         _user.value = None
+        return response
+
+
+logger = logging.getLogger(__name__)
+
+
+class LogRequestMiddleware:
+    """
+    Middleware to log incoming requests.
+    """
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        logger.info(
+            f"In: {request.method} {request.get_full_path()} from {request.META.get('REMOTE_ADDR')}"
+        )
+        response = self.get_response(request)
+        logger.info(
+            f"Out: {response.status_code} for {request.method} {request.get_full_path()}"
+        )
         return response

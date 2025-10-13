@@ -2,6 +2,8 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from products.models import Product
 
@@ -100,7 +102,12 @@ def toggle_wishlist(request, product_id):
             )
 
         messages.success(request, message)
-        return redirect(request.META.get("HTTP_REFERER", "wishlist:wishlist_list"))
+        next_url = request.META.get("HTTP_REFERER")
+        if not url_has_allowed_host_and_scheme(
+            next_url, allowed_hosts={request.get_host()}
+        ):
+            next_url = reverse("wishlist:wishlist_list")
+        return redirect(next_url)
 
     return redirect("products:product_list")
 
