@@ -92,7 +92,7 @@ resource "aws_alb_listener" "http" {
 
 resource "aws_alb_listener_rule" "metrics_rule" {
   listener_arn = aws_alb_listener.https.arn
-  priority     = 10
+  priority     = 100
 
   action {
     type             = "forward"
@@ -111,6 +111,26 @@ resource "aws_alb_listener_rule" "metrics_rule" {
     }
   }
   depends_on = [ aws_prometheus_workspace.prometheus ]
+}
+
+resource "aws_alb_listener_rule" "metrics_public_rule" {
+  listener_arn = aws_alb_listener.https.arn
+  priority     = 101
+
+  action {
+    type             = "fixed-response"
+    fixed_response {
+      content_type = "text/plain"
+      status_code = "403"
+      message_body = "Forbidden"
+    }
+  }
+
+  condition {
+    path_pattern {
+      values = ["/metrics"]
+    }
+  }
 }
 
 # resource "aws_alb_target_group" "metrics_tg" {
