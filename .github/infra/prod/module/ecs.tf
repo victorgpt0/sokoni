@@ -273,7 +273,7 @@ resource "aws_ecs_task_definition" "app" {
         },
         {
           name = "SECRET_KEY"
-          valueFrom = aws_secretsmanager_secret.django_secret_key.arn
+          valueFrom = "${aws_secretsmanager_secret.django_secret_key.arn}"
         }
       ]
       logConfiguration = {
@@ -475,7 +475,7 @@ resource "aws_ecs_task_definition" "migrations" {
         },
         {
           name = "SECRET_KEY"
-          valueFrom = aws_secretsmanager_secret.django_secret_key.arn
+          valueFrom = "${aws_secretsmanager_secret.django_secret_key.arn}"
         }
       ]
       logConfiguration = {
