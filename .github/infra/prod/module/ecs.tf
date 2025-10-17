@@ -85,11 +85,11 @@ data "aws_ami" "ecs_optimized" {
   }
 }
 
-# resource "aws_iam_policy_attachment" "ecs_task_execution_policy" {
-#   name       = "sokoni-${var.env}-ecs-task-execution-policy"
-#   roles      = [aws_iam_role.ecs_task_execution_role.name]
-#   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-# }
+resource "aws_iam_policy_attachment" "ecs_task_execution_policy" {
+  name       = "sokoni-${var.env}-ecs-task-execution-policy"
+  roles      = [aws_iam_role.ecs_task_execution_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
 
 resource "aws_iam_policy" "ecs_secrets_policy" {
   name = "sokoni-${var.env}-ecs-secrets-policy"

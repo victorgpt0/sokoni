@@ -24,7 +24,7 @@ resource "aws_service_discovery_service" "webapp_svc_discovery" {
 }
 
 resource "aws_ssm_parameter" "cloudmap_namespaces" {
-  name = "observability/cloudmap/namespaces"
+  name = "observability\\/cloudmap\\/namespaces"
   type = "StringList"
   value = join(",", [
     aws_service_discovery_private_dns_namespace.cloudmap_ns.name
