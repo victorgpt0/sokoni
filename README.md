@@ -27,7 +27,7 @@ This project serves as the practical capstone for my 12-week Starter DevOps Prog
 
 ---
 
-## 🎯 Project Overview
+## Project Overview
 
 **Features:**
 - User authentication & authorization
@@ -49,7 +49,7 @@ This project serves as the practical capstone for my 12-week Starter DevOps Prog
 
 ---
 
-## 🏗️ Architecture Diagram
+## Architecture Diagram
 `Disclaimer: This setup is designed to be as budget-friendly as possible without compromising on security.`
 
 #### Production Environment Architecture
@@ -60,7 +60,7 @@ This project serves as the practical capstone for my 12-week Starter DevOps Prog
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 | Layer | Technology |
 |-------|-----------|
@@ -79,7 +79,7 @@ This project serves as the practical capstone for my 12-week Starter DevOps Prog
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```
 sokoni/
@@ -122,7 +122,7 @@ sokoni/
 
 ---
 
-## 💻 Local Development
+## Local Development
 
 ### Option A: Python Virtual Environment
 
@@ -209,7 +209,7 @@ docker compose exec server python manage.py seed_dev
 
 ---
 
-## ⚙️ Configuration (Environment Variables)
+## Configuration (Environment Variables)
 
 Create a `.env` file based on `.env.example`:
 
@@ -242,7 +242,7 @@ PAYSTACK_SECRET_KEY=sk_xxxxxx
 
 ---
 
-## 🔄 CI/CD Pipeline
+## CI/CD Pipeline
 
 ### GitHub Actions Workflows
 
@@ -284,7 +284,7 @@ graph LR
 
 ---
 
-## 🐳 Containerization & Docker Registry
+## Containerization & Docker Registry
 
 ### Dockerfile Highlights
 [View Dockerfile](./Dockerfile)
@@ -380,7 +380,7 @@ terraform apply -var="container_image=<your-image-uri>"
 
 ---
 
-## 📊 Monitoring & Observability
+## Monitoring & Observability
 
 ### Application Metrics
 
@@ -424,7 +424,7 @@ terraform apply -var="container_image=<your-image-uri>"
 
 ---
 
-## 🔒 DevSecOps
+## DevSecOps
 
 ### Vulnerability Scanning
 
@@ -479,13 +479,13 @@ terraform apply -var="container_image=<your-image-uri>"
 
 ---
 
-## 🌐 Live Demo
+## Live Demo
 
 **Production URL:** [sokoni.dev](https://sokoni.dev)
 
 ---
 
-## ✅ Deliverables Checklist
+## Deliverables Checklist
 
 | Deliverable | Status | Location |
 |------------|--------|----------|
@@ -516,7 +516,7 @@ terraform apply -var="container_image=<your-image-uri>"
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 ### Branching Strategy
 
@@ -562,7 +562,7 @@ feature/* (feature branches)
 
 ---
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 - **Nairobi DevOps Community** - For the 12-week Starter DevOps Program
 - **Django Community** - For the excellent web framework
@@ -575,13 +575,13 @@ feature/* (feature branches)
 
 ---
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License. See `LICENSE` file for details.
 
 ---
 
-## 📞 Support
+## Support
 
 For questions or issues:
 - **GitHub Issues:** https://github.com/victorgpt0/sokoni/issues
