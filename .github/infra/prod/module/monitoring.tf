@@ -32,13 +32,13 @@
   
 # }
 
-# resource "aws_prometheus_workspace" "prometheus" {
-#   alias = "sokoni-prometheus-${var.env}-workspace"
-#   tags = {
-#     Name      = "sokoni-prometheus-${var.env}-workspace"
-#     terraform = true
-#   }
-# }
+resource "aws_prometheus_workspace" "prometheus" {
+  alias = "sokoni-prometheus-${var.env}-workspace"
+  tags = {
+    Name      = "sokoni-prometheus-${var.env}-workspace"
+    terraform = true
+  }
+}
 
 # resource "aws_iam_role" "grafana_ecs_task_role" {
 #   name = "sokoni-${var.env}-grafana-task-role"

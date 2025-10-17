@@ -89,3 +89,47 @@ resource "aws_alb_listener" "http" {
     }
   }
 }
+
+resource "aws_alb_listener_rule" "metrics_rule" {
+  listener_arn = aws_alb_listener.https.arn
+  priority     = 10
+
+  action {
+    type             = "forward"
+    target_group_arn = aws_alb_target_group.app_instance_tg.arn
+  }
+
+  condition {
+    path_pattern {
+      values = ["/metrics"]
+    }
+  }
+
+  condition {
+    host_header {
+      values = [aws_prometheus_workspace.prometheus.prometheus_endpoint]
+    }
+  }
+  depends_on = [ aws_prometheus_workspace.prometheus ]
+}
+
+# resource "aws_alb_target_group" "metrics_tg" {
+#   name        = "sokoni-${var.env}-metrics-tg"
+#   port        = var.app_port
+#   protocol    = "HTTP"
+#   target_type = "instance"
+#   vpc_id      = aws_vpc.sokoni-vpc.id
+#   health_check {
+#     path                = "/metrics"
+#     protocol            = "HTTP"
+#     matcher             = "200,302"
+#     interval            = 30
+#     timeout             = 5
+#     healthy_threshold   = 3
+#     unhealthy_threshold = 3
+#   }
+#   tags = {
+#     Name      = "sokoni-${var.env}-metrics-tg"
+#     terraform = "true"
+#   }  
+# }
