@@ -152,6 +152,7 @@ resource "aws_launch_template" "ecs" {
 
   network_interfaces {
     security_groups = [ aws_security_group.ecs.id ]
+    associate_public_ip_address = false
   }
 
   user_data = base64encode(<<-EOT
