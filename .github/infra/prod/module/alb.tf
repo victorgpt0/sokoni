@@ -67,7 +67,7 @@ resource "aws_alb_listener" "https" {
   certificate_arn   = aws_acm_certificate_validation.cert_validation.certificate_arn
   default_action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.app_tg.arn
+    target_group_arn = aws_alb_target_group.app_instance_tg.arn
   }
 
   lifecycle {
