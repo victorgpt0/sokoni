@@ -1,3 +1,37 @@
+resource "aws_service_discovery_private_dns_namespace" "cloudmap_ns" {
+  name        = "sokoni.local"
+  vpc = aws_vpc.sokoni-vpc.id
+}
+
+resource "aws_service_discovery_service" "webapp_svc_discovery" {
+  name = "sokoni-${var.env}-webapp-svc"
+  namespace_id = aws_service_discovery_private_dns_namespace.cloudmap_ns.id
+  
+  dns_config {
+    namespace_id = aws_service_discovery_private_dns_namespace.cloudmap_ns.id
+    dns_records {
+      type = "A"
+      ttl  = 10
+    }
+    routing_policy = "WEIGHTED"
+  }
+
+
+  tags = {
+    Name      = "sokoni-${var.env}-webapp-service-discovery"
+    terraform = true
+  }
+}
+
+resource "aws_ssm_parameter" "cloudmap_namespaces" {
+  name = "observability/cloudmap/namespaces"
+  type = "StringList"
+  value = join(",", [
+    aws_service_discovery_private_dns_namespace.cloudmap_ns.name
+  ])
+  
+}
+
 resource "aws_prometheus_workspace" "prometheus" {
   alias = "sokoni-prometheus-${var.env}-workspace"
   tags = {
@@ -33,16 +67,13 @@ resource "aws_iam_policy" "grafana_amp_policy" {
     Statement = [
       {
         Action = [
-          "aps:QueryMetrics",
+          "aps:RemoteWrite",
           "aps:GetSeries",
           "aps:GetLabels",
-          "aps:GetMetricData",
           "aps:GetMetricMetadata",
-          "aps:ListWorkspaces",
-          "aps:DescribeWorkspace",
         ]
         Effect   = "Allow"
-        Resource = aws_prometheus_workspace.prometheus.arn
+        Resource = "*"
       },
       {
         Effect = "Allow"
@@ -59,6 +90,16 @@ resource "aws_iam_policy" "grafana_amp_policy" {
           "cloudwatch:ListMetrics",
           "cloudwatch:GetMetricStatistics",
         ]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = ["ssm:GetParameter"]
+        Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = ["servicediscovery:*"]
         Resource = "*"
       }
     ]
@@ -194,6 +235,163 @@ resource "aws_ecs_task_definition" "grafana" {
 
 }
 
+# resource "aws_ecs_service" "grafana" {
+#   name            = "sokoni-${var.env}-grafana"
+#   cluster         = aws_ecs_cluster.this.id
+#   task_definition = aws_ecs_task_definition.grafana.arn
+#   desired_count   = 1
+#   launch_type     = "FARGATE"
+
+#   network_configuration {
+#     subnets          = aws_subnet.public[*].id
+#     security_groups  = [aws_security_group.monitoring.id]
+#     assign_public_ip = true
+#   }
+
+#   tags = {
+#     terraform = true
+#   }
+
+# }
+
+resource "aws_ecs_task_definition" "prometheus" {
+  family                   = "sokoni-${var.env}-prometheus"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = var.task_cpu
+  memory                   = var.task_memory
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.grafana_ecs_task_role.arn
+  container_definitions = jsonencode([{
+    name      = "prometheus"
+    image     = "quay.io/prometheus/prometheus:v2.44.0"
+    essential = true
+    mountPoints = [{
+      sourceVolume  = "configVolume"
+      containerPath = "/etc/config"
+      readOnly      = false
+    },
+    {
+      sourceVolume  = "walVolume"
+      containerPath = "/data"
+      readOnly      = false
+    }
+    ]
+    portMappings = [{
+      containerPort = 9090
+      protocol      = "tcp"
+    }]
+
+    environment = [
+      {
+        name  = "WORKSPACE_ID"
+        value = aws_prometheus_workspace.prometheus.id
+      }
+    ]
+
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
+        "awslogs-region"        = var.aws_region
+        "awslogs-stream-prefix" = "prometheus"
+      }
+    }
+  },
+  {
+    name = "aws-iamproxy"
+    image = "public.ecr.aws/aws-observability/aws-sigv4-proxy:1.0"
+    essential = true
+    portMappings = [{
+      containerPort = 8080
+      protocol      = "tcp"
+    }]
+    command = [
+      "--name", "aps",
+      "--region", var.aws_region,
+      "--host", "aps-workspaces.${var.aws_region}.amazonaws.com"
+    ]
+
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
+        "awslogs-region"        = var.aws_region
+        "awslogs-stream-prefix" = "aws-iamproxy"
+      }
+    }
+  },
+  {
+    name = "config-reloader"
+    image = "quay.io/prometheus-operator/prometheus-config-reloader:v0.76.0"
+    essential = true
+    mountPoints = [{
+      sourceVolume  = "configVolume"
+      containerPath = "/etc/config"
+      readOnly      = false
+    }]
+    environment = [
+      {
+        name  = "CONFIG_FILE_DIR"
+        value = "/etc/config"
+      },
+      {
+        name  = "CONFIG_RELOAD_FREQUENCY"
+        value = "30"
+      },
+      {
+        name = "CLOUDMAP_NAMESPACE_ID"
+        value = aws_service_discovery_private_dns_namespace.cloudmap_ns.id
+      }
+    ]
+
+    logConfiguration = {
+      logDriver = "awslogs"
+      options = {
+        "awslogs-group"         = aws_cloudwatch_log_group.ecs.name
+        "awslogs-region"        = var.aws_region
+        "awslogs-stream-prefix" = "config-reloader"
+      }
+    }
+  }
+  ])
+
+  volume {
+    name = "configVolume"
+    host_path = "/var/lib/prometheus-config"
+  }
+
+  volume {
+    name = "walVolume"
+    host_path = "/var/lib/prometheus-wal"
+  }
+
+  tags = {
+    terraform = true
+  }
+
+}
+
+
+resource "aws_ecs_service" "prometheus" {
+  name            = "sokoni-${var.env}-grafana"
+  cluster         = aws_ecs_cluster.this.id
+  task_definition = aws_ecs_task_definition.prometheus.arn
+  desired_count   = 1
+  launch_type     = "FARGATE"
+
+  network_configuration {
+    subnets          = aws_subnet.public[*].id
+    security_groups  = [aws_security_group.monitoring.id]
+    assign_public_ip = true
+  }
+
+  tags = {
+    terraform = true
+  }
+
+}
+
 resource "aws_ecs_service" "grafana" {
   name            = "sokoni-${var.env}-grafana"
   cluster         = aws_ecs_cluster.this.id
@@ -213,6 +411,8 @@ resource "aws_ecs_service" "grafana" {
 
 }
 
+
+
 resource "aws_security_group" "monitoring" {
   name        = "sokoni-${var.env}-monitoring-sg"
   description = "Security group for Prometheus and Grafana Managed services"
@@ -223,7 +423,7 @@ resource "aws_security_group" "monitoring" {
     to_port     = 3000
     protocol    = "tcp"
     # cidr_blocks = ["${chomp(data.http.my_ip.response_body)}/32"]
-    cidr_blocks = ["41.90.172.205/32"]
+    cidr_blocks = ["41.90.172.0/24"]
   }
 
   egress {

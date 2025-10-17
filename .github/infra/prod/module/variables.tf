@@ -20,6 +20,10 @@ variable "private_subnets" {
 }
 
 #ECS configuration variables
+variable "instance_type" {
+  type    = string
+  default = "t3.micro"  
+}
 variable "app_port" {
   type    = number
   default = 80
@@ -36,6 +40,14 @@ variable "container_image" {
   type = string
 }
 variable "desired_count" {
+  type    = number
+  default = 1
+}
+variable "max_size" {
+  type    = number
+  default = 2  
+}
+variable "min_size" {
   type    = number
   default = 1
 }
