@@ -431,7 +431,7 @@ resource "aws_ecs_service" "app" {
   launch_type     = "EC2"
 
   load_balancer {
-    target_group_arn = aws_alb_target_group.app_tg.arn
+    target_group_arn = aws_alb_target_group.app_instance_tg.arn
     container_name   = "app"
     container_port   = var.app_port
   }
