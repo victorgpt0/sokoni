@@ -51,7 +51,7 @@ resource "aws_alb_target_group" "app_instance_tg" {
     unhealthy_threshold = 3
   }
   tags = {
-    Name      = "sokoni-${var.env}-tg"
+    Name      = "sokoni-${var.env}-instance-tg"
     terraform = "true"
   }
   lifecycle {
