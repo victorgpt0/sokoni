@@ -15,6 +15,30 @@ resource "aws_alb_target_group" "app_tg" {
   name        = "sokoni-${var.env}-tg"
   port        = var.app_port
   protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = aws_vpc.sokoni-vpc.id
+  health_check {
+    path                = "/"
+    protocol            = "HTTP"
+    matcher             = "200"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 3
+    unhealthy_threshold = 3
+  }
+  tags = {
+    Name      = "sokoni-${var.env}-tg"
+    terraform = "true"
+  }
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_alb_target_group" "app_instance_tg" {
+  name        = "sokoni-${var.env}-instance-tg"
+  port        = var.app_port
+  protocol    = "HTTP"
   target_type = "instance"
   vpc_id      = aws_vpc.sokoni-vpc.id
   health_check {
