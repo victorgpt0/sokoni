@@ -107,7 +107,7 @@ resource "aws_alb_listener_rule" "metrics_rule" {
 
   condition {
     host_header {
-      values = [aws_prometheus_workspace.prometheus.prometheus_endpoint]
+      values = ["aps-workspaces.us-east-1.amazonaws.com"]
     }
   }
   depends_on = [ aws_prometheus_workspace.prometheus ]
