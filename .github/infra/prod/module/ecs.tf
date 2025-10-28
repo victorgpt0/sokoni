@@ -226,6 +226,15 @@ resource "aws_autoscaling_group" "ecs" {
   max_size            = var.max_size
   desired_capacity    = var.desired_count
 
+  instance_refresh {
+    strategy = "Rolling"
+    preferences {
+      min_healthy_percentage = 0
+      instance_warmup        = 30
+    }
+    triggers = [ "launch_template" ]
+  }
+
   tag {
     key                 = "Name"
     value               = "sokoni-${var.env}-ecs-instance"
