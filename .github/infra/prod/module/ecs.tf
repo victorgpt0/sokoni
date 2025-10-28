@@ -157,6 +157,37 @@ resource "aws_launch_template" "ecs" {
 
   user_data = base64encode(<<-EOT
     #!/bin/bash
+
+    yum update -y
+    yum install -y amazon-cloudwatch-agent
+
+    # Create CloudWatch agent config
+    cat > /opt/aws/amazon-cloudwatch-agent/bin/config.json <<'EOF'
+    {
+      "logs": {
+        "logs_collected": {
+          "files": {
+            "collect_list": [
+              {
+                "file_path": "/var/log/cloud-init-output.log",
+                "log_group_name": "/ec2/userdata",
+                "log_stream_name": "{instance_id}-userdata",
+                "timestamp_format": "%Y-%m-%d %H:%M:%S"
+              },
+              { "file_path": "/var/log/ecs/ecs-init.log", "log_group_name": "/ecs/init", "log_stream_name": "{instance_id}-ecs-init" },
+              { "file_path": "/var/log/ecs/ecs-agent.log", "log_group_name": "/ecs/agent", "log_stream_name": "{instance_id}-ecs-agent" }
+            ]
+          }
+        }
+      }
+    }
+    EOF
+
+    # Start the agent
+    /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+      -a fetch-config -m ec2 -c file:/opt/aws/amazon-cloudwatch-agent/bin/config.json -s
+
+
     echo ECS_CLUSTER=${aws_ecs_cluster.this.name} >> /etc/ecs/ecs.config
     echo AWS_REGION=${var.aws_region} >> /etc/ecs/ecs.config
     echo ECS_ENABLE_TASK_IAM_ROLE=true >> /etc/ecs/ecs.config
