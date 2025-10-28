@@ -159,6 +159,9 @@ resource "aws_launch_template" "ecs" {
     #!/bin/bash
     echo ECS_CLUSTER=${aws_ecs_cluster.this.name} >> /etc/ecs/ecs.config
     echo AWS_REGION=${var.aws_region} >> /etc/ecs/ecs.config
+    echo ECS_ENABLE_TASK_IAM_ROLE=true >> /etc/ecs/ecs.config
+    echo ECS_ENABLE_TASK_IAM_ROLE_NETWORK_HOST=true >> /etc/ecs/ecs.config
+    systemctl enable --now ecs
     EOT
   )
 
@@ -222,7 +225,7 @@ resource "aws_ecs_cluster_capacity_providers" "this" {
   default_capacity_provider_strategy {
     capacity_provider = aws_ecs_capacity_provider.asg.name
     weight            = 1
-    base              = 0
+    base              = 1
   }
   
 }
