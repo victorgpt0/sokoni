@@ -194,12 +194,6 @@ resource "aws_launch_template" "ecs" {
 
     echo ECS_CLUSTER=${aws_ecs_cluster.this.name} >> /etc/ecs/ecs.config
     echo AWS_REGION=${var.aws_region} >> /etc/ecs/ecs.config
-    echo ECS_ENABLE_TASK_IAM_ROLE=true >> /etc/ecs/ecs.config
-    echo ECS_ENABLE_TASK_IAM_ROLE_NETWORK_HOST=true >> /etc/ecs/ecs.config
-
-    cat /etc/ecs/ecs.config
-
-    systemctl enable --now ecs
 
     systemctl status ecs
     EOT
